@@ -1,0 +1,15 @@
+Reload 
+nginx -s reload -c /Users/moazzedd/homebrew/etc/nginx/test.conf
+
+check the config file
+nginx -t -c /Users/moazzedd/homebrew/etc/nginx/test.conf
+
+Test
+curl -I http://localhost:8080/
+
+Check wich port is listining
+
+lsof -i -P -n | grep LISTEN
+
+errors_log:
+tail -f /Users/moazzedd/homebrew/var/log/nginx/error.log
