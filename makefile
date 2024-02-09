@@ -2,7 +2,7 @@ NAME = webserv
 
 FLAGS = c++ -Wall -Wextra -Werror -std=c++98 -fsanitize=address -g3
 
-SRC =  configuration/config.cpp 
+SRC =  configuration/config.cpp  main.cpp
 
 all : $(NAME) $(SRC) 
 
