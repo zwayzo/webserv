@@ -27,14 +27,17 @@ class serveur{
         int max_size;
         int number;
         int size;
+        int locationsNumber;
         
 
 
         std::string index;
         std::string error_page;
         std::string name;
+        std::string mySer;
 
-        location *loca;
+        std::vector<location> loc;
+        // location *loca;
 
 };
 
@@ -43,6 +46,7 @@ class conf{
         std::vector<serveur> ser;
         int size;
         int serversNumber;
+        std::string allIn;
 };
 
 void fileConfiguration(conf *conf, std::string file);
