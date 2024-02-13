@@ -29,7 +29,7 @@ class serveur{
         int size;
         int locationsNumber;
         
-
+        int begin;
 
         std::string index;
         std::string error_page;
