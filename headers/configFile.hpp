@@ -18,9 +18,9 @@ class location{
         std::string theLoc;
 };
 
-class serveur{
+class server{
     public:
-        serveur(int n) : number(n){};
+        server(int n) : number(n){};
         int listen;
         int post;
         int get;
@@ -44,7 +44,7 @@ class serveur{
 
 class conf{
     public:
-        std::vector<serveur> ser;
+        std::vector<server> ser;
         int size;
         int serversNumber;
         std::string allIn;

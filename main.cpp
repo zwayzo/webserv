@@ -11,8 +11,10 @@ int main()
         // std::cout << "enter\n";
         if (std::strcmp(x , "syntax") == 0)
             std::cout << "SYNTAX ERROR...!\n";
-        else if (std::strcmp(x, "serveur syntax") == 0)
+        else if (std::strcmp(x, "server syntax") == 0)
             std::cout << "SERVER SYNTAX ERROR...!\n";
+        else if (std::strcmp(x, "check") == 0)
+            std::cout << "ERROR...RE-CHECK THE SYNATX...!\n";
         exit(1);
     }
     catch (...)

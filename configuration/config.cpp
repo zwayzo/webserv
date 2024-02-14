@@ -1,6 +1,21 @@
 #include "../headers/configFile.hpp"
 
-void checkAcollade(serveur &ser)
+void checkPrototype(server &ser)
+{
+    int i = 0, j = 0, n = 0;
+    while (ser.mySer[i])
+    {
+        if (std::strcmp("server_name", &ser.mySer[i]) && std::strcmp("listen", &ser.mySer[i]) && std::strcmp("root", &ser.mySer[i])
+        && std::strcmp("error_page", &ser.mySer[i]) && std::strcmp("max_body", &ser.mySer[i]) && std::strcmp("location", &ser.mySer[i])
+        && std::strcmp("index", &ser.mySer[i]) && std::strcmp("methodes", &ser.mySer[i]) && std::strcmp("redirection", &ser.mySer[i]))
+            throw ("check");
+        while (ser.mySer[i] != '\n' &&  ser.mySer[i])
+            i++;
+        i++;
+    }
+}
+
+void checkAcollade(server &ser)
 {
     // std::cout << ser.mySer << '\n';
     // std::cout << "enter\n";
@@ -22,7 +37,7 @@ void checkAcollade(serveur &ser)
     if (std::strncmp(&ser.mySer[0], "server{", i) != 0 && std::strncmp(&ser.mySer[0], "server {", i) != 0
     && std::strncmp(&ser.mySer[0], "server\n{", i) != 0
     && std::strncmp(&ser.mySer[0], "server{\n", i) != 0 && std::strncmp(&ser.mySer[0], "server {\n", i) != 0)
-        throw ("serveur syntax");
+        throw ("server syntax");
 }
 
 void stockLocation(conf *conf, int indice)
@@ -77,7 +92,7 @@ void getBegin(int indice, conf *conf, std::string allIn)
         conf->ser[indice].begin = n + 1;
 }
 
-void stockServeur(std::string allIn, conf *conf, int indice)
+void stockserver(std::string allIn, conf *conf, int indice)
 {
     int n = 0;
     int i = 0;
@@ -102,7 +117,7 @@ void stockServeur(std::string allIn, conf *conf, int indice)
 }
 
 
-void serveurSize(std::string allIn, int indice, conf *conf)
+void serverSize(std::string allIn, int indice, conf *conf)
 {
     getBegin(indice, conf, allIn);
     int i = 0, j = 0;
@@ -208,19 +223,20 @@ void fileConfiguration(conf *conf, std::string file)
     {
         // std::cout << "j is:" << j << '\n';
         conf->ser.push_back(conf->ser[j]);
-        serveurSize(conf->allIn, j, conf);
-        stockServeur(conf->allIn, conf, j);
+        serverSize(conf->allIn, j, conf);
+        stockserver(conf->allIn, conf, j);
         checkAcollade(conf->ser[j]);
         conf->ser[j].locationsNumber = locationsNumbers(conf->ser[j].mySer);
         conf->ser[j].loc.reserve(conf->ser[j].locationsNumber);
         stockLocation(conf, j);
+        checkPrototype(conf->ser);
         /*
         for (int x = 0; x < conf->ser[j].locationsNumber; x++)
             std::cout << conf->ser[j].loc[x].theLoc<<"---------------\n";
         */
 
-        std::cout <<"- serveur size - " <<conf->ser[j].size << " -- begin:" << conf->ser[j].begin << "  location num:"<<conf->ser[j].locationsNumber <<  "\n";
-        std::cout << "---------------------------\n";
+        // std::cout <<"- server size - " <<conf->ser[j].size << " -- begin:" << conf->ser[j].begin << "  location num:"<<conf->ser[j].locationsNumber <<  "\n";
+        // std::cout << "---------------------------\n";
         // exit(1);
     }
 
