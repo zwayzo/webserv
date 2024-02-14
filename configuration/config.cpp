@@ -2,28 +2,37 @@
 
 void checkPrototype(server &ser)
 {
-    int i = 0 ,j = 0;
-    while (ser.mySer[i] != '\n')
-        i++;
-    i++;
+    int i = 0 ,j = 0, n = 0;
+    int z = 0;
+    // while (ser.mySer[i] != '\n')
+    //     i++;
+    // i++;
+    int x = 0;
     while (ser.mySer[i])
     {
-        std::cout <<&ser.mySer[i];
-        while (ser.mySer[j] != 32 || ser.mySer[j] != '\t')
+        i = j;
+        n = 0;
+        for ( z=j;ser.mySer[z] != '\n';z++)
+            std::cout << ser.mySer[z];
+        std::cout<<"'";
+        while (ser.mySer[j] != 32 && ser.mySer[j] != '\t' && ser.mySer[j] != '\n' && x < ser.size){
             j++;
-        j--;
-        // std::cout << std::strncmp("server", &ser.mySer[i], 6);
-        std::cout << "{{{}{}{}{}{}}}\n";
-        if (std::strncmp("name", &ser.mySer[i],  j) && std::strncmp("listen", &ser.mySer[i], j) && std::strncmp("root", &ser.mySer[i], j)
-        && std::strncmp("error_page", &ser.mySer[i], j) && std::strncmp("max_body", &ser.mySer[i], j) && std::strncmp("location", &ser.mySer[i], j)
-        && std::strncmp("index", &ser.mySer[i], j) && std::strncmp("methodes", &ser.mySer[i], j) && std::strncmp("redirection", &ser.mySer[i], j)
-        && std::strncmp("server", &ser.mySer[i], j))
+            n++;
+        }
+        if (n == 0)
+            break;
+        x++;
+        if (ser.mySer[j] == '\0')
+            break;
+        std::cout << n << "}\n";
+        if (std::strncmp("name", &ser.mySer[i],  n) && std::strncmp("listen", &ser.mySer[i], n) && std::strncmp("root", &ser.mySer[i], n)
+        && std::strncmp("error_page", &ser.mySer[i], n) && std::strncmp("max_body", &ser.mySer[i], n) && std::strncmp("location", &ser.mySer[i], n)
+        && std::strncmp("index", &ser.mySer[i], n) && std::strncmp("methods", &ser.mySer[i], n) && std::strncmp("redirection", &ser.mySer[i], n)
+        && std::strncmp("server", &ser.mySer[i], n) && std::strncmp("}", &ser.mySer[i], n))
             throw ("check");
-        j = i;
-        while (ser.mySer[i] != '\n' &&  ser.mySer[i])
-            i++;
-        i++;
-        j = i;
+        while (ser.mySer[j] != '\n' &&  ser.mySer[j])
+            j++;
+        j++;
     }
 }
 
@@ -34,12 +43,19 @@ void checkAcollade(server &ser)
     int i = 0, j = 0, n = 0;
     while (ser.mySer[n])
     {
-        if (ser.mySer[n] == '{')
+        if (ser.mySer[n] == '{'){
+            // std::cout << "__________\n";
+            // std::cout << &ser.mySer[n];
             i++;
-        else if (ser.mySer[n] == '}')
+            }
+        else if (ser.mySer[n] == '}'){
+            // std::cout << "__________\n";
+            // std::cout << &ser.mySer[n];
             j++;
+            }
         n++;
     }
+    std::cout << i << '|' << j << '\n';
     if (i != j)
         throw ("syntax");
     i = 0;
