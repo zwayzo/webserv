@@ -1,5 +1,61 @@
 #include "../headers/configFile.hpp"
 
+void checkAcollade(serveur &ser)
+{
+    int i = 0, j = 0, n = 0;
+    while (ser.mySer[n])
+    {
+        if (ser.mySer[n] == '{')
+            i++;
+        else if (ser.mySer[n] == '}')
+            j++;
+        n++;
+    }
+    if (i != j)
+        throw ("syntax");
+    i = 0;
+    std::cout << std::strcmp(&ser.mySer[0], "server{") << '|' << std::strcmp(&ser.mySer[0], "server {") << '|' << std::strcmp(&ser.mySer[0], "server\n{") << '|' << std::strcmp(&ser.mySer[0], "server{\n") << '|' << std::strcmp(&ser.mySer[0], "server {\n") <<'\n';
+    if (std::strcmp(&ser.mySer[0], "server{") != 0 && std::strcmp(&ser.mySer[0], "server {") != 0
+    && std::strcmp(&ser.mySer[0], "server\n{") != 0
+    && std::strcmp(&ser.mySer[0], "server{\n") != 0 && std::strcmp(&ser.mySer[0], "server {\n") != 0)
+        throw ("serveur syntax");
+}
+
+void stockLocation(conf *conf, int indice)
+{
+    int i = 0, j = 0;
+
+    while (conf->ser[indice].mySer[i])
+    {
+        if (std::strncmp(&conf->ser[indice].mySer[i], "location", 8) == 0)
+        {
+            // Assuming loc is a vector of location objects
+            location newLocation; // Create a new location object
+
+            while (conf->ser[indice].mySer[i] != '}')
+            {
+                // std::cout << conf->ser[indice].mySer[i];
+                newLocation.theLoc.push_back(conf->ser[indice].mySer[i]);
+                i++;
+
+                if (conf->ser[indice].mySer[i] == '}')
+                {
+                    j++;
+                    break; // Exit the inner loop
+                }
+            }
+            newLocation.theLoc.push_back('}');
+            newLocation.theLoc.push_back('\n');
+            // Assuming loc is a vector of location objects
+            conf->ser[indice].loc.push_back(newLocation); // Add the newLocation to the loc vector
+            // std::cout << "enter2\n";
+        }
+        i++;
+    }
+}
+
+
+
 void getBegin(int indice, conf *conf, std::string allIn)
 {
     int i = 1, j = 0, n = 0;
@@ -30,30 +86,20 @@ void stockServeur(std::string allIn, conf *conf, int indice)
             i++;
         }
     }
-    // std::cout << "_____________\n";
-    // std::cout << &allIn[i];
-    i = 0;
-    int j = 0;
-    // std::cout << "size:" << conf->ser[indice].size << '\n';
-    // exit(1);
-    while (i < conf->ser[indice].size)
+    n = 0;
+    while (n <= conf->ser[indice].size)
     {
-        if (allIn[j] == '\n')
-            i++;
-        conf->ser[indice].mySer.push_back(allIn[j]);
-        // std::cout << allIn[j] << i;
-        j++;
-        // std::cout << "i is:" << i<< '\n';
+        if (allIn[i] == '\n')
+            n++;
+        conf->ser[indice].mySer.push_back(allIn[i]);
+        i++;
     }
+    conf->ser[indice].mySer.push_back('\0');
 }
 
 
 void serveurSize(std::string allIn, int indice, conf *conf)
 {
-    // std::cout << allIn;
-    // exit(2);
-    // std::cout  <<"______\n";
-    // std::cout << "indice:" << indice << '\n';
     getBegin(indice, conf, allIn);
     int i = 0, j = 0;
     while (allIn[i] && j != indice)
@@ -64,42 +110,27 @@ void serveurSize(std::string allIn, int indice, conf *conf)
             break;
         i++;
     }
-    // std::cout << &allIn[i];
     i++;
     j = 0;
     while (allIn[i] != '\n' || allIn[i - 1] != '\n')
     {
         if (allIn[i] == '\n')
             j++;
-        // std::cout <<allIn[i]<<'\n';
         i++;
     }
-    // std::cout << "{}{}\n";
-    // exit(1);
-    // std::cout << &allIn[i];
     conf->ser[indice].size = j;
-    // std::cout <<"---"<< j << '\n';
-    // return (j);
 }
 
-int locationsNumbers(std::string allIn, conf *conf, int x)
+int locationsNumbers(std::string mySer)
 {
-    // std::cout << "{}" << allIn;
-    // exit(1);
-    int i = 0, j = 0, n = 0;
-    while (allIn[i] && allIn[i] != '\n')
+    int i = 0, n = 0;
+    while (mySer[i])
     {
-        // std::cout <<"{}{}\n";
-        // std::cout << allIn[i] << '\n';
-        if (std::strncmp(&allIn[i], "location", 8) == 0)
-            j++;
-        while (allIn[i] != '\n' && allIn[i])
-            i++;
+        if (std::strncmp(&mySer[i], "location", 8) == 0)
+            n++;
         i++;
-        n++;
     }
-    conf->ser[x].size = n;
-    return j;
+    return n;
 }
 
 std::string getTheFileInOneString(std::string file)
@@ -173,14 +204,19 @@ void fileConfiguration(conf *conf, std::string file)
     {
         // std::cout << "j is:" << j << '\n';
         conf->ser.push_back(conf->ser[j]);
-        // std::cout << conf->ser[j].mySer;
         serveurSize(conf->allIn, j, conf);
-        // conf->ser[j].locationsNumber = locationsNumbers(conf->allIn, conf, j);
-        // conf->ser[j].loc.reserve(conf->ser[j].locationsNumber);
-        // stockServeur(conf->allIn, conf, j);
+        stockServeur(conf->allIn, conf, j);
+        checkAcollade(conf->ser[j]);
+        conf->ser[j].locationsNumber = locationsNumbers(conf->ser[j].mySer);
+        conf->ser[j].loc.reserve(conf->ser[j].locationsNumber);
+        stockLocation(conf, j);
+        /*
+        for (int x = 0; x < conf->ser[j].locationsNumber; x++)
+            std::cout << conf->ser[j].loc[x].theLoc<<"---------------\n";
+        */
 
-        // std::cout << conf->allIn;
-        std::cout <<"- serveur size - " <<conf->ser[j].size << " -- begin:" << conf->ser[j].begin <<  "\n";
+        std::cout <<"- serveur size - " <<conf->ser[j].size << " -- begin:" << conf->ser[j].begin << "  location num:"<<conf->ser[j].locationsNumber <<  "\n";
+        std::cout << "---------------------------\n";
         // exit(1);
     }
 

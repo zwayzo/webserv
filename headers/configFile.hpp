@@ -15,6 +15,7 @@ class location{
         std::string index;
         std::string error_page;
         std::string name;
+        std::string theLoc;
 };
 
 class serveur{
