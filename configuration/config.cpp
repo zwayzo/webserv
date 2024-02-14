@@ -3,7 +3,7 @@
 void checkPrototype(server &ser)
 {
     int i = 0 ,j = 0, n = 0;
-    int z = 0;
+    // int z = 0;
     // while (ser.mySer[i] != '\n')
     //     i++;
     // i++;
@@ -12,9 +12,9 @@ void checkPrototype(server &ser)
     {
         i = j;
         n = 0;
-        for ( z=j;ser.mySer[z] != '\n';z++)
-            std::cout << ser.mySer[z];
-        std::cout<<"'";
+        // for ( z=j;ser.mySer[z] != '\n';z++)
+        //     std::cout << ser.mySer[z];
+        // std::cout<<"'";
         while (ser.mySer[j] != 32 && ser.mySer[j] != '\t' && ser.mySer[j] != '\n' && x < ser.size){
             j++;
             n++;
