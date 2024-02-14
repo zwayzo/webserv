@@ -2,6 +2,8 @@
 
 void checkAcollade(serveur &ser)
 {
+    // std::cout << ser.mySer << '\n';
+    // std::cout << "enter\n";
     int i = 0, j = 0, n = 0;
     while (ser.mySer[n])
     {
@@ -14,10 +16,12 @@ void checkAcollade(serveur &ser)
     if (i != j)
         throw ("syntax");
     i = 0;
-    std::cout << std::strcmp(&ser.mySer[0], "server{") << '|' << std::strcmp(&ser.mySer[0], "server {") << '|' << std::strcmp(&ser.mySer[0], "server\n{") << '|' << std::strcmp(&ser.mySer[0], "server{\n") << '|' << std::strcmp(&ser.mySer[0], "server {\n") <<'\n';
-    if (std::strcmp(&ser.mySer[0], "server{") != 0 && std::strcmp(&ser.mySer[0], "server {") != 0
-    && std::strcmp(&ser.mySer[0], "server\n{") != 0
-    && std::strcmp(&ser.mySer[0], "server{\n") != 0 && std::strcmp(&ser.mySer[0], "server {\n") != 0)
+
+    for(;ser.mySer[i] != '\n'; i++);
+    // std::cout << std::strncmp(&ser.mySer[0], "server{\n", i) << '|' << std::strncmp(&ser.mySer[0], "server {", i) << '|' << std::strncmp(&ser.mySer[0], "server\n{", i) << '|' << std::strncmp(&ser.mySer[0], "server{\n", i) << '|' << std::strncmp(&ser.mySer[0], "server {\n", i) <<'\n';
+    if (std::strncmp(&ser.mySer[0], "server{", i) != 0 && std::strncmp(&ser.mySer[0], "server {", i) != 0
+    && std::strncmp(&ser.mySer[0], "server\n{", i) != 0
+    && std::strncmp(&ser.mySer[0], "server{\n", i) != 0 && std::strncmp(&ser.mySer[0], "server {\n", i) != 0)
         throw ("serveur syntax");
 }
 
