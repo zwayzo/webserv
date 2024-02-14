@@ -2,19 +2,28 @@
 
 void checkPrototype(server &ser)
 {
-    int i = 0;// j = 0, n = 0;
+    int i = 0 ,j = 0;
+    while (ser.mySer[i] != '\n')
+        i++;
+    i++;
     while (ser.mySer[i])
     {
         std::cout <<&ser.mySer[i];
-        std::cout << std::strcmp("server", &ser.mySer[i]);
-        if (std::strcmp("server_name", &ser.mySer[i]) && std::strcmp("listen", &ser.mySer[i]) && std::strcmp("root", &ser.mySer[i])
-        && std::strcmp("error_page", &ser.mySer[i]) && std::strcmp("max_body", &ser.mySer[i]) && std::strcmp("location", &ser.mySer[i])
-        && std::strcmp("index", &ser.mySer[i]) && std::strcmp("methodes", &ser.mySer[i]) && std::strcmp("redirection", &ser.mySer[i])
-        && std::strcmp("server", &ser.mySer[i]))
+        while (ser.mySer[j] != 32 || ser.mySer[j] != '\t')
+            j++;
+        j--;
+        // std::cout << std::strncmp("server", &ser.mySer[i], 6);
+        std::cout << "{{{}{}{}{}{}}}\n";
+        if (std::strncmp("name", &ser.mySer[i],  j) && std::strncmp("listen", &ser.mySer[i], j) && std::strncmp("root", &ser.mySer[i], j)
+        && std::strncmp("error_page", &ser.mySer[i], j) && std::strncmp("max_body", &ser.mySer[i], j) && std::strncmp("location", &ser.mySer[i], j)
+        && std::strncmp("index", &ser.mySer[i], j) && std::strncmp("methodes", &ser.mySer[i], j) && std::strncmp("redirection", &ser.mySer[i], j)
+        && std::strncmp("server", &ser.mySer[i], j))
             throw ("check");
+        j = i;
         while (ser.mySer[i] != '\n' &&  ser.mySer[i])
             i++;
         i++;
+        j = i;
     }
 }
 
