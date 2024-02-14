@@ -2,12 +2,15 @@
 
 void checkPrototype(server &ser)
 {
-    int i = 0, j = 0, n = 0;
+    int i = 0;// j = 0, n = 0;
     while (ser.mySer[i])
     {
+        std::cout <<&ser.mySer[i];
+        std::cout << std::strcmp("server", &ser.mySer[i]);
         if (std::strcmp("server_name", &ser.mySer[i]) && std::strcmp("listen", &ser.mySer[i]) && std::strcmp("root", &ser.mySer[i])
         && std::strcmp("error_page", &ser.mySer[i]) && std::strcmp("max_body", &ser.mySer[i]) && std::strcmp("location", &ser.mySer[i])
-        && std::strcmp("index", &ser.mySer[i]) && std::strcmp("methodes", &ser.mySer[i]) && std::strcmp("redirection", &ser.mySer[i]))
+        && std::strcmp("index", &ser.mySer[i]) && std::strcmp("methodes", &ser.mySer[i]) && std::strcmp("redirection", &ser.mySer[i])
+        && std::strcmp("server", &ser.mySer[i]))
             throw ("check");
         while (ser.mySer[i] != '\n' &&  ser.mySer[i])
             i++;
@@ -229,7 +232,7 @@ void fileConfiguration(conf *conf, std::string file)
         conf->ser[j].locationsNumber = locationsNumbers(conf->ser[j].mySer);
         conf->ser[j].loc.reserve(conf->ser[j].locationsNumber);
         stockLocation(conf, j);
-        checkPrototype(conf->ser);
+        checkPrototype(conf->ser[j]);
         /*
         for (int x = 0; x < conf->ser[j].locationsNumber; x++)
             std::cout << conf->ser[j].loc[x].theLoc<<"---------------\n";
