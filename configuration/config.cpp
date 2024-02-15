@@ -7,13 +7,12 @@ infos *checkValue(std::string mySer, infos *info)
     for (;mySer[i] != '\n'; i++);
     i++;
     // std::cout << &mySer[i];
-    // listenMap = new std::map<int, std::string> ();
-    // std::string tmp;
     while(mySer[i])
     {
+        // if (std::strncmp÷)
         // std::cout << std::strncmp(&mySer[i], "listen", 6);
         // exit(1);
-        // std::cout << &mySer[i] << "_______________________\n";
+        // std::cout <<"1---------\n"<< &mySer[i] << "2_______________________\n";
         if (std::strncmp(&mySer[i], "listen", 6) == 0)
         {
             // std::cout << "enter\n";
@@ -42,34 +41,35 @@ infos *checkValue(std::string mySer, infos *info)
 
         else if (std::strncmp(&mySer[i], "name", 4) == 0)
         {
-            std::cout << "entr\n";
+            // std::cout << "entr\n";
             std::string tmp2;
             // tmp = NULL;
-            i++;
-            while (mySer[i] != '\n' && mySer[i])
+            i = i + 5;
+            while (mySer[i] != ';' && mySer[i])
             {
                 tmp2.push_back(mySer[i]);
                 // if (mySer[i] < '0' || mySer[i] > '9')
                 //     throw ("listen");
-                i++;
                 if (mySer[i] == '\n' || mySer[i] == '\0'){
                     info->serverName[0] = "name";
                     info->serverName["1"] = tmp2;
                 }
+                i++;
             }
         }
         else if (std::strncmp(&mySer[i], "max_body", 8) == 0)
         {
+            // exit(1);
             std::string tmp3;
             // tmp = NULL;
-            i++;
-            while (mySer[i] != '\n' && mySer[i])
+            i = i + 9;
+            while (mySer[i] != ';' && mySer[i])
             {
                 tmp3.push_back(mySer[i]);
                 if (mySer[i] < '0' || mySer[i] > '9')
                     throw ("max");
                 i++;
-                if (mySer[i] == '\n' || mySer[i] == '\0'){
+                if (mySer[i] == ';' || mySer[i] == '\0'){
                     info->maxBody[0] = "max";
                     info->maxBody[1] = tmp3;
                 }
@@ -77,52 +77,61 @@ infos *checkValue(std::string mySer, infos *info)
         }
         else if (std::strncmp(&mySer[i], "root", 4) == 0)
         {
-            std::string tmp1;
+            std::string tmp8;
             // tmp = NULL;
-            i++;
-            while (mySer[i] != '\n' && mySer[i])
+            i = i + 5;
+            // std::cout <<"|||"<< &mySer[i];
+            // exit(1);
+            while (mySer[i] != ';' && mySer[i])
             {
-                tmp1.push_back(mySer[i]);
+                tmp8.push_back(mySer[i]);
                 // if (mySer[i] < '0' || mySer[i] > '9')
                 //     throw ("listen");
                 i++;
-                if (mySer[i] == '\n' || mySer[i] == '\0'){
-                    info->root[0] = "root";
-                    info->root["1"] = tmp1;
+                if (mySer[i] == ';' || mySer[i] == '\0'){
+                    // std::cout << "in\n";
+                    info->root["0"] = "root";
+                    // exit(1);
+                    info->root["1"] = tmp8;
                 }
             }
         }
         else if (std::strncmp(&mySer[i], "index", 5) == 0)
         {
+            // std::cout << "[[[[]]]]";
+            // exit(1);
             std::map<std::string, std::string> Index2;
             std::string tmp4;
             // tmp = NULL;
-            i++;
-            while (mySer[i] != '\n' && mySer[i])
+            i = i + 6;
+            // std::cout << &mySer[i];
+            // exit(1);
+            while (mySer[i] != ';' && mySer[i])
             {
                 tmp4.push_back(mySer[i]);
                 // if (mySer[i] < '0' || mySer[i] > '9')
                 //     throw ("listen");
                 i++;
-                if (mySer[i] == '\n' || mySer[i] == '\0'){
-                    info->Index[0] = "index";
+                if (mySer[i] == ';' || mySer[i] == '\0'){
+                    info->Index["0"] = "index";
                     info->Index["1"] = tmp4;
                 }
             }
         }
         else if (std::strncmp(&mySer[i], "error_page", 10) == 0)
         {
+            // std::cout << "fede\n";
             std::string tmp5;
             // tmp = NULL;
-            i++;
-            while (mySer[i] != '\n' && mySer[i])
+            i = i + 11;
+            while (mySer[i] != ';' && mySer[i])
             {
                 tmp5.push_back(mySer[i]);
                 // if (mySer[i] < '0' || mySer[i] > '9')
                 //     throw ("listen");
                 i++;
-                if (mySer[i] == '\n' || mySer[i] == '\0'){
-                    info->errorPage[0] = "error_page";
+                if (mySer[i] == ';' || mySer[i] == '\0'){
+                    info->errorPage["0"] = "error_page";
                     info->errorPage["1"] = tmp5;
                 }
             }
@@ -131,15 +140,15 @@ infos *checkValue(std::string mySer, infos *info)
         {
             std::string tmp6;
             // tmp = NULL;
-            i++;
-            while (mySer[i] != '\n' && mySer[i])
+            i = i + 9;
+            while (mySer[i] != ';' && mySer[i])
             {
                 tmp6.push_back(mySer[i]);
                 // if (mySer[i] < '0' || mySer[i] > '9')
                 //     throw ("listen");
                 i++;
-                if (mySer[i] == '\n' || mySer[i] == '\0'){
-                    info->methodes[0] = "methodes";
+                if (mySer[i] == ';' || mySer[i] == '\0'){
+                    info->methodes["0"] = "methodes";
                     info->methodes["1"] = tmp6;
                 }
             }
@@ -148,22 +157,22 @@ infos *checkValue(std::string mySer, infos *info)
         {
             std::string tmp7;
             // tmp = NULL;
-            i++;
-            while (mySer[i] != '\n' && mySer[i])
+            i = i + 12;
+            while (mySer[i] != ';' && mySer[i])
             {
                 tmp7.push_back(mySer[i]);
                 // if (mySer[i] < '0' || mySer[i] > '9')
                 //     throw ("listen");
                 i++;
-                if (mySer[i] == '\n' || mySer[i] == '\0'){
-                    info->redirection[0] = "redirection";
+                if (mySer[i] == ';' || mySer[i] == '\0'){
+                    info->redirection["0"] = "redirection";
                     info->redirection["1"] = tmp7;
                 }
             }
         }
-        else
+        // else
             i++;
-        std::cout << "{" << &mySer[i] << "-------------------\n";
+        // std::cout << "{" << &mySer[i] << "-------------------\n";
 
     }
     return info;
@@ -430,10 +439,12 @@ void fileConfiguration(conf *conf, std::string file)
         stockLocation(conf, j);
         checkPrototype(conf->ser[j]);
         infos *info = new infos;
+        // exit(1);
         info = checkValue(conf->ser[j].mySer, info);
-        std::cout << "out\n";
-        std::map<int, std::string>::iterator it = info->listenMap.begin();
-        for (it = info->listenMap.begin(); it != info->listenMap.end(); ++it) {
+        // std::cout << "out\n";
+        std::map<std::string, std::string>::iterator it = info->errorPage.begin();
+        for (it = info->errorPage.begin(); it != info->errorPage.end(); ++it) {
+            // std::cout << "in\n";
         std::cout << "Key: " << it->first << ", Value: " << it->second << std::endl;
     }
         exit(1);
