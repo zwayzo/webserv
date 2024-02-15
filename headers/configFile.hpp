@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <map>
 
 class location{
     public:
@@ -50,9 +51,23 @@ class conf{
         std::string allIn;
 };
 
+
+class infos{
+    public:
+        std::map<int, std::string> listenMap;
+        std::map<int, std::string> maxBody;
+        std::map<std::string, std::string> serverName;
+        std::map<std::string, std::string> root;
+        std::map<std::string, std::string> Index;
+        std::map<std::string, std::string> errorPage;
+        std::map<std::string, std::string> methodes;
+        std::map<std::string, std::string> redirection;
+};
+
 void fileConfiguration(conf *conf, std::string file);
 int file_size(std::string file);
 int checkServersNumber(std::string file);
+
 
 
 #endif

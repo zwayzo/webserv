@@ -15,6 +15,12 @@ int main()
             std::cout << "SERVER SYNTAX ERROR...!\n";
         else if (std::strcmp(x, "check") == 0)
             std::cout << "ERROR...RE-CHECK THE SYNATX...!\n";
+        else if (std::strcmp(x, "params") == 0)
+            std::cout << "ERROR...INKOWN PARAMS...!\n";
+        else if (std::strcmp(x, "max") == 0)
+            std::cout << "ERROR...MAX SYNTAX...!\n";
+        else if (std::strcmp(x, "listen") == 0)
+            std::cout << "ERROR...LISTEN SYNTAX...!\n";
         exit(1);
     }
     catch (...)
