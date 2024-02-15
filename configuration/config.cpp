@@ -1,19 +1,111 @@
 #include "../headers/configFile.hpp"
 
-infos *checkValue(std::string mySer, infos *info)
+void printArguments(infos *info)
+{
+    // (void &) ser;
+    // int i = 0;
+    // std::map<std::string, std::string>::iterator it = info->errorPage.begin();
+    for (std::map<std::string, std::string>::iterator it = info->errorPage.begin(); it != info->errorPage.end(); ++it)
+        std::cout << "error_page:\n" <<  "Key: " << it->first << ", Value: " << it->second << std::endl;
+
+    for (std::map<int, std::string>::iterator it = info->listenMap.begin(); it != info->listenMap.end(); ++it)
+        std::cout << "Key: " << it->first << ", Value: " << it->second << std::endl;
+
+    for (std::map<int, std::string>::iterator it = info->maxBody.begin(); it != info->maxBody.end(); ++it)
+        std::cout << "Key: " << it->first << ", Value: " << it->second << std::endl;
+
+    for (std::map<std::string, std::string>::iterator it = info->serverName.begin(); it != info->serverName.end(); ++it)
+        std::cout <<" Key: " << it->first << ", Value: " << it->second << std::endl;
+
+    for (std::map<std::string, std::string>::iterator it = info->root.begin(); it != info->root.end(); ++it)
+        std::cout << "Key: " << it->first << ", Value: " << it->second << std::endl;
+
+    for (std::map<std::string, std::string>::iterator it = info->Index.begin(); it != info->Index.end(); ++it)
+        std::cout << "Key: " << it->first << ", Value: " << it->second << std::endl;
+
+    for (std::map<std::string, std::string>::iterator it = info->methodes.begin(); it != info->methodes.end(); ++it)
+        std::cout << "Key: " << it->first << ", Value: " << it->second << std::endl;
+
+    for (std::map<std::string, std::string>::iterator it = info->redirection.begin(); it != info->redirection.end(); ++it)
+        std::cout << "listen:\n" <<  "Key: " << it->first << ", Value: " << it->second << std::endl;
+
+
+}
+
+int storeLocationValue(server &ser, int n, int number)
+{
+    int i = n;
+    while (ser.mySer[i] != '}')
+    {
+        if (std::strncmp(&ser.mySer[i], "index", 5))
+        {
+            i = i + 6;
+            for (;ser.mySer[i] != ';'; i++)
+                ser.loc[number].index.push_back(ser.mySer[i]);
+            i++;
+        }
+        else if (std::strncmp(&ser.mySer[i], "root", 4))
+        {
+            i = i + 5;
+            for (;ser.mySer[i] != ';'; i++)
+                ser.loc[number].root.push_back(ser.mySer[i]);
+            i++;
+        }
+        else if (std::strncmp((&ser.mySer)->c_str(), "methodes", 8) == 0)
+        {
+            i = i + 9;
+            while (ser.mySer[i] != ';'){
+            if (std::strncmp((&ser.mySer)->c_str(), "GET", 3) == 0)
+            {
+                ser.loc[number].get = 1;
+                i += 4;
+            }
+            if (std::strncmp((&ser.mySer)->c_str(), "DELETE", 6) == 0)
+            {
+                ser.loc[number].deletee = 1;
+                i += 7;
+            }
+            if (std::strncmp((&ser.mySer)->c_str(), "POST", 3) == 0)
+            {
+                ser.loc[number].post = 1;
+                i += 5;
+            }
+            else 
+                throw("location");
+            }
+        }
+        else if (std::strncmp((&ser.mySer)->c_str(), "redirection", 11) == 0)
+        {
+            i += 12;
+            for (; ser.mySer[i]; i++)
+                ser.loc[number].redirection.push_back(ser.mySer[i]);
+        }
+        else 
+            throw ("location");
+        i++;
+    }
+    return i+1;
+}
+
+
+infos *checkValue(std::string mySer, infos *info, server &ser)
 {
     // infos *info = new infos;
     int i = 0;
+    int n = 0;
     for (;mySer[i] != '\n'; i++);
     i++;
     // std::cout << &mySer[i];
     while(mySer[i])
     {
-        // if (std::strncmp÷)
+        if (std::strncmp(&mySer[i], "location", 8) == 0){
+            i = i + storeLocationValue(ser, i, n);
+            n++;
+        }
         // std::cout << std::strncmp(&mySer[i], "listen", 6);
         // exit(1);
         // std::cout <<"1---------\n"<< &mySer[i] << "2_______________________\n";
-        if (std::strncmp(&mySer[i], "listen", 6) == 0)
+        else if (std::strncmp(&mySer[i], "listen", 6) == 0)
         {
             // std::cout << "enter\n";
             std::string tmp1;
@@ -440,13 +532,10 @@ void fileConfiguration(conf *conf, std::string file)
         checkPrototype(conf->ser[j]);
         infos *info = new infos;
         // exit(1);
-        info = checkValue(conf->ser[j].mySer, info);
+        info = checkValue(conf->ser[j].mySer, info, conf->ser[j]);
         // std::cout << "out\n";
-        std::map<std::string, std::string>::iterator it = info->errorPage.begin();
-        for (it = info->errorPage.begin(); it != info->errorPage.end(); ++it) {
-            // std::cout << "in\n";
-        std::cout << "Key: " << it->first << ", Value: " << it->second << std::endl;
-    }
+        printArguments(info);
+        
         exit(1);
 
         /*

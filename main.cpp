@@ -21,6 +21,8 @@ int main()
             std::cout << "ERROR...MAX SYNTAX...!\n";
         else if (std::strcmp(x, "listen") == 0)
             std::cout << "ERROR...LISTEN SYNTAX...!\n";
+        else if (std::strcmp(x, "location") == 0)
+            std::cout << "ERROR...LOCATION...!\n";
         exit(1);
     }
     catch (...)

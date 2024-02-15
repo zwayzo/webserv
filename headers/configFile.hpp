@@ -17,6 +17,8 @@ class location{
         std::string error_page;
         std::string name;
         std::string theLoc;
+        std::string root;
+        std::string redirection;
 };
 
 class server{
@@ -37,6 +39,7 @@ class server{
         std::string error_page;
         std::string name;
         std::string mySer;
+        std::string redirection;
 
         std::vector<location> loc;
         // location *loca;
