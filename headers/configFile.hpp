@@ -22,6 +22,26 @@ class infos{
 
 class location{
     public:
+    location& operator=(const location& other) {
+        if (this != &other) {
+            // Ensure that all members are assigned properly
+            this->listen = other.listen;
+            this->get = other.get;
+            this->post = other.post;
+            this->deletee = other.deletee;
+
+            this->name = other.name;
+            this->root = other.root;
+            this->redirection = other.redirection;
+            // ... (assign other members)
+
+            // Make sure that strings are handled properly (e.g., using assignment or copying methods)
+            this->index = other.index;
+            this->error_page = other.error_page;
+            // ... (assign other string members)
+        }
+        return *this;
+    }
         int listen;
         int post;
         int get;
@@ -58,7 +78,7 @@ class server{
 
         std::vector<location> loc;
         infos *info;
-        // location *loca;
+        // location *loc;
 
 };
 

@@ -1,5 +1,24 @@
 #include "../headers/configFile.hpp"
 
+void initLocation(server &ser, int n)
+{
+    location newLocation;
+    newLocation.listen = 0;
+    // newLocation.listen = 0;
+    newLocation.post = 0;
+    newLocation.get = 0;
+    newLocation.deletee = 0;
+    newLocation.index[0] = '\0';
+    newLocation.error_page[0] = '\0';
+    newLocation.name[0] = '\0';
+    newLocation.root[0] = '\0';
+    newLocation.redirection[0] = '\0';
+    newLocation.theLoc[0] = '\0';
+    // exit(1);
+    ser.loc[n] = newLocation;
+
+}
+
 void wordCounter(server &ser)
 {
     int i = 0;
@@ -7,7 +26,7 @@ void wordCounter(server &ser)
     ser.wor = i;
 }
 
-void printArguments(infos *info)
+void printArguments(infos *info, int n, server &ser)
 {
     // (void &) ser;
     // int i = 0;
@@ -36,6 +55,19 @@ void printArguments(infos *info)
     for (std::map<std::string, std::string>::iterator it = info->redirection.begin(); it != info->redirection.end(); ++it)
         std::cout << "listen:\n" <<  "Key: " << it->first << ", Value: " << it->second << std::endl;
 
+    for (int j = 0;j < n; j++)
+    {
+        std::cout << "location number:" << j << '\n';
+        std::cout << "index:" << ser.loc[j].index << '\n';
+        // std::cout "index:" << << ser.loc[j].listen << '\n';
+        // std::cout "index:" << << ser.loc[j].post << '\n';
+        // std::cout "index:" << << ser.loc[j].get << '\n';
+        std::cout << "delete:" << ser.loc[j].deletee << '\n';
+        std::cout << "erroe_page:" << ser.loc[j].error_page << '\n';
+        // std::cout << "index:" << ser.loc[j].name << '\n';
+        std::cout << "root:" << ser.loc[j].root << '\n';
+        // std::cout << ser->loc[j].error_page << '\n';
+    }
 
 }
 
@@ -47,14 +79,12 @@ int storeLocationValue(server &ser, int n, int number)
     while (ser.mySer[i] != '{')
         i++;
     i += 2;
+    int in=0, ro=0, red=0;
     while (ser.mySer[i] != '}')
     {
-        // std::cout << "loc\n";
-        // std::cout << std::strncmp(&ser.mySer[i], "root", 4) << "||\n";
-        // std::cout << &ser.mySer[i];
-        // exit(1);
         if (std::strncmp(&ser.mySer[i], "index", 5) == 0)
         {
+            in++;
             i = i + 6;
             for (;ser.mySer[i] != ';'; i++)
                 ser.loc[number].index.push_back(ser.mySer[i]);
@@ -62,6 +92,7 @@ int storeLocationValue(server &ser, int n, int number)
         }
         else if (std::strncmp(&ser.mySer[i], "root", 4) == 0)
         {
+            ro++;
             // std::cout << "rwwoot\n";
             i = i + 5;
             for (;ser.mySer[i] != ';'; i++)
@@ -95,6 +126,7 @@ int storeLocationValue(server &ser, int n, int number)
         }
         else if (std::strncmp((&ser.mySer)->c_str(), "redirection", 11) == 0)
         {
+            red++;
             i += 12;
             for (; ser.mySer[i]; i++)
                 ser.loc[number].redirection.push_back(ser.mySer[i]);
@@ -103,6 +135,14 @@ int storeLocationValue(server &ser, int n, int number)
             throw ("location");
         i++;
     }
+    if (in == 0)
+        ser.loc[number].index[0] = '\0';
+    if (ro == 0)
+        ser.loc[number].root[0] = '\0';
+    if (red == 0)
+        ser.loc[number].redirection[0] = '\0';
+    if (in == 0)
+        ser.loc[number].index[0] = '\0';
     // std::cout << "--\n" << &ser.mySer[i]<< "---\n";
     // std::cout << "safiii" << i << "\n";
     return i;
@@ -587,6 +627,12 @@ void fileConfiguration(conf *conf, std::string file)
         conf->ser[j].locationsNumber = locationsNumbers(conf->ser[j].mySer);
         std::cout << "5\n";
         conf->ser[j].loc.reserve(conf->ser[j].locationsNumber);
+        // for (int n = 0;n < conf->ser[j].locationsNumber; n++)
+        // {
+        //     // conf->ser[j].loc.reserve(9);
+        //     std::cout << "n:" << conf->ser[j].locationsNumber << '\n';
+        //     initLocation(conf->ser[j], n);
+        // }
         std::cout << "6\n";
         stockLocation(conf, j);
         std::cout << "7\n";
@@ -601,7 +647,7 @@ void fileConfiguration(conf *conf, std::string file)
         // printArguments(info);
         
         // exit(1);
-        printArguments(conf->ser[j].info);
+        printArguments(conf->ser[j].info, conf->ser[j].locationsNumber, conf->ser[j]);
         // std::cout << conf->ser[j].loc[0].root;
         // for (int x = 0; x < conf->ser[j].locationsNumber; x++)
         //     std::cout << conf->ser[j].loc[x].theLoc<<"---------------\n";
