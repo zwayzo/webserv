@@ -5,6 +5,20 @@
 #include <fstream>
 #include <vector>
 #include <map>
+#include <thread>
+#include <chrono>
+
+class infos{
+    public:
+        std::map<int, std::string> listenMap;
+        std::map<int, std::string> maxBody;
+        std::map<std::string, std::string> serverName;
+        std::map<std::string, std::string> root;
+        std::map<std::string, std::string> Index;
+        std::map<std::string, std::string> errorPage;
+        std::map<std::string, std::string> methodes;
+        std::map<std::string, std::string> redirection;
+};
 
 class location{
     public:
@@ -31,6 +45,7 @@ class server{
         int max_size;
         int number;
         int size;
+        int wor;
         int locationsNumber;
         
         int begin;
@@ -42,6 +57,7 @@ class server{
         std::string redirection;
 
         std::vector<location> loc;
+        infos *info;
         // location *loca;
 
 };
@@ -55,17 +71,6 @@ class conf{
 };
 
 
-class infos{
-    public:
-        std::map<int, std::string> listenMap;
-        std::map<int, std::string> maxBody;
-        std::map<std::string, std::string> serverName;
-        std::map<std::string, std::string> root;
-        std::map<std::string, std::string> Index;
-        std::map<std::string, std::string> errorPage;
-        std::map<std::string, std::string> methodes;
-        std::map<std::string, std::string> redirection;
-};
 
 void fileConfiguration(conf *conf, std::string file);
 int file_size(std::string file);

@@ -1,12 +1,19 @@
 #include "../headers/configFile.hpp"
 
+void wordCounter(server &ser)
+{
+    int i = 0;
+    for (; ser.mySer[i]; i++);
+    ser.wor = i;
+}
+
 void printArguments(infos *info)
 {
     // (void &) ser;
     // int i = 0;
     // std::map<std::string, std::string>::iterator it = info->errorPage.begin();
     for (std::map<std::string, std::string>::iterator it = info->errorPage.begin(); it != info->errorPage.end(); ++it)
-        std::cout << "error_page:\n" <<  "Key: " << it->first << ", Value: " << it->second << std::endl;
+        std::cout <<"Key: " << it->first << ", Value: " << it->second << std::endl;
 
     for (std::map<int, std::string>::iterator it = info->listenMap.begin(); it != info->listenMap.end(); ++it)
         std::cout << "Key: " << it->first << ", Value: " << it->second << std::endl;
@@ -34,22 +41,34 @@ void printArguments(infos *info)
 
 int storeLocationValue(server &ser, int n, int number)
 {
-    int i = n;
+    // std::cout << "in\n";
+    int i = n + 9;
+    // std::cout << "i is:" << i << '\n';
+    while (ser.mySer[i] != '{')
+        i++;
+    i += 2;
     while (ser.mySer[i] != '}')
     {
-        if (std::strncmp(&ser.mySer[i], "index", 5))
+        // std::cout << "loc\n";
+        // std::cout << std::strncmp(&ser.mySer[i], "root", 4) << "||\n";
+        // std::cout << &ser.mySer[i];
+        // exit(1);
+        if (std::strncmp(&ser.mySer[i], "index", 5) == 0)
         {
             i = i + 6;
             for (;ser.mySer[i] != ';'; i++)
                 ser.loc[number].index.push_back(ser.mySer[i]);
             i++;
         }
-        else if (std::strncmp(&ser.mySer[i], "root", 4))
+        else if (std::strncmp(&ser.mySer[i], "root", 4) == 0)
         {
+            // std::cout << "rwwoot\n";
             i = i + 5;
             for (;ser.mySer[i] != ';'; i++)
                 ser.loc[number].root.push_back(ser.mySer[i]);
-            i++;
+            i ++;
+            // std::cout <<"==="<< i << '\n';
+            // exit(1);
         }
         else if (std::strncmp((&ser.mySer)->c_str(), "methodes", 8) == 0)
         {
@@ -84,13 +103,19 @@ int storeLocationValue(server &ser, int n, int number)
             throw ("location");
         i++;
     }
-    return i+1;
+    // std::cout << "--\n" << &ser.mySer[i]<< "---\n";
+    // std::cout << "safiii" << i << "\n";
+    return i;
 }
 
 
 infos *checkValue(std::string mySer, infos *info, server &ser)
 {
+    // std::cout << "wo:" << ser.wor;
+    // std::this_thread::sleep_for(std::chrono::seconds(1));
     // infos *info = new infos;
+    // std::cout << mySer;
+    // exit(1);
     int i = 0;
     int n = 0;
     for (;mySer[i] != '\n'; i++);
@@ -98,8 +123,12 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
     // std::cout << &mySer[i];
     while(mySer[i])
     {
+        // std::cout << i << '\n';
         if (std::strncmp(&mySer[i], "location", 8) == 0){
-            i = i + storeLocationValue(ser, i, n);
+            // std::cout << i << "--\n";
+            i = storeLocationValue(ser, i, n);
+            // std::cout <<i << "{[]}\n";
+            // exit(1);
             n++;
         }
         // std::cout << std::strncmp(&mySer[i], "listen", 6);
@@ -107,7 +136,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
         // std::cout <<"1---------\n"<< &mySer[i] << "2_______________________\n";
         else if (std::strncmp(&mySer[i], "listen", 6) == 0)
         {
-            // std::cout << "enter\n";
+            // std::cout << "ente1r\n";
             std::string tmp1;
             // tmp = NULL;
             i = i + 7;
@@ -133,7 +162,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
 
         else if (std::strncmp(&mySer[i], "name", 4) == 0)
         {
-            // std::cout << "entr\n";
+            std::cout << "ent2r\n";
             std::string tmp2;
             // tmp = NULL;
             i = i + 5;
@@ -151,6 +180,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
         }
         else if (std::strncmp(&mySer[i], "max_body", 8) == 0)
         {
+            // std::cout << "ent3r\n";
             // exit(1);
             std::string tmp3;
             // tmp = NULL;
@@ -170,6 +200,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
         else if (std::strncmp(&mySer[i], "root", 4) == 0)
         {
             std::string tmp8;
+            // std::cout << "ent4r\n";
             // tmp = NULL;
             i = i + 5;
             // std::cout <<"|||"<< &mySer[i];
@@ -191,7 +222,6 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
         else if (std::strncmp(&mySer[i], "index", 5) == 0)
         {
             // std::cout << "[[[[]]]]";
-            // exit(1);
             std::map<std::string, std::string> Index2;
             std::string tmp4;
             // tmp = NULL;
@@ -200,6 +230,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
             // exit(1);
             while (mySer[i] != ';' && mySer[i])
             {
+                // std::cout << "w\n";
                 tmp4.push_back(mySer[i]);
                 // if (mySer[i] < '0' || mySer[i] > '9')
                 //     throw ("listen");
@@ -207,6 +238,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
                 if (mySer[i] == ';' || mySer[i] == '\0'){
                     info->Index["0"] = "index";
                     info->Index["1"] = tmp4;
+                    // std::cout << "l\n";
                 }
             }
         }
@@ -231,6 +263,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
         else if (std::strncmp(&mySer[i], "methodes", 8) == 0)
         {
             std::string tmp6;
+            // std::cout << "ent9r\n";
             // tmp = NULL;
             i = i + 9;
             while (mySer[i] != ';' && mySer[i])
@@ -248,6 +281,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
         else if (std::strncmp(&mySer[i], "redirection", 11) == 0)
         {
             std::string tmp7;
+            // std::cout << "ent22r\n";
             // tmp = NULL;
             i = i + 12;
             while (mySer[i] != ';' && mySer[i])
@@ -262,6 +296,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
                 }
             }
         }
+        // std::cout <<"down\n";
         // else
             i++;
         // std::cout << "{" << &mySer[i] << "-------------------\n";
@@ -332,7 +367,8 @@ void checkAcollade(server &ser)
         throw ("syntax");
     i = 0;
 
-    for(;ser.mySer[i] != '\n'; i++);
+    // std::cout << "|||\n";
+    // for(; ser.mySer[i] != '\n'; i++);
     // std::cout << std::strncmp(&ser.mySer[0], "server{\n", i) << '|' << std::strncmp(&ser.mySer[0], "server {", i) << '|' << std::strncmp(&ser.mySer[0], "server\n{", i) << '|' << std::strncmp(&ser.mySer[0], "server{\n", i) << '|' << std::strncmp(&ser.mySer[0], "server {\n", i) <<'\n';
     if (std::strncmp(&ser.mySer[0], "server{", i) != 0 && std::strncmp(&ser.mySer[0], "server {", i) != 0
     && std::strncmp(&ser.mySer[0], "server\n{", i) != 0
@@ -414,11 +450,15 @@ void stockserver(std::string allIn, conf *conf, int indice)
         i++;
     }
     conf->ser[indice].mySer.push_back('\0');
+    // exit(1);
+    // std::cout << conf->ser[indice].mySer;
 }
 
 
 void serverSize(std::string allIn, int indice, conf *conf)
 {
+    // std::cout << allIn;
+    // exit(1);
     getBegin(indice, conf, allIn);
     int i = 0, j = 0;
     while (allIn[i] && j != indice)
@@ -429,8 +469,11 @@ void serverSize(std::string allIn, int indice, conf *conf)
             break;
         i++;
     }
+    // std::cout << "---" << i;
+    // std::cout << "{}" << allIn << "\n";
     i++;
     j = 0;
+    // exit(1);
     while (allIn[i] != '\n' || allIn[i - 1] != '\n')
     {
         if (allIn[i] == '\n')
@@ -454,17 +497,22 @@ int locationsNumbers(std::string mySer)
 
 std::string getTheFileInOneString(std::string file)
 {
+    // std::cout << "file:" << file;
     std::ifstream inputfile(file.c_str());
     std::string line;
     std::string allIn;
-    int i = 0, j = 0, n = 0;
+    int i = 0, j = 0, n = 0, x = 0;
     while (std::getline(inputfile, line))
     {
+        x = 0;
+        // std::cout << "her "<< line << "\n";
         while (line[i] == 32 || line[i] == '\t')
             i++;
-        if (line[i] == '#')
-            break;
-        if (std::strncmp(&line[i], "server", 6) == 0 && n != 0)
+        while (line[i] == '#'){
+            x = 1;
+            break;}
+        // std::cout << "out\n";
+        if (!x){if (std::strncmp(&line[i], "server", 6) == 0 && n != 0)
             allIn.push_back('\n');
         for (; line[i]; i++)
         {
@@ -475,12 +523,15 @@ std::string getTheFileInOneString(std::string file)
                 allIn.push_back(line[i]);
         }
         if (i != 0)
-            allIn.push_back('\n');
+            allIn.push_back('\n');}
         i = 0;
         j = 0;
         n++;
     }
     allIn.push_back('\n');
+    // std::cout << "|";
+    // std::cout << allIn ;
+    // std::cout << "|iugikygiygbknly";
     return allIn;
     
 }
@@ -518,33 +569,46 @@ void fileConfiguration(conf *conf, std::string file)
     conf->serversNumber = checkServersNumber(file);
     conf->ser.reserve(conf->serversNumber);
     conf->allIn = getTheFileInOneString(file);
+    // std::cout << "--\n";
     // std::cout << conf->allIn << '\n';
+    // exit(2);
     for (int j = 0; j < conf->serversNumber; j++)
     {
         // std::cout << "j is:" << j << '\n';
         conf->ser.push_back(conf->ser[j]);
+        std::cout << "1\n";
         serverSize(conf->allIn, j, conf);
+        std::cout << "2\n";
         stockserver(conf->allIn, conf, j);
+        std::cout << "3\n";
+        // std::cout << conf->ser[j].mySer;
         checkAcollade(conf->ser[j]);
+        std::cout << "4\n";
         conf->ser[j].locationsNumber = locationsNumbers(conf->ser[j].mySer);
+        std::cout << "5\n";
         conf->ser[j].loc.reserve(conf->ser[j].locationsNumber);
+        std::cout << "6\n";
         stockLocation(conf, j);
+        std::cout << "7\n";
         checkPrototype(conf->ser[j]);
-        infos *info = new infos;
+        wordCounter(conf->ser[j]);
+        std::cout << "8\n";
+        conf->ser[j].info = new infos;
+        std::cout << "9\n";
         // exit(1);
-        info = checkValue(conf->ser[j].mySer, info, conf->ser[j]);
-        // std::cout << "out\n";
-        printArguments(info);
+        conf->ser[j].info = checkValue(conf->ser[j].mySer, conf->ser[j].info, conf->ser[j]);
+        std::cout << "out\n";
+        // printArguments(info);
         
-        exit(1);
-
-        /*
-        for (int x = 0; x < conf->ser[j].locationsNumber; x++)
-            std::cout << conf->ser[j].loc[x].theLoc<<"---------------\n";
-        */
+        // exit(1);
+        printArguments(conf->ser[j].info);
+        // std::cout << conf->ser[j].loc[0].root;
+        // for (int x = 0; x < conf->ser[j].locationsNumber; x++)
+        //     std::cout << conf->ser[j].loc[x].theLoc<<"---------------\n";
+        
 
         // std::cout <<"- server size - " <<conf->ser[j].size << " -- begin:" << conf->ser[j].begin << "  location num:"<<conf->ser[j].locationsNumber <<  "\n";
-        // std::cout << "---------------------------\n";
+        std::cout << "\n---------------------------\n";
         // exit(1);
     }
 
