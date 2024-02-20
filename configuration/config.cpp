@@ -1,4 +1,22 @@
 #include "../headers/configFile.hpp"
+void checkComma(std::string mySer)
+{
+    int i = 0;
+    while (mySer[i] != '\n')
+        i++;
+    i++;
+    while (mySer[i])
+    {
+        while (mySer[i] != '\n')
+            i++;
+
+    std::cout << "------\n" << &mySer[i-1];
+        if (mySer[i - 1] != ';' && mySer[i-1] != '}' && mySer[i-1] != '{' && mySer[i-1] != 10 && mySer[i - 1] != '\t'){
+            // std::cout << static_cast<int>(mySer[i-1]);
+            throw ("comma");}
+        i++;
+    }
+}
 
 void initLocation(server &ser, int n)
 {
@@ -381,6 +399,7 @@ void checkPrototype(server &ser)
             j++;
         j++;
     }
+    checkComma(ser.mySer);
 }
 
 void checkAcollade(server &ser)
@@ -405,6 +424,7 @@ void checkAcollade(server &ser)
     // std::cout << i << '|' << j << '\n';
     if (i != j)
         throw ("syntax");
+    ser.close = i;
     i = 0;
 
     // std::cout << "|||\n";

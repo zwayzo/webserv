@@ -69,6 +69,7 @@ class server{
         int locationsNumber;
         
         int begin;
+        int close;
 
         std::string index;
         std::string error_page;

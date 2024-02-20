@@ -23,6 +23,8 @@ int main()
             std::cout << "ERROR...LISTEN SYNTAX...!\n";
         else if (std::strcmp(x, "location") == 0)
             std::cout << "ERROR...LOCATION...!\n";
+        else if (std::strcmp(x, "comma") == 0)
+            std::cout << "ERROR...COMMA\n";
         exit(1);
     }
     catch (...)
