@@ -71,7 +71,10 @@ void printArguments(infos *info, int n, server &ser)
         std::cout << "Key: " << it->first << ", Value: " << it->second << std::endl;
 
     for (std::map<std::string, std::string>::iterator it = info->redirection.begin(); it != info->redirection.end(); ++it)
-        std::cout << "listen:\n" <<  "Key: " << it->first << ", Value: " << it->second << std::endl;
+        std::cout <<  "Key: " << it->first << ", Value: " << it->second << std::endl;
+    
+    for (std::map<int, std::string>::iterator it = info->autoindex.begin(); it != info->autoindex.end(); ++it)
+        std::cout <<  "Key: " << it->first << ", Value: " << it->second << std::endl;
     
     std::cout << "\n\n";
     std::cout << "methodes:\n" << "get:" << ser.get << '\n' << "delete:" << ser.deletee << '\n' << "post:" << ser.post << '\n';
@@ -80,6 +83,7 @@ void printArguments(infos *info, int n, server &ser)
     std::cout << "error_page:" << ser.error_page << '\n';
     std::cout << "redirection:" << ser.redirection << '\n';
     std::cout << "name:" << ser.name << '\n';
+    std::cout << "auto:" << ser.autoindex << '\n';
 
 
     for (int j = 0;j < n; j++)
@@ -374,21 +378,23 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
             i += 10;
             if (!std::strncmp(&mySer[i], "on;", 3))
             {
+                // exit(1);
                 ser.autoindex = 1;
-                infos->autoindex[0] = "autoindex";
-                infos->autoindex[1] = "1";
+                info->autoindex[0] = "autoindex";
+                info->autoindex[1] = "1";
+                i+= 2;
             }
             else if (!std::strncmp(&mySer[i], "off;", 3))
             {
                 ser.autoindex = 1;
-                infos->autoindex[0] = "autoindex";
-                infos->autoindex[1] = "0";
+                info->autoindex[0] = "autoindex";
+                info->autoindex[1] = "0";
+                i += 3 ;
             }
             else
                 throw ("auto");
+            
         }
-        // std::cout <<"down\n";
-        // else
             i++;
         // std::cout << "{" << &mySer[i] << "-------------------\n";
 
