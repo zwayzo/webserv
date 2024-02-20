@@ -368,6 +368,25 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
                 }
             }
         }
+        else if (std::strncmp(&mySer[i], "autoindex", 9) == 0)
+        {
+            std::string tmp99;
+            i += 10;
+            if (!std::strncmp(&mySer[i], "on;", 3))
+            {
+                ser.autoindex = 1;
+                infos->autoindex[0] = "autoindex";
+                infos->autoindex[1] = "1";
+            }
+            else if (!std::strncmp(&mySer[i], "off;", 3))
+            {
+                ser.autoindex = 1;
+                infos->autoindex[0] = "autoindex";
+                infos->autoindex[1] = "0";
+            }
+            else
+                throw ("auto");
+        }
         // std::cout <<"down\n";
         // else
             i++;
@@ -407,7 +426,7 @@ void checkPrototype(server &ser)
         if (std::strncmp("name", &ser.mySer[i],  n) && std::strncmp("listen", &ser.mySer[i], n) && std::strncmp("root", &ser.mySer[i], n)
         && std::strncmp("error_page", &ser.mySer[i], n) && std::strncmp("max_body", &ser.mySer[i], n) && std::strncmp("location", &ser.mySer[i], n)
         && std::strncmp("index", &ser.mySer[i], n) && std::strncmp("methodes", &ser.mySer[i], n) && std::strncmp("redirection", &ser.mySer[i], n)
-        && std::strncmp("server", &ser.mySer[i], n) && std::strncmp("}", &ser.mySer[i], n))
+        && std::strncmp("server", &ser.mySer[i], n) && std::strncmp("}", &ser.mySer[i], n) && std::strncmp("autoindex", &ser.mySer[i], n))
             throw ("check");
         while (ser.mySer[j] != '\n' &&  ser.mySer[j])
             j++;
@@ -689,7 +708,7 @@ void fileConfiguration(conf *conf, std::string file)
 
         // std::cout <<"- server size - " <<conf->ser[j].size << " -- begin:" << conf->ser[j].begin << "  location num:"<<conf->ser[j].locationsNumber <<  "\n";
         std::cout << "\n---------------------------\n";
-        exit(1);
+        // exit(1);
     }
 
     

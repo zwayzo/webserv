@@ -25,6 +25,8 @@ int main()
             std::cout << "ERROR...LOCATION...!\n";
         else if (std::strcmp(x, "comma") == 0)
             std::cout << "ERROR...COMMA\n";
+        else if (std::strcmp(x, "auto") == 0)
+            std::cout << "ERROR...AUTO\n";
         exit(1);
     }
     catch (...)

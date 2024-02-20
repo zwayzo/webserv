@@ -10,6 +10,7 @@
 
 class infos{
     public:
+        std::map<int, std::string> autoindex;
         std::map<int, std::string> listenMap;
         std::map<int, std::string> maxBody;
         std::map<std::string, std::string> serverName;
@@ -46,6 +47,7 @@ class location{
         int post;
         int get;
         int deletee;
+        int autoindex;
 
         std::string index;
         std::string error_page;
@@ -62,6 +64,7 @@ class server{
         int post;
         int get;
         int deletee;
+        int autoindex;
         int max_size;
         int number;
         int size;
