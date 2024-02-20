@@ -35,7 +35,7 @@ class location{
             this->redirection = other.redirection;
             // ... (assign other members)
 
-            // Make sure that strings are handled properly (e.g., using assignment or copying methods)
+            // Make sure that strings are handled properly (e.g., using assignment or copying methodes)
             this->index = other.index;
             this->error_page = other.error_page;
             // ... (assign other string members)
@@ -76,6 +76,7 @@ class server{
         std::string name;
         std::string mySer;
         std::string redirection;
+        std::string root;
 
         std::vector<location> loc;
         infos *info;
