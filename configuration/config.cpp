@@ -102,6 +102,8 @@ void printArguments(infos *info, int n, server &ser)
 int storeLocationValue(server &ser, int n, int number)
 {
     ser.loc[number].autoindex = 2;
+    ser.loc[number].root = ser.root;
+    ser.loc[number].index = ser.index;
     // std::cout << "in\n";
     int i = n + 9;
     // std::cout << "i is:" << i << '\n';
@@ -427,7 +429,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
 
     }
     // std::cout << "-->" << in << nn <<l<<m<<r<<e<<me<<a ;
-    if (nn > 1 || l > 1 || m > 1 || r > 1 || in > 1 || e > 1 || me > 1 || a > 1)
+    if (nn > 1 || l > 1 || m > 1 || r != 1 || in != 1 || e > 1 || me > 1 || a > 1 )
         throw ("numbers");
     return info;
 }
