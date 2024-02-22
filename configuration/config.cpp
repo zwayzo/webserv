@@ -27,8 +27,6 @@ void initLocation(server &ser, int n)
     newLocation.get = 0;
     newLocation.deletee = 0;
     newLocation.index[0] = '\0';
-    newLocation.error_page[0] = '\0';
-    newLocation.name[0] = '\0';
     newLocation.root[0] = '\0';
     newLocation.redirection[0] = '\0';
     newLocation.theLoc[0] = '\0';
@@ -93,9 +91,8 @@ void printArguments(infos *info, int n, server &ser)
         // std::cout "index:" << << ser.loc[j].listen << '\n';
         // std::cout "index:" << << ser.loc[j].post << '\n';
         // std::cout "index:" << << ser.loc[j].get << '\n';
-        std::cout << "delete:" << ser.loc[j].deletee << '\n';
-        std::cout << "erroe_page:" << ser.loc[j].error_page << '\n';
-        // std::cout << "index:" << ser.loc[j].name << '\n';
+        std::cout << "redirection:" << ser.loc[j].redirection << '\n';
+        std::cout << "autoindex:" << ser.loc[j].autoindex << '\n';
         std::cout << "root:" << ser.loc[j].root << '\n';
         // std::cout << ser->loc[j].error_page << '\n';
     }
@@ -104,13 +101,14 @@ void printArguments(infos *info, int n, server &ser)
 
 int storeLocationValue(server &ser, int n, int number)
 {
+    ser.loc[number].autoindex = 2;
     // std::cout << "in\n";
     int i = n + 9;
     // std::cout << "i is:" << i << '\n';
     while (ser.mySer[i] != '{')
         i++;
     i += 2;
-    int in=0, ro=0, red=0;
+    int in=0, ro=0, red=0, au=0;
     while (ser.mySer[i] != '}')
     {
         if (std::strncmp(&ser.mySer[i], "index", 5) == 0)
@@ -162,6 +160,25 @@ int storeLocationValue(server &ser, int n, int number)
             for (; ser.mySer[i]; i++)
                 ser.loc[number].redirection.push_back(ser.mySer[i]);
         }
+        else if (std::strncmp((&ser.mySer)->c_str(), "autoindex", 9) == 0)
+        {
+            au++;
+            std::string tmp99;
+            i += 10;
+            if (!std::strncmp(&ser.mySer[i], "on;", 3))
+            {
+                ser.loc[number].autoindex = 1;
+                i+= 2;
+            }
+            else if (!std::strncmp(&ser.mySer[i], "off;", 3))
+            {
+                ser.loc[number].autoindex = 0;
+                i += 3 ;
+            }
+            else
+                throw ("auto");
+            
+        }
         else 
             throw ("location");
         i++;
@@ -174,18 +191,20 @@ int storeLocationValue(server &ser, int n, int number)
         ser.loc[number].redirection[0] = '\0';
     if (in == 0)
         ser.loc[number].index[0] = '\0';
+    if (in > 1 || ro > 1 || red > 1)
+        throw ("numberss");
     // std::cout << "--\n" << &ser.mySer[i]<< "---\n";
     // std::cout << "safiii" << i << "\n";
     return i;
 }
 
 
-infos *checkValue(std::string mySer, infos *info, server &ser)
+infos *checkValue(std::string mySer, infos *info, server &ser) 
 {
     int i = 0;
     // std::cout << ser.mySer;
     // exit(1);
-    int n = 0;
+    int n = 0, l = 0, m=0, r=0, in=0, e=0, me=0 , a=0, nn=0;
     for (;mySer[i] != '\n'; i++);
     i++;
     while(mySer[i])
@@ -207,6 +226,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
                 }
                 i++;
                 if (mySer[i] == ';' || mySer[i] == '\0'){
+                    l++;
                     ser.listen = std::atoi(tmp1.c_str());
                     info->listenMap[0] = "listen";
                     info->listenMap[1] = tmp1;
@@ -232,6 +252,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
                     // std::cout << "ent2r\n";
                     // exit(2);
                     ser.name = tmp2;
+                    nn++;
                     info->serverName["0"] = "name";
                     info->serverName["1"] = tmp2;
                 }
@@ -252,6 +273,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
                 i++;
                 if (mySer[i] == ';' || mySer[i] == '\0'){
                     ser.max_size = std::atoi(tmp3.c_str());
+                    m++;
                     info->maxBody[0] = "max";
                     info->maxBody[1] = tmp3;
                 }
@@ -273,6 +295,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
                 i++;
                 if (mySer[i] == ';' || mySer[i] == '\0'){
                     ser.root = tmp8;
+                    r++;
                     // std::cout << "in\n";
                     info->root["0"] = "root";
                     // exit(1);
@@ -298,6 +321,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
                 i++;
                 if (mySer[i] == ';' || mySer[i] == '\0'){
                     ser.index = tmp4;
+                    in++;
                     info->Index["0"] = "index";
                     info->Index["1"] = tmp4;
                     // std::cout << "l\n";
@@ -317,6 +341,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
                 //     throw ("listen");
                 i++;
                 if (mySer[i] == ';' || mySer[i] == '\0'){
+                    e++;
                     ser.error_page = tmp5;
                     info->errorPage["0"] = "error_page";
                     info->errorPage["1"] = tmp5;
@@ -347,7 +372,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
                 //     throw ("listen");
                 i++;
                 if (mySer[i] == ';' || mySer[i] == '\0'){
-                    
+                    me++;
                     info->methodes["0"] = "methodes";
                     info->methodes["1"] = tmp6;
                 }
@@ -366,6 +391,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
                 //     throw ("listen");
                 i++;
                 if (mySer[i] == ';' || mySer[i] == '\0'){
+                    r++;
                     ser.redirection = tmp7;
                     info->redirection["0"] = "redirection";
                     info->redirection["1"] = tmp7;
@@ -386,6 +412,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
             }
             else if (!std::strncmp(&mySer[i], "off;", 3))
             {
+                a++;
                 ser.autoindex = 1;
                 info->autoindex[0] = "autoindex";
                 info->autoindex[1] = "0";
@@ -399,6 +426,9 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
         // std::cout << "{" << &mySer[i] << "-------------------\n";
 
     }
+    // std::cout << "-->" << in << nn <<l<<m<<r<<e<<me<<a ;
+    if (nn > 1 || l > 1 || m > 1 || r > 1 || in > 1 || e > 1 || me > 1 || a > 1)
+        throw ("numbers");
     return info;
 }
 
@@ -682,6 +712,7 @@ void fileConfiguration(conf *conf, std::string file)
         conf->ser[j].get = 0;
         conf->ser[j].deletee = 0;
         conf->ser[j].post = 0;
+        conf->ser[j].autoindex = 2;
         std::cout << "4\n";
         conf->ser[j].locationsNumber = locationsNumbers(conf->ser[j].mySer);
         std::cout << "5\n";

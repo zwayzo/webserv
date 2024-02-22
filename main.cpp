@@ -27,6 +27,10 @@ int main()
             std::cout << "ERROR...COMMA\n";
         else if (std::strcmp(x, "auto") == 0)
             std::cout << "ERROR...AUTO\n";
+        else if (std::strcmp(x, "numbers") == 0)
+            std::cout << "ERROR...DEPLUCATE\n";
+        else if (std::strcmp(x, "numberss") == 0)
+            std::cout << "ERROR...DEPLUCATE(location)\n";    
         exit(1);
     }
     catch (...)

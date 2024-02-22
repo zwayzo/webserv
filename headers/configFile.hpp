@@ -31,14 +31,13 @@ class location{
             this->post = other.post;
             this->deletee = other.deletee;
 
-            this->name = other.name;
+            this->autoindex = other.autoindex;
             this->root = other.root;
             this->redirection = other.redirection;
             // ... (assign other members)
 
             // Make sure that strings are handled properly (e.g., using assignment or copying methodes)
             this->index = other.index;
-            this->error_page = other.error_page;
             // ... (assign other string members)
         }
         return *this;
@@ -50,8 +49,6 @@ class location{
         int autoindex;
 
         std::string index;
-        std::string error_page;
-        std::string name;
         std::string theLoc;
         std::string root;
         std::string redirection;
