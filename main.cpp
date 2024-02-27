@@ -4,7 +4,8 @@ int main()
 {
     conf *config = new conf;
     try{
-        fileConfiguration(config, "configFile.conf");
+        config = fileConfiguration(config, "configFile.conf");
+        multuplixing(config);
     }
     catch (const char *x)
     {
@@ -31,6 +32,8 @@ int main()
             std::cout << "ERROR...DEPLUCATE\n";
         else if (std::strcmp(x, "numberss") == 0)
             std::cout << "ERROR...DEPLUCATE(location)\n";    
+        else if (std::strcmp(x, "creating socket") == 0)
+            std::cout << "ERROR IN CREATING SOCKET\n";    
         exit(1);
     }
     catch (...)

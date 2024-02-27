@@ -57,6 +57,8 @@ class location{
 class server{
     public:
         server(int n) : number(n){};
+        // server(u)
+        int socketAddr;
         int listen;
         int post;
         int get;
@@ -71,6 +73,7 @@ class server{
         int begin;
         int close;
 
+        // std::string ip;
         std::string index;
         std::string error_page;
         std::string name;
@@ -94,7 +97,7 @@ class conf{
 
 
 
-void fileConfiguration(conf *conf, std::string file);
+conf *fileConfiguration(conf *conf, std::string file);
 int file_size(std::string file);
 int checkServersNumber(std::string file);
 

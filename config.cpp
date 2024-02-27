@@ -1,4 +1,4 @@
-#include "../headers/configFile.hpp"
+#include "headers/configFile.hpp"
 void checkComma(std::string mySer)
 {
     int i = 0;
@@ -688,7 +688,7 @@ int file_size(std::string file)
         i++;
     return i;
 }
-void fileConfiguration(conf *conf, std::string file)
+conf* fileConfiguration(conf *conf, std::string file)
 {
     // std::string line;
     // int i = 0;
@@ -703,21 +703,24 @@ void fileConfiguration(conf *conf, std::string file)
     for (int j = 0; j < conf->serversNumber; j++)
     {
         // std::cout << "j is:" << j << '\n';
-        conf->ser.push_back(conf->ser[j]);
-        std::cout << "1\n";
+        // conf->ser.reserve(1);
+        server tmp(j);
+        conf->ser.push_back(tmp);
+        // exit(1);
+        // std::cout << "1\n";
         serverSize(conf->allIn, j, conf);
-        std::cout << "2\n";
+        // std::cout << "2\n";
         stockserver(conf->allIn, conf, j);
-        std::cout << "3\n";
+        // std::cout << "3\n";
         // std::cout << conf->ser[j].mySer;
         checkAcollade(conf->ser[j]);
         conf->ser[j].get = 0;
         conf->ser[j].deletee = 0;
         conf->ser[j].post = 0;
         conf->ser[j].autoindex = 2;
-        std::cout << "4\n";
+        // std::cout << "4\n";
         conf->ser[j].locationsNumber = locationsNumbers(conf->ser[j].mySer);
-        std::cout << "5\n";
+        // std::cout << "5\n";
         conf->ser[j].loc.reserve(conf->ser[j].locationsNumber);
         // for (int n = 0;n < conf->ser[j].locationsNumber; n++)
         // {
@@ -725,30 +728,31 @@ void fileConfiguration(conf *conf, std::string file)
         //     std::cout << "n:" << conf->ser[j].locationsNumber << '\n';
         //     initLocation(conf->ser[j], n);
         // }
-        std::cout << "6\n";
+        // std::cout << "6\n";
         stockLocation(conf, j);
-        std::cout << "7\n";
+        // std::cout << "7\n";
         checkPrototype(conf->ser[j]);
         wordCounter(conf->ser[j]);
-        std::cout << "8\n";
+        // std::cout << "8\n";
         conf->ser[j].info = new infos;
-        std::cout << "9\n";
+        // std::cout << "9\n";
         // exit(1);
         conf->ser[j].info = checkValue(conf->ser[j].mySer, conf->ser[j].info, conf->ser[j]);
-        std::cout << "out\n";
+        // std::cout << "out\n";
         // printArguments(info);
         
         // exit(1);
-        printArguments(conf->ser[j].info, conf->ser[j].locationsNumber, conf->ser[j]);
+        // printArguments(conf->ser[j].info, conf->ser[j].locationsNumber, conf->ser[j]);
         // std::cout << conf->ser[j].loc[0].root;
         // for (int x = 0; x < conf->ser[j].locationsNumber; x++)
         //     std::cout << conf->ser[j].loc[x].theLoc<<"---------------\n";
         
 
         // std::cout <<"- server size - " <<conf->ser[j].size << " -- begin:" << conf->ser[j].begin << "  location num:"<<conf->ser[j].locationsNumber <<  "\n";
-        std::cout << "\n---------------------------\n";
+        // std::cout << "\n---------------------------\n";
         // exit(1);
     }
+    return (conf);
 
     
     // std::cout << "number:" << conf-> serversNumber << '\n';
