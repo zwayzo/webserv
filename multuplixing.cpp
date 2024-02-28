@@ -4,23 +4,41 @@ void multuplixing(conf* conf)
 {
     // exit(1);
 
-    int serverSoket[conf->serversNumber];
-    // struct addrinfo[conf->serversNumber];
+    int serverSocket[conf->serversNumber];
     struct addrinfo hints[conf->serversNumber];
     struct addrinfo *result[conf->serversNumber];
+
     for (int i = 0; i < conf->serversNumber; i++)
     {
-        memset(&hints, 0, sizeof(struct addrinfo));
+        memset(&hints[i], 0, sizeof(struct addrinfo));
         hints[i].ai_family = AF_UNSPEC;     // Allow IPv4 or IPv6
         hints[i].ai_socktype = SOCK_STREAM; // Stream socket (TCP)
+        hints[i].ai_flags = AI_PASSIVE;     // fill in my IP for me
 
-        if ((serverSoket[i] = socket(AF_INET6, SOCK_STREAM, 0)) == -1)
-            throw ("creating socket");
-        
         conf->ser[i].socketAddr = getaddrinfo(conf->ser[i].name.c_str(),
                                 (std::to_string(conf->ser[i].listen)).c_str(),
                                 &hints[i], &result[i]);
-        std::cout << serverSoket[i];
+        // std::cout << conf->ser[i].listen;
+        if (result[i] == NULL){
+            fprintf(stderr, "getaddrinfo failed for %s:%d - %s\n",
+            conf->ser[i].name.c_str(), conf->ser[i].listen, gai_strerror(conf->ser[i].socketAddr));
+            exit(1);
+        }
+        if ((serverSocket[i] = socket(result[i]->ai_family,
+                                result[i]->ai_socktype, result[i]->ai_protocol)) == -1){
+            perror("socket");
+            freeaddrinfo(result[i]);
+            throw ("creating socket");
+        }
+        bind(serverSocket[i], result[i]->ai_addr, result[i]->ai_addrlen);
+        // connect(serverSocket[i], result[i]->ai_addr, result[i]->ai_addrlen);
+        listen(serverSocket[i], 2);
+        struct sockaddr_storage their_addr;
+        socklen_t addr_size = sizeof their_addr;
+        accept(serverSocket[i], (struct sockaddr *)&their_addr, &addr_size);
+        while (1);
+
+        std::cout << serverSocket[i] << " addr:" << conf->ser[i].socketAddr << '\n';
     }
 
 // struct addrinfo hints, *result;
