@@ -6,6 +6,7 @@ int main()
     try{
         config = fileConfiguration(config, "configFile.conf");
         multuplixing(config);
+
     }
     catch (const char *x)
     {
@@ -33,11 +34,22 @@ int main()
         else if (std::strcmp(x, "numberss") == 0)
             std::cout << "ERROR...DEPLUCATE(location)\n";    
         else if (std::strcmp(x, "creating socket") == 0)
-            std::cout << "ERROR IN CREATING SOCKET\n";    
-        exit(1);
+            std::cout << "ERROR IN CREATING SOCKET\n";
+        else if (std::strcmp(x, "bind") == 0)
+            std::cout << "ERROR IN BINDING!\n";
+        else if (std::strcmp(x, "listen") == 0)
+            std::cout << "ERROR IN LISTEN!\n";
+        else if (std::strcmp(x, "addr") == 0)
+            std::cout << "ERROR IN GETTING ADDR";
+        else if (std::strcmp(x, "result") == 0)
+            std::cout << "ERROR THE RESULT FIELD IS NULL...!";
+        // exit(1);
     }
     catch (...)
     {
         std::cout << "unhandled exception...!\n";
     }
+    for (int i = 0;i < config->serversNumber; i++)
+        delete config->ser[i].info;
+    delete (config);
 }
