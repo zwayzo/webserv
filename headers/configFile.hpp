@@ -66,6 +66,7 @@ class server{
         server(int n) : number(n){};
         // server(u)
         int socketAddr;
+        int sock;
         int listen;
         int post;
         int get;

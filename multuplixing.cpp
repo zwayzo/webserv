@@ -1,5 +1,18 @@
 #include "headers/multuplixing.hpp"
 
+int maxFd(conf* conf)
+{
+    int tmp = 0;
+    for (int i = 0;i < conf->serversNumber; i++)
+    {
+        if (conf->ser[i].sock> tmp)
+            tmp = conf->ser[i].sock;
+    }
+    std::cout << "tmp is:"<< tmp << std::endl;
+    return tmp;
+
+}
+
 void multuplixing(conf* conf)
 {
     // exit(1);
@@ -9,10 +22,13 @@ void multuplixing(conf* conf)
     struct addrinfo *result[conf->serversNumber];
     // struct sockaddr_storage their_addr[conf->serversNumber]; //wher the infos about upcoming connections will go
     int listen_fd[conf->serversNumber];
-    // int newFd;
+    int newFd;
+    socklen_t addrlen;
     // socklen_t addr_size;
+    struct sockaddr_storage remoteaddr; // client address
     struct timeval tv;
-    fd_set readfds;
+    fd_set master;    // master file descriptor list
+    fd_set read_fds;  // temp file descriptor list for select()
 
     for (int i = 0; i < conf->serversNumber; i++)
     {
@@ -39,6 +55,7 @@ void multuplixing(conf* conf)
             freeaddrinfo(result[i]);
             throw ("creating socket");
         }
+        conf->ser[i].sock = serverSocket[i];
         if (bind(serverSocket[i], result[i]->ai_addr, result[i]->ai_addrlen) == -1)
             throw ("bind");
         else 
@@ -51,16 +68,28 @@ void multuplixing(conf* conf)
             std::cout << "listining...\n";
 
         fcntl(serverSocket[i], F_SETFL, O_NONBLOCK); //instead of waiting for the data to be avilabale of for write to finish it program execution. Instead of waiting for data to be available or for a write operation to complete, non-blocking sockets allow you to check if the operation can be performed immediately without waiting.
-        FD_ZERO(&readfds);
-        FD_SET(0, &readfds);
+        FD_ZERO(&read_fds); //clear the set
+        FD_ZERO(&master);
+        FD_SET(serverSocket[i], &read_fds);
+        for (;;){
+            int maxfd = maxFd(conf);
+            read_fds = master;
+            if (select(maxfd, &read_fds, NULL, NULL, NULL) == -1)
+                throw ("ERROR IN SELECT...!\n");
+            for (int j = 0;j < maxfd; j++){
+                if (FD_ISSET(j, &read_fds)) // if the fd is in the set
+                {
+                    if (j == serverSocket[i]) //the fd is in the set
+                    {// handel new connections
+                        addrlen = sizeof(remoteaddr);
+                        newFd =accept(serverSocket[i], (struct sockaddr *)&remoteaddr, &addrlen);\
+                        
+                }
 
-    // don't care about writefds and exceptfds:
-        select(0+1, &readfds, NULL, NULL, &tv);
-
-        if (FD_ISSET(0, &readfds))
-            printf("A key was pressed!\n");
-        else
-            printf("Timed out.\n");
+        // if (FD_ISSET(serverSocket[i], &read_fds))
+        //     printf("A key was pressed!\n");
+        // else
+        //     printf("Timed out.\n");
 
         // addr_size = sizeof their_addr[i];
         // newFd = accept(serverSocket[i], (struct sockaddr *)&their_addr[i], &addr_size); // will creat a new fd that is ready to sent and receiv and for the socket one it's been listining

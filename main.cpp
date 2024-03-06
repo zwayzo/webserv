@@ -43,7 +43,7 @@ int main()
             std::cout << "ERROR IN GETTING ADDR";
         else if (std::strcmp(x, "result") == 0)
             std::cout << "ERROR THE RESULT FIELD IS NULL...!";
-        // exit(1);
+        std::cout << x;
     }
     catch (...)
     {
