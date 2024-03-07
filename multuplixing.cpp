@@ -1,4 +1,8 @@
 #include "headers/multuplixing.hpp"
+#include <iostream>
+#include <string>
+#include <sstream>
+
 
 int maxFd(conf* conf)
 {
@@ -42,7 +46,9 @@ void multuplixing(conf* conf)
     fd_set read_fds;  // temp file descriptor list for select()
     fd_set write_fds;
     int nbytes;
-    char buf[256];    // buffer for client data
+    char buf[1024];    // buffer for client data
+    // std::cout << conf->serversNumber;
+    // exit(1);
     for (int i = 0; i < conf->serversNumber; i++)
     {
         memset(&hints[i], 0, sizeof(struct addrinfo));
@@ -96,13 +102,13 @@ void multuplixing(conf* conf)
         // std::cout << "errno:" << errno;
         // exit(1);
         int maxfd = maxFd(conf);
+        signal(SIGTSTP, handleCtrlZ);
         for (;;){
-            signal(SIGTSTP, handleCtrlZ);
             read_fds = master_re;
             write_fds = master_wr;
             if (select(maxfd+1, &read_fds, NULL, NULL, NULL) == -1)
                  throw ("ERROR IN SELECT...!\n");
-            printf("out\n");
+            // printf("out\n");
             for (int j = 0;j <= maxfd; j++){
                 // std::cout << "j  is:" << j <<'\n';
                 if (FD_ISSET(j, &read_fds)) // if the fd is in the set
@@ -120,8 +126,8 @@ void multuplixing(conf* conf)
                             maxfd = newFd;
                     }
                     else{
-                        std::cout << "22\n";
-                        if ((nbytes = recv(j, buf, 1024, 0)) <= 0)
+                        // std::cout << "22\n";
+                        if ((nbytes = recv(j, buf, sizeof(buf), 0)) <= 0)
                         {
                             printf("2.1\n");
                             // close (j);
@@ -133,11 +139,15 @@ void multuplixing(conf* conf)
                         }
                         else{
                             printf("2.2\n");
-                            std::cout <<"nbytes:" << nbytes << '\n';
-                            std::cout <<"client:" << j << '\n';
-                            std::cout <<"buffer:" << buf << '\n';
+                            // std::cout <<"nbytes:" << nbytes << '\n';
+                            // std::cout <<"client:" << j << '\n';
+                            std::cout << "\n-------------------------------------------------\n";
+                            for (int i = 0; i < nbytes; ++i) 
+                                std::cout << (char)buf[i];
+                            std::cout << "\n-------------------------------------------------\n";
+                            // exit(1);
                             // buf[nbytes] = '\0';
-                            std::cout << "Received from client " << j << ": " << buf << std::endl;
+                            // std::cout << "Received from client " << j << ": " << buf << std::endl;
                             for (int x = 0; x < maxfd; x++){
                                 if (FD_ISSET(x, &master_re)){
                                     if (x != serverSocket[i] && x != j){
