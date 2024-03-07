@@ -12,6 +12,9 @@
 #include <netdb.h>
 #include <cstdlib>
 #include <string>
+#include <csignal>
+#include <signal.h>
+#include <unistd.h>
 
 
 void multuplixing (conf *conf);

@@ -13,8 +13,18 @@ int maxFd(conf* conf)
 
 }
 
+void handleCtrlZ(int signum) {
+    (void )signum;
+    // std::cout << "Ctrl+Z signal received (SIGTSTP)." << std::endl;
+
+    // Raise the SIGINT signal to terminate the program
+    std::raise(SIGINT);
+}
+
 void multuplixing(conf* conf)
 {
+    
+    
     // exit(1);
 
     int serverSocket[conf->serversNumber];
@@ -27,8 +37,10 @@ void multuplixing(conf* conf)
     // socklen_t addr_size;
     struct sockaddr_storage remoteaddr; // client address
     // struct timeval tv;
-    fd_set master;    // master file descriptor list
+    fd_set master_re;    // master_re file descriptor list
+    fd_set master_wr;
     fd_set read_fds;  // temp file descriptor list for select()
+    fd_set write_fds;
     int nbytes;
     char buf[256];    // buffer for client data
     for (int i = 0; i < conf->serversNumber; i++)
@@ -42,14 +54,14 @@ void multuplixing(conf* conf)
         if ((conf->ser[i].socketAddr = getaddrinfo(conf->ser[i].name.c_str(),
                                 ss.str().c_str(),
                                 &hints[i], &result[i])) != 0)
-                                throw ("addr");
+                                throw ("error in addr");
 
         else 
             std::cout << "getting the addr...\n";
         
         // std::cout << conf->ser[i].listen;
         if (result[i] == NULL)
-            throw ("result");
+            throw ("error in result result");
         if ((serverSocket[i] = socket(result[i]->ai_family,
                                 result[i]->ai_socktype, result[i]->ai_protocol)) == -1){
             perror("socket");
@@ -57,54 +69,77 @@ void multuplixing(conf* conf)
             throw ("creating socket");
         }
         conf->ser[i].sock = serverSocket[i];
-        if (bind(serverSocket[i], result[i]->ai_addr, result[i]->ai_addrlen) == -1)
-            throw ("bind");
+        if (bind(serverSocket[i], result[i]->ai_addr, result[i]->ai_addrlen) == -1){
+            close (serverSocket[i]);
+            throw ("error in binding");
+        }
         else 
             std::cout << "binding...\n";
         freeaddrinfo(result[i]);
-        if ((listen_fd[i] = listen(serverSocket[i], 2)) == -1)
+        if ((listen_fd[i] = listen(serverSocket[i], FD_SETSIZE)) == -1)
             throw ("listen");
         else
             std::cout << "listining...\n";
 
-        fcntl(serverSocket[i], F_SETFL, O_NONBLOCK); //instead of waiting for the data to be avilabale of for write to finish it program execution. Instead of waiting for data to be available or for a write operation to complete, non-blocking sockets allow you to check if the operation can be performed immediately without waiting.
+        // fcntl(serverSocket[i], F_SETFL, O_NONBLOCK); //instead of waiting for the data to be avilabale of for write to finish it program execution. Instead of waiting for data to be available or for a write operation to complete, non-blocking sockets allow you to check if the operation can be performed immediately without waiting.
+        int flags = fcntl(0, F_GETFL, 0);
+        fcntl(serverSocket[i], F_SETFL, flags | O_NONBLOCK);
+        FD_ZERO(&master_re);
+        FD_ZERO(&master_wr);
+        FD_ZERO(&write_fds);
         FD_ZERO(&read_fds); //clear the set
-        FD_ZERO(&master);
-        FD_SET(serverSocket[i], &read_fds);
+        FD_SET(serverSocket[i], &master_re);
+        FD_SET(serverSocket[i], &master_wr);
+        // std::cout << "her\n";
+        // std::cout << accept(serverSocket[i], (struct sockaddr *)&remoteaddr, &addrlen)<<'\n';
+        // std::cout << "her2\n";
+        // std::cout << "errno:" << errno;
+        // exit(1);
+        int maxfd = maxFd(conf);
         for (;;){
-            int maxfd = maxFd(conf);
-            read_fds = master;
-            if (select(maxfd, &read_fds, NULL, NULL, NULL) == -1)
-                throw ("ERROR IN SELECT...!\n");
-            // std::cout 
-            for (int j = 0;j < maxfd; j++){
+            signal(SIGTSTP, handleCtrlZ);
+            read_fds = master_re;
+            write_fds = master_wr;
+            if (select(maxfd+1, &read_fds, NULL, NULL, NULL) == -1)
+                 throw ("ERROR IN SELECT...!\n");
+            printf("out\n");
+            for (int j = 0;j <= maxfd; j++){
+                // std::cout << "j  is:" << j <<'\n';
                 if (FD_ISSET(j, &read_fds)) // if the fd is in the set
                 {
-                    std::cout << "her\n";
+                    // std::cout << "her\n";
                     if (j == serverSocket[i]) //the fd is in the set handel new connection
                     {// handel new connections
+                        std::cout << "11\n";
                         addrlen = sizeof(remoteaddr);
                         newFd = accept(serverSocket[i], (struct sockaddr *)&remoteaddr, &addrlen);
                         if (newFd == -1)
                             throw ("ERROR IN ACCEPT FUNCTION...\n");
-                        FD_SET(newFd, &master); //now we have fd that have the request and fd who still waiting
+                        FD_SET(newFd, &master_re); //now we have fd that have the request and fd who still waiting
                         if (newFd > maxfd)
                             maxfd = newFd;
                     }
                     else{
-                        std::cout << "her1\n";
-                        if ((nbytes = recv(j, buf, sizeof(buf), 0)) <= 0)
+                        std::cout << "22\n";
+                        if ((nbytes = recv(j, buf, 1024, 0)) <= 0)
                         {
+                            printf("2.1\n");
                             // close (j);
-                            FD_CLR(j, &master);
+                            FD_CLR(j, &master_re);
                             if (nbytes == 0)
                                 throw ("SOCKT IS HANGING...(RECV)\n");
                             else
                                 throw ("ERROR IN (RECV)\n");
                         }
                         else{
+                            printf("2.2\n");
+                            std::cout <<"nbytes:" << nbytes << '\n';
+                            std::cout <<"client:" << j << '\n';
+                            std::cout <<"buffer:" << buf << '\n';
+                            // buf[nbytes] = '\0';
+                            std::cout << "Received from client " << j << ": " << buf << std::endl;
                             for (int x = 0; x < maxfd; x++){
-                                if (FD_ISSET(x, &master)){
+                                if (FD_ISSET(x, &master_re)){
                                     if (x != serverSocket[i] && x != j){
                                         if (send(x, buf, nbytes, 0) == -1)
                                             throw ("ERROR IN SENDING...\n");
