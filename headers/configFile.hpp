@@ -1,6 +1,7 @@
 #ifndef CONFIGFILE_HPP
 #define CONFIGFILE_HPP
 
+#include"multuplixing.hpp"
 #include <iostream>
 #include <fstream>
 #include <vector>

@@ -57,6 +57,7 @@ void multuplixing(conf* conf)
         hints[i].ai_flags = AI_PASSIVE;     // fill in my IP for me
         std::stringstream ss;
         ss << conf->ser[i].listen;
+        std::cout << "listen on:" << ss.str().c_str() << '\n';
         if ((conf->ser[i].socketAddr = getaddrinfo(conf->ser[i].name.c_str(),
                                 ss.str().c_str(),
                                 &hints[i], &result[i])) != 0)
@@ -87,7 +88,7 @@ void multuplixing(conf* conf)
         else
             std::cout << "listining...\n";
 
-        // fcntl(serverSocket[i], F_SETFL, O_NONBLOCK); //instead of waiting for the data to be avilabale of for write to finish it program execution. Instead of waiting for data to be available or for a write operation to complete, non-blocking sockets allow you to check if the operation can be performed immediately without waiting.
+        fcntl(serverSocket[i], F_SETFL, O_NONBLOCK); //instead of waiting for the data to be avilabale of for write to finish it program execution. Instead of waiting for data to be available or for a write operation to complete, non-blocking sockets allow you to check if the operation can be performed immediately without waiting.
         int flags = fcntl(0, F_GETFL, 0);
         fcntl(serverSocket[i], F_SETFL, flags | O_NONBLOCK);
         FD_ZERO(&master_re);
@@ -96,11 +97,6 @@ void multuplixing(conf* conf)
         FD_ZERO(&read_fds); //clear the set
         FD_SET(serverSocket[i], &master_re);
         FD_SET(serverSocket[i], &master_wr);
-        // std::cout << "her\n";
-        // std::cout << accept(serverSocket[i], (struct sockaddr *)&remoteaddr, &addrlen)<<'\n';
-        // std::cout << "her2\n";
-        // std::cout << "errno:" << errno;
-        // exit(1);
         int maxfd = maxFd(conf);
         signal(SIGTSTP, handleCtrlZ);
         for (;;){
@@ -113,7 +109,7 @@ void multuplixing(conf* conf)
                 // std::cout << "j  is:" << j <<'\n';
                 if (FD_ISSET(j, &read_fds)) // if the fd is in the set
                 {
-                    // std::cout << "her\n";
+                    std::cout << "her\n";
                     if (j == serverSocket[i]) //the fd is in the set handel new connection
                     {// handel new connections
                         std::cout << "11\n";
@@ -126,7 +122,7 @@ void multuplixing(conf* conf)
                             maxfd = newFd;
                     }
                     else{
-                        // std::cout << "22\n";
+                        std::cout << "22\n";
                         if ((nbytes = recv(j, buf, sizeof(buf), 0)) <= 0)
                         {
                             printf("2.1\n");

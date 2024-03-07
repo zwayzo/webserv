@@ -1,7 +1,8 @@
 #ifndef MULTUPLIXING_HPP
 #define MULTUPLIXING_HPP
 
-#include "configFile.hpp"
+#include "header.hpp"
+#include"configFile.hpp"
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
@@ -16,7 +17,7 @@
 #include <signal.h>
 #include <unistd.h>
 
-
+class conf;
 void multuplixing (conf *conf);
 
 #endif
