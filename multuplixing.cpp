@@ -61,14 +61,17 @@ void getSocket(conf* conf)
             throw ("creating socket");
         }
         if (bind(conf->ser[i].sock, result[i]->ai_addr, result[i]->ai_addrlen) == -1){
-            // close (conf->ser[i].sock);
+            close (conf->ser[i].sock);
             continue;
             // throw ("error in binding");
         }
         std::cout << "binding...\n";
         freeaddrinfo(result[i]);
-        if ((conf->ser[i].listen_fd = listen(conf->ser[i].sock, FD_SETSIZE)) == -1)
-            throw ("listen");
+        if ((conf->ser[i].listen_fd = listen(conf->ser[i].sock, FD_SETSIZE)) == -1){
+            close(conf->ser[i].sock);
+            continue;
+            // throw ("listen");
+        }
         else
             std::cout << "listining...\n";
         // int flags = fcntl(0, F_GETFL, 0);
@@ -173,7 +176,7 @@ void multuplixing(conf* conf)
                     {// handel new connections
                         std::cout << "11\n";
                         addrlen = sizeof(remoteaddr);
-                        newFd = accept(conf->ser[i].sock, (struct sockaddr *)&remoteaddr, &addrlen);
+                        newFd = accept(conf->ser[i].sock, NULL, NULL);
                         if (newFd == -1)
                             throw ("ERROR IN ACCEPT FUNCTION...\n");
                         FD_SET(newFd, &master_re); //now we have fd that have the request and fd who still waiting
@@ -185,8 +188,8 @@ void multuplixing(conf* conf)
                         if ((nbytes = recv(j, buf, sizeof(buf), 0)) <= 0)
                         {
 
-                            printf("2.1-->%d\n",j);
-                            printf("%s\n", buf);
+                            printf("2.1-->%d-->%d\n",j,nbytes);
+                            // printf("%s\n", buf);
                             // close (j);
                             // FD_CLR(j, &master_re);
                             if (nbytes == 0)
@@ -204,32 +207,32 @@ void multuplixing(conf* conf)
                             std::cout <<"nbytes:" << nbytes << '\n';
                             std::cout <<"client:" << j << '\n';
                             std::cout << "\n-------------------------------------------------\n";
-                            for (int i = 0; i < nbytes; ++i) 
-                                std::cout << (char)buf[i];
-                            std::cout << "\n-------------------------------------------------\n";
+                            // for (int i = 0; i < nbytes; ++i) 
+                            //     std::cout << (char)buf[i];
                             // exit(1);
                             // 
                             buf[nbytes] = '\0';
                             std::cout << "Received from client " << j << ": " << buf << std::endl;
-                            for (int x = 0; x < maxfd; x++){
-                                printf("1\n");
-                                if (FD_ISSET(x, &master_re)){
-                                    printf("2\n");
-                                    if (x != conf->ser[i].sock && x != j){
-                                        printf("3\n");
-                                        printf("bytes:%d\n", nbytes);
-                                        int tmp = send(x, buf, nbytes, 0);
-                                        printf("4\n");
-                                        printf("send return:%d", tmp);
-                                        if (tmp == -1)
-                                            throw ("ERROR IN SENDING...\n");
-                                        else 
-                                            printf("4\n");
-                                    }
-                                    printf("6\n");
-                                }
-                                printf("7\n");
-                            }
+                            std::cout << "\n-------------------------------------------------\n";
+                            // for (int x = 0; x < maxfd; x++){
+                            //     printf("1\n");
+                            //     if (FD_ISSET(x, &master_re)){
+                            //         printf("2\n");
+                            //         if (x != conf->ser[i].sock && x != j){
+                            //             printf("3\n");
+                            //             printf("bytes:%d\n", nbytes);
+                            //             int tmp = send(x, buf, nbytes, 0);
+                            //             printf("4\n");
+                            //             printf("send return:%d", tmp);
+                            //             if (tmp == -1)
+                            //                 throw ("ERROR IN SENDING...\n");
+                            //             else 
+                            //                 printf("4\n");
+                            //         }
+                            //         printf("6\n");
+                            //     }
+                            //     printf("7\n");
+                            // }
                         }
                         std::cout << "out\n";
                     }
