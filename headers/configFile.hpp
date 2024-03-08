@@ -68,6 +68,7 @@ class server{
         // server(u)
         int socketAddr;
         int sock;
+        int listen_fd;
         int listen;
         int post;
         int get;

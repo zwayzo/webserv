@@ -5,7 +5,7 @@ int main()
     conf *config = new conf;
     try{
         config = fileConfiguration(config, "configFile.conf");
-        // multuplixing(config);
+        multuplixing(config);
 
     }
     catch (const char *x)

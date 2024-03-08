@@ -25,17 +25,69 @@ void handleCtrlZ(int signum) {
     std::raise(SIGINT);
 }
 
+void getSocket(conf* conf)
+{
+    // std::cout << conf->serversNumber;
+    // exit(1);
+    // for (int i = 0; i < conf->serversNumber; i++)
+    //     std::cout << "port:" << conf->ser[i].listen << " name:"<< conf->ser[i].name << '\n';
+    // exit(1);
+    struct addrinfo hints[conf->serversNumber];
+    struct addrinfo *result[conf->serversNumber];
+    std::stringstream ss[conf->serversNumber];
+    for (int i = 0; i < conf->serversNumber; i++)
+    {
+        memset(&hints[i], 0, sizeof(struct addrinfo));
+        hints[i].ai_family = AF_UNSPEC;     // Allow IPv4 or IPv6
+        hints[i].ai_socktype = SOCK_STREAM; // Stream socket (TCP)
+        hints[i].ai_flags = AI_PASSIVE;     // fill in my IP for me
+
+        ss[i] << conf->ser[i].listen;
+        // std::cout << "before\n";
+        std::cout << ss[i].str().c_str()  << '\n';
+        //  std::cout << "after\n";
+        if ((conf->ser[i].socketAddr = getaddrinfo(conf->ser[i].name.c_str(),
+            ss[i].str().c_str(),
+            &hints[i], &result[i])) != 0){
+                std::cout <<  "errno set to " <<  strerror(errno) << '\n';
+            throw ("error in addr");
+            }
+        std::cout << "getting the addr...\n";
+        if (result[i] == NULL)
+            throw ("error in result");
+        if ((conf->ser[i].sock = socket(result[i]->ai_family,
+                                result[i]->ai_socktype, result[i]->ai_protocol)) == -1){
+            // freeaddrinfo(result[i]);
+            throw ("creating socket");
+        }
+        if (bind(conf->ser[i].sock, result[i]->ai_addr, result[i]->ai_addrlen) == -1){
+            // close (conf->ser[i].sock);
+            continue;
+            // throw ("error in binding");
+        }
+        std::cout << "binding...\n";
+        freeaddrinfo(result[i]);
+        if ((conf->ser[i].listen_fd = listen(conf->ser[i].sock, FD_SETSIZE)) == -1)
+            throw ("listen");
+        else
+            std::cout << "listining...\n";
+        // int flags = fcntl(0, F_GETFL, 0);
+        // fcntl(conf->ser[i].sock, F_SETFL, flags | O_NONBLOCK);
+    }
+        // exit(1);
+}
+
 void multuplixing(conf* conf)
 {
     
-    
+    // std::cout << conf->ser[0].listen << '\n';
     // exit(1);
 
-    int serverSocket[conf->serversNumber];
-    struct addrinfo hints[conf->serversNumber];
-    struct addrinfo *result[conf->serversNumber];
+    // int serverSocket[conf->serversNumber];
+    // struct addrinfo hints[conf->serversNumber];
+    // // struct addrinfo *result[conf->serversNumber];
     // struct sockaddr_storage their_addr[conf->serversNumber]; //wher the infos about upcoming connections will go
-    int listen_fd[conf->serversNumber];
+    // int listen_fd[conf->serversNumber];
     int newFd;
     socklen_t addrlen;
     // socklen_t addr_size;
@@ -51,52 +103,59 @@ void multuplixing(conf* conf)
     // exit(1);
     for (int i = 0; i < conf->serversNumber; i++)
     {
-        memset(&hints[i], 0, sizeof(struct addrinfo));
-        hints[i].ai_family = AF_UNSPEC;     // Allow IPv4 or IPv6
-        hints[i].ai_socktype = SOCK_STREAM; // Stream socket (TCP)
-        hints[i].ai_flags = AI_PASSIVE;     // fill in my IP for me
-        std::stringstream ss;
-        ss << conf->ser[i].listen;
-        std::cout << "listen on:" << ss.str().c_str() << '\n';
-        if ((conf->ser[i].socketAddr = getaddrinfo(conf->ser[i].name.c_str(),
-                                ss.str().c_str(),
-                                &hints[i], &result[i])) != 0)
-                                throw ("error in addr");
+        // memset(&hints[i], 0, sizeof(struct addrinfo));
+        // hints[i].ai_family = AF_UNSPEC;     // Allow IPv4 or IPv6
+        // hints[i].ai_socktype = SOCK_STREAM; // Stream socket (TCP)
+        // hints[i].ai_flags = AI_PASSIVE;     // fill in my IP for me
+        // std::stringstream ss;
+        // ss << conf->ser[i].listen;
+        // std::cout << "listen on:" << ss.str().c_str() << '\n';
+        // if ((conf->ser[i].socketAddr = getaddrinfo(conf->ser[i].name.c_str(),
+        //                         ss.str().c_str(),
+        //                         &hints[i], &result[i])) != 0)
+        //                         throw ("error in addr");
 
-        else 
-            std::cout << "getting the addr...\n";
+        // else 
+        //     std::cout << "getting the addr...\n";
         
         // std::cout << conf->ser[i].listen;
-        if (result[i] == NULL)
-            throw ("error in result result");
-        if ((serverSocket[i] = socket(result[i]->ai_family,
-                                result[i]->ai_socktype, result[i]->ai_protocol)) == -1){
-            perror("socket");
-            freeaddrinfo(result[i]);
-            throw ("creating socket");
-        }
-        conf->ser[i].sock = serverSocket[i];
-        if (bind(serverSocket[i], result[i]->ai_addr, result[i]->ai_addrlen) == -1){
-            close (serverSocket[i]);
-            throw ("error in binding");
-        }
-        else 
-            std::cout << "binding...\n";
-        freeaddrinfo(result[i]);
-        if ((listen_fd[i] = listen(serverSocket[i], FD_SETSIZE)) == -1)
-            throw ("listen");
-        else
-            std::cout << "listining...\n";
+        // if (result[i] == NULL)
+        //     throw ("error in result result");
+        // if ((serverSocket[i] = socket(result[i]->ai_family,
+        //                         result[i]->ai_socktype, result[i]->ai_protocol)) == -1){
+        //     perror("socket");
+        //     freeaddrinfo(result[i]);
+        //     throw ("creating socket");
+        // }
+        // conf->ser[i].sock = serverSocket[i];
+        // if (bind(serverSocket[i], result[i]->ai_addr, result[i]->ai_addrlen) == -1){
+        //     close (serverSocket[i]);
+        //     throw ("error in binding");
+        // }
+        // else 
+        //     std::cout << "binding...\n";
+        // freeaddrinfo(result[i]);
+        // if ((listen_fd[i] = listen(serverSocket[i], FD_SETSIZE)) == -1)
+        //     throw ("listen");
+        // else
+        //     std::cout << "listining...\n";
 
-        fcntl(serverSocket[i], F_SETFL, O_NONBLOCK); //instead of waiting for the data to be avilabale of for write to finish it program execution. Instead of waiting for data to be available or for a write operation to complete, non-blocking sockets allow you to check if the operation can be performed immediately without waiting.
-        int flags = fcntl(0, F_GETFL, 0);
-        fcntl(serverSocket[i], F_SETFL, flags | O_NONBLOCK);
+        // fcntl(serverSocket[i], F_SETFL, O_NONBLOCK); //instead of waiting for the data to be avilabale of for write to finish it program execution. Instead of waiting for data to be available or for a write operation to complete, non-blocking sockets allow you to check if the operation can be performed immediately without waiting.
+        // int flags = fcntl(0, F_GETFL, 0);
+        // fcntl(serverSocket[i], F_SETFL, flags | O_NONBLOCK);
+
+        getSocket(conf);
+        printf("->%d\n", conf->ser[i].sock);
+        // exit(1);
         FD_ZERO(&master_re);
         FD_ZERO(&master_wr);
         FD_ZERO(&write_fds);
         FD_ZERO(&read_fds); //clear the set
-        FD_SET(serverSocket[i], &master_re);
-        FD_SET(serverSocket[i], &master_wr);
+        for (int i = 0 ;i < conf->serversNumber; i++){
+            // printf("____>%d\n", conf->ser[i].sock);
+            FD_SET(conf->ser[i].sock, &master_re);
+            FD_SET(conf->ser[i].sock, &master_wr);
+        }
         int maxfd = maxFd(conf);
         signal(SIGTSTP, handleCtrlZ);
         for (;;){
@@ -110,11 +169,11 @@ void multuplixing(conf* conf)
                 if (FD_ISSET(j, &read_fds)) // if the fd is in the set
                 {
                     std::cout << "her\n";
-                    if (j == serverSocket[i]) //the fd is in the set handel new connection
+                    if (j == conf->ser[i].sock) //the fd is in the set handel new connection
                     {// handel new connections
                         std::cout << "11\n";
                         addrlen = sizeof(remoteaddr);
-                        newFd = accept(serverSocket[i], (struct sockaddr *)&remoteaddr, &addrlen);
+                        newFd = accept(conf->ser[i].sock, (struct sockaddr *)&remoteaddr, &addrlen);
                         if (newFd == -1)
                             throw ("ERROR IN ACCEPT FUNCTION...\n");
                         FD_SET(newFd, &master_re); //now we have fd that have the request and fd who still waiting
@@ -125,34 +184,54 @@ void multuplixing(conf* conf)
                         std::cout << "22\n";
                         if ((nbytes = recv(j, buf, sizeof(buf), 0)) <= 0)
                         {
-                            printf("2.1\n");
+
+                            printf("2.1-->%d\n",j);
+                            printf("%s\n", buf);
                             // close (j);
-                            FD_CLR(j, &master_re);
+                            // FD_CLR(j, &master_re);
                             if (nbytes == 0)
-                                throw ("SOCKT IS HANGING...(RECV)\n");
-                            else
+                                printf("selectserver: socket %d port %d hung up\n", conf->ser[i].sock, conf->ser[i].listen);
+                            else{
+                                // std::cout << "isset:" << FD_ISSET(j, &master_re)<< '\n';
                                 throw ("ERROR IN (RECV)\n");
+                            }
+                            close (j);
+                            FD_CLR(j, &master_re);
+                            FD_CLR(j, &master_wr);
                         }
                         else{
                             printf("2.2\n");
-                            // std::cout <<"nbytes:" << nbytes << '\n';
-                            // std::cout <<"client:" << j << '\n';
+                            std::cout <<"nbytes:" << nbytes << '\n';
+                            std::cout <<"client:" << j << '\n';
                             std::cout << "\n-------------------------------------------------\n";
                             for (int i = 0; i < nbytes; ++i) 
                                 std::cout << (char)buf[i];
                             std::cout << "\n-------------------------------------------------\n";
                             // exit(1);
-                            // buf[nbytes] = '\0';
-                            // std::cout << "Received from client " << j << ": " << buf << std::endl;
+                            // 
+                            buf[nbytes] = '\0';
+                            std::cout << "Received from client " << j << ": " << buf << std::endl;
                             for (int x = 0; x < maxfd; x++){
+                                printf("1\n");
                                 if (FD_ISSET(x, &master_re)){
-                                    if (x != serverSocket[i] && x != j){
-                                        if (send(x, buf, nbytes, 0) == -1)
+                                    printf("2\n");
+                                    if (x != conf->ser[i].sock && x != j){
+                                        printf("3\n");
+                                        printf("bytes:%d\n", nbytes);
+                                        int tmp = send(x, buf, nbytes, 0);
+                                        printf("4\n");
+                                        printf("send return:%d", tmp);
+                                        if (tmp == -1)
                                             throw ("ERROR IN SENDING...\n");
+                                        else 
+                                            printf("4\n");
                                     }
+                                    printf("6\n");
                                 }
+                                printf("7\n");
                             }
                         }
+                        std::cout << "out\n";
                     }
                 }//handel data from client
             }//got new upcoming connections

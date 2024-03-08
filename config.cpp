@@ -738,7 +738,7 @@ conf* fileConfiguration(conf *conf, std::string file)
         // std::cout << "9\n";
         // exit(1);
         conf->ser[j].info = checkValue(conf->ser[j].mySer, conf->ser[j].info, conf->ser[j]);
-        multuplixing(conf);
+        // multuplixing(conf);
         // free(conf->ser[j].info);
         // std::cout << "out\n";
         // printArguments(info);
