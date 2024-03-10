@@ -3,6 +3,15 @@
 #include <string>
 #include <sstream>
 
+int validSocket(int j, conf *conf)
+{
+    for (int i =0;i  < conf->serversNumber; i++)
+    {
+        if (j == conf->ser[i].sock)
+            return 1;
+    }
+    return 0;
+}
 
 int maxFd(conf* conf)
 {
@@ -27,7 +36,7 @@ void handleCtrlZ(int signum) {
 
 void getSocket(conf* conf)
 {
-    // std::cout << conf->serversNumber;
+    std::cout <<"{}"<< conf->serversNumber<< '\n';
     // exit(1);
     // for (int i = 0; i < conf->serversNumber; i++)
     //     std::cout << "port:" << conf->ser[i].listen << " name:"<< conf->ser[i].name << '\n';
@@ -52,7 +61,7 @@ void getSocket(conf* conf)
                 std::cout <<  "errno set to " <<  strerror(errno) << '\n';
             throw ("error in addr");
             }
-        std::cout << "getting the addr...\n";
+        std::cout << "getting the addr..."<< conf->ser[i].socketAddr << "\n";
         if (result[i] == NULL)
             throw ("error in result");
         if ((conf->ser[i].sock = socket(result[i]->ai_family,
@@ -60,12 +69,14 @@ void getSocket(conf* conf)
             // freeaddrinfo(result[i]);
             throw ("creating socket");
         }
-        if (bind(conf->ser[i].sock, result[i]->ai_addr, result[i]->ai_addrlen) == -1){
+        printf("socket has been created...%d\n",conf->ser[i].sock );
+        int b = bind(conf->ser[i].sock, result[i]->ai_addr, result[i]->ai_addrlen);
+        if (b  == -1){
             close (conf->ser[i].sock);
             continue;
             // throw ("error in binding");
         }
-        std::cout << "binding...\n";
+        std::cout << "binding..." << b << "\n";
         freeaddrinfo(result[i]);
         if ((conf->ser[i].listen_fd = listen(conf->ser[i].sock, FD_SETSIZE)) == -1){
             close(conf->ser[i].sock);
@@ -73,7 +84,7 @@ void getSocket(conf* conf)
             // throw ("listen");
         }
         else
-            std::cout << "listining...\n";
+            std::cout << "listining..." << conf->ser[i].listen_fd <<"\n";
         // int flags = fcntl(0, F_GETFL, 0);
         // fcntl(conf->ser[i].sock, F_SETFL, flags | O_NONBLOCK);
     }
@@ -102,6 +113,7 @@ void multuplixing(conf* conf)
     fd_set write_fds;
     int nbytes;
     char buf[1024];    // buffer for client data
+    // buf = (char *)std::calloc(1024, 1);
     // std::cout << conf->serversNumber;
     // exit(1);
     for (int i = 0; i < conf->serversNumber; i++)
@@ -160,19 +172,24 @@ void multuplixing(conf* conf)
             FD_SET(conf->ser[i].sock, &master_wr);
         }
         int maxfd = maxFd(conf);
+        printf("max is %d", maxfd);
         signal(SIGTSTP, handleCtrlZ);
         for (;;){
+            printf("max is %d\n", maxfd);
             read_fds = master_re;
             write_fds = master_wr;
-            if (select(maxfd+1, &read_fds, NULL, NULL, NULL) == -1)
-                 throw ("ERROR IN SELECT...!\n");
+            if (select(maxfd+1, &read_fds, NULL, NULL, NULL) == -1){
+                printf("%d\n", (maxfd+1));
+                 throw("select error\n");
+            }
             // printf("out\n");
             for (int j = 0;j <= maxfd; j++){
                 // std::cout << "j  is:" << j <<'\n';
                 if (FD_ISSET(j, &read_fds)) // if the fd is in the set
                 {
-                    std::cout << "her\n";
-                    if (j == conf->ser[i].sock) //the fd is in the set handel new connection
+                    std::cout << "1\n";
+                    printf("j is %d socket %d\n", j, conf->ser[i].sock);
+                    if (validSocket(j, conf)) //the fd is in the set handel new connection
                     {// handel new connections
                         std::cout << "11\n";
                         addrlen = sizeof(remoteaddr);
@@ -181,15 +198,14 @@ void multuplixing(conf* conf)
                             throw ("ERROR IN ACCEPT FUNCTION...\n");
                         FD_SET(newFd, &master_re); //now we have fd that have the request and fd who still waiting
                         if (newFd > maxfd)
-                            maxfd = newFd;
+                            maxfd = newFd + 1;
                     }
                     else{
                         std::cout << "22\n";
+                        std::cout << "j is:" << j << " buf is:" << buf << " size is:"<<sizeof(buf)<< '\n';
                         if ((nbytes = recv(j, buf, sizeof(buf), 0)) <= 0)
                         {
-
                             printf("2.1-->%d-->%d\n",j,nbytes);
-                            // printf("%s\n", buf);
                             // close (j);
                             // FD_CLR(j, &master_re);
                             if (nbytes == 0)
@@ -201,18 +217,20 @@ void multuplixing(conf* conf)
                             close (j);
                             FD_CLR(j, &master_re);
                             FD_CLR(j, &master_wr);
+                            FD_CLR(j, &read_fds);
+                            FD_CLR(j, &write_fds);
                         }
                         else{
                             printf("2.2\n");
                             std::cout <<"nbytes:" << nbytes << '\n';
                             std::cout <<"client:" << j << '\n';
+                            std::cout << "Received from client " << j << ": " <<  std::endl;
+                            buf[nbytes] = '\0';
                             std::cout << "\n-------------------------------------------------\n";
                             // for (int i = 0; i < nbytes; ++i) 
-                            //     std::cout << (char)buf[i];
+                            std::cout << buf;
                             // exit(1);
                             // 
-                            buf[nbytes] = '\0';
-                            std::cout << "Received from client " << j << ": " << buf << std::endl;
                             std::cout << "\n-------------------------------------------------\n";
                             // for (int x = 0; x < maxfd; x++){
                             //     printf("1\n");
