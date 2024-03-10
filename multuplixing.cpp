@@ -85,8 +85,8 @@ void getSocket(conf* conf)
         }
         else
             std::cout << "listining..." << conf->ser[i].listen_fd <<"\n";
-        // int flags = fcntl(0, F_GETFL, 0);
-        // fcntl(conf->ser[i].sock, F_SETFL, flags | O_NONBLOCK);
+        int flags = fcntl(0, F_GETFL, 0);
+        fcntl(conf->ser[i].sock, F_SETFL, flags | O_NONBLOCK);
     }
         // exit(1);
 }
@@ -160,6 +160,7 @@ void multuplixing(conf* conf)
         // fcntl(serverSocket[i], F_SETFL, flags | O_NONBLOCK);
 
         getSocket(conf);
+        // fcntl(s, F_SETFL, O_NONBLOCK)
         printf("->%d\n", conf->ser[i].sock);
         // exit(1);
         FD_ZERO(&master_re);
@@ -191,14 +192,16 @@ void multuplixing(conf* conf)
                     printf("j is %d socket %d\n", j, conf->ser[i].sock);
                     if (validSocket(j, conf)) //the fd is in the set handel new connection
                     {// handel new connections
-                        std::cout << "11\n";
                         addrlen = sizeof(remoteaddr);
+                        std::cout << "11\n";
                         newFd = accept(conf->ser[i].sock, NULL, NULL);
+                        printf("accepted...\n");
                         if (newFd == -1)
                             throw ("ERROR IN ACCEPT FUNCTION...\n");
                         FD_SET(newFd, &master_re); //now we have fd that have the request and fd who still waiting
                         if (newFd > maxfd)
                             maxfd = newFd + 1;
+                        std::cout << "finish\n";
                     }
                     else{
                         std::cout << "22\n";
