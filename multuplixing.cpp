@@ -131,6 +131,7 @@ void multuplixing(conf* conf)
         std::cout << j << '\n';
         FD_SET(conf->ser[j].sock, &master_re);
     }
+    // int sizeReaded = 0;
     // addSocket(conf);
     for (;;)
     {
@@ -162,14 +163,17 @@ void multuplixing(conf* conf)
                     if (FD_ISSET(i, &read_fds)){
                         printf("not new connection in read\n");
                         printf("recv try to connect with %d\n", i);
-                        int nbytes;
-                        if (nbytes = recv(i, buf, sizeof(buf), 0) == -1)
+                        int nbytes = recv(i, buf, sizeof(buf), 0);
+                        if (nbytes == -1)
                             throw ("error in recv");
                         
+                        // sizeReaded += nbytes;
+                        printf("size readed %d\n", nbytes);
+
                         printf("-------------------------------------\n%s\n----------------------------------\n",buf);
-                        //working on request
-                        FD_CLR(i, &master_re);
-                        FD_SET(i, &master_wr);
+                            FD_CLR(i, &master_re);
+                            FD_SET(i, &master_wr);
+                        //working on request workREquest(buf);
                     }
                     if(FD_ISSET(i, &write_fds)){
                         printf("not new connection in write\n");
