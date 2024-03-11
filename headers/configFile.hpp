@@ -103,6 +103,7 @@ class conf{
         int size;
         int serversNumber;
         std::string allIn;
+        std::vector<int> vec;
 };
 
 

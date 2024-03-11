@@ -2,13 +2,17 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <algorithm>
+
 
 int validSocket(int j, conf *conf)
 {
-    for (int i =0;i  < conf->serversNumber; i++)
+    for (std::vector<int>::iterator it = conf->vec.begin(); it != conf->vec.end(); it++)
     {
-        if (j == conf->ser[i].sock)
+        if (*it == j){
+            printf("{}{}}}}}}}}}}}}}}}}}}}}\n");
             return 1;
+        }
     }
     return 0;
 }
@@ -21,11 +25,16 @@ int maxFd(conf* conf)
         if (conf->ser[i].sock> tmp)
             tmp = conf->ser[i].sock;
     }
-    std::cout << "tmp is:"<< tmp << std::endl;
+    // std::cout << "tmp is:"<< tmp << std::endl;
     return tmp;
 
 }
 
+void addSocket(conf *conf)
+{
+    for (int i = 0; i < conf->serversNumber; i++)
+        conf->vec.push_back(conf->ser[i].sock);
+}
 void handleCtrlZ(int signum) {
     (void )signum;
     // std::cout << "Ctrl+Z signal received (SIGTSTP)." << std::endl;
@@ -69,7 +78,8 @@ void getSocket(conf* conf)
             // freeaddrinfo(result[i]);
             throw ("creating socket");
         }
-        printf("socket has been created...%d\n",conf->ser[i].sock );
+        printf("socket for server %d is %d\n", i, conf->ser[i].sock);
+        // printf("socket has been created...%d\n",conf->ser[i].sock );
         int b = bind(conf->ser[i].sock, result[i]->ai_addr, result[i]->ai_addrlen);
         if (b  == -1){
             close (conf->ser[i].sock);
@@ -94,83 +104,127 @@ void getSocket(conf* conf)
 void multuplixing(conf* conf)
 {
     
-    // std::cout << conf->ser[0].listen << '\n';
-    // exit(1);
-
-    // int serverSocket[conf->serversNumber];
-    // struct addrinfo hints[conf->serversNumber];
-    // // struct addrinfo *result[conf->serversNumber];
-    // struct sockaddr_storage their_addr[conf->serversNumber]; //wher the infos about upcoming connections will go
-    // int listen_fd[conf->serversNumber];
-    int newFd;
-    socklen_t addrlen;
+    // int newFd;
+    // socklen_t addrlen;
     // socklen_t addr_size;
-    struct sockaddr_storage remoteaddr; // client address
+    // struct sockaddr_storage remoteaddr; // client address
     // struct timeval tv;
     fd_set master_re;    // master_re file descriptor list
     fd_set master_wr;
     fd_set read_fds;  // temp file descriptor list for select()
     fd_set write_fds;
-    int nbytes;
+    // int nbytes;
     char buf[1024];    // buffer for client data
+    int newFd;
+
+    getSocket(conf);
+    printf("--------------------------\n");
+    int maxfd = maxFd(conf);
+    printf("max is %d\n", maxfd);
+    FD_ZERO(&master_re);
+    FD_ZERO(&master_wr);
+    FD_ZERO(&write_fds);
+    FD_ZERO(&read_fds); //clear the set
+    // conf->vec.
+    signal(SIGTSTP, handleCtrlZ);
+    for (int j = 0; j < conf->serversNumber; j++){
+        std::cout << j << '\n';
+        FD_SET(conf->ser[j].sock, &master_re);
+    }
+    // addSocket(conf);
+    for (;;)
+    {
+        read_fds =  master_re;
+        write_fds =  master_wr;
+        printf("before select...\n");
+        if (select(maxfd + 1, &read_fds, &write_fds, NULL, NULL) == -1)
+            throw ("ERROR IN SELECT");
+        printf("select...\n");
+        for (int i = 0; i <= maxfd; i++){
+            printf("i is %d\n", i);
+            if(FD_ISSET(i, &read_fds) || FD_ISSET(i, &write_fds))
+            {
+                if (!validSocket(i, conf))
+                {
+                    printf("new connection\n");
+                    printf("1-->%d\n", i);
+                    if ((newFd = accept(i, NULL, NULL)) == -1)
+                        throw ("ERROR IN ACCEPTING\n");
+                    printf("accept...\n");
+                    conf->vec.push_back(newFd);
+                    FD_SET(newFd, &master_re);
+                    if (newFd > maxfd)
+                        maxfd = newFd;
+                }
+                else
+                {
+                    // printf("not new connection\n");
+                    if (FD_ISSET(i, &read_fds)){
+                        printf("not new connection in read\n");
+                        printf("recv try to connect with %d\n", i);
+                        int nbytes;
+                        if (nbytes = recv(i, buf, sizeof(buf), 0) == -1)
+                            throw ("error in recv");
+                        
+                        printf("-------------------------------------\n%s\n----------------------------------\n",buf);
+                        //working on request
+                        FD_CLR(i, &master_re);
+                        FD_SET(i, &master_wr);
+                    }
+                    if(FD_ISSET(i, &write_fds)){
+                        printf("not new connection in write\n");
+                        // printf("2.2\n");
+                        send(i, "9wd", 4, 0);
+                        //send response
+                        FD_CLR(i, &master_wr);
+                        close (i);
+                        conf->vec.erase(std::remove(conf->vec.begin(), conf->vec.end(), i));
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // buf = (char *)std::calloc(1024, 1);
     // std::cout << conf->serversNumber;
     // exit(1);
+    /*
     for (int i = 0; i < conf->serversNumber; i++)
     {
-        // memset(&hints[i], 0, sizeof(struct addrinfo));
-        // hints[i].ai_family = AF_UNSPEC;     // Allow IPv4 or IPv6
-        // hints[i].ai_socktype = SOCK_STREAM; // Stream socket (TCP)
-        // hints[i].ai_flags = AI_PASSIVE;     // fill in my IP for me
-        // std::stringstream ss;
-        // ss << conf->ser[i].listen;
-        // std::cout << "listen on:" << ss.str().c_str() << '\n';
-        // if ((conf->ser[i].socketAddr = getaddrinfo(conf->ser[i].name.c_str(),
-        //                         ss.str().c_str(),
-        //                         &hints[i], &result[i])) != 0)
-        //                         throw ("error in addr");
-
-        // else 
-        //     std::cout << "getting the addr...\n";
-        
-        // std::cout << conf->ser[i].listen;
-        // if (result[i] == NULL)
-        //     throw ("error in result result");
-        // if ((serverSocket[i] = socket(result[i]->ai_family,
-        //                         result[i]->ai_socktype, result[i]->ai_protocol)) == -1){
-        //     perror("socket");
-        //     freeaddrinfo(result[i]);
-        //     throw ("creating socket");
-        // }
-        // conf->ser[i].sock = serverSocket[i];
-        // if (bind(serverSocket[i], result[i]->ai_addr, result[i]->ai_addrlen) == -1){
-        //     close (serverSocket[i]);
-        //     throw ("error in binding");
-        // }
-        // else 
-        //     std::cout << "binding...\n";
-        // freeaddrinfo(result[i]);
-        // if ((listen_fd[i] = listen(serverSocket[i], FD_SETSIZE)) == -1)
-        //     throw ("listen");
-        // else
-        //     std::cout << "listining...\n";
-
-        // fcntl(serverSocket[i], F_SETFL, O_NONBLOCK); //instead of waiting for the data to be avilabale of for write to finish it program execution. Instead of waiting for data to be available or for a write operation to complete, non-blocking sockets allow you to check if the operation can be performed immediately without waiting.
-        // int flags = fcntl(0, F_GETFL, 0);
         // fcntl(serverSocket[i], F_SETFL, flags | O_NONBLOCK);
-
         getSocket(conf);
         // fcntl(s, F_SETFL, O_NONBLOCK)
         printf("->%d\n", conf->ser[i].sock);
         // exit(1);
-        FD_ZERO(&master_re);
-        FD_ZERO(&master_wr);
-        FD_ZERO(&write_fds);
-        FD_ZERO(&read_fds); //clear the set
         for (int i = 0 ;i < conf->serversNumber; i++){
             // printf("____>%d\n", conf->ser[i].sock);
             FD_SET(conf->ser[i].sock, &master_re);
-            FD_SET(conf->ser[i].sock, &master_wr);
+            // FD_SET(conf->ser[i].sock, &master_wr);
         }
         int maxfd = maxFd(conf);
         printf("max is %d", maxfd);
@@ -260,8 +314,8 @@ void multuplixing(conf* conf)
                 }//handel data from client
             }//got new upcoming connections
         }//looping through fd's
-    }//while 1
-}
+    }//while 1*/
+// }
 
                         
         // if (FD_ISSET(serverSocket[i], &read_fds))
