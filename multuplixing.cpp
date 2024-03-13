@@ -11,33 +11,43 @@ void getMethodes(std::string buf, client *cl)
         cl->post = 1;
 }
 
+void clearSets(client mycl, int i, int *s, int *index, fd_set master_re, fd_set master_wr)
+{
+    if (mycl.post == 1)
+            mycl.fileD.close();
+    FD_CLR(i, &master_re);
+    FD_SET(i, &master_wr);
+    *s = 0;
+    *index = 0;
+}
 
 std::string getExtention(char *buf)
 {
     std::string tmp = buf;
+
     size_t pos = tmp.find("Content-Type:");
+    int i = 0;
     pos += 14;
-    printf("||||||||||||||||||||||||||||||||||||\n");
-    std::cout << tmp << '\n';
+    // std::cout << tmp << '\n';
     while (tmp[pos] != '/')
         pos++;
     pos++;
-    std::string ret;
+    char *ret = static_cast<char *>(calloc(20, 1));
     while (tmp[pos] != '\n')
     {
-        ret += tmp[pos];
+        ret[i] += tmp[pos];
+        i++;
         pos++;
     }
-    std::cout << "extention is " << ret << '\n';
-    // exit(1);
+    // printf("i is %d\n", i);
+    ret[i - 1] = '\0';
+    std::cout << "extention is '" << ret << "'\n";
     return ret;
 }
 
 int getRequestLenght(char *buf)
 {
     std::string tmp = buf;
-    // std::cout << tmp;
-    // exit(2);
     size_t pos = tmp.find("Content-Length: ");
     std::string t;
     pos += 16;
@@ -45,8 +55,7 @@ int getRequestLenght(char *buf)
         t = t + tmp[pos];
         pos++;
     }
-    printf("=======>%d\n", std::atoi(t.c_str()));
-    // exit(0);
+    printf("content-lenght:%d\n", std::atoi(t.c_str()));
     return (std::atoi(t.c_str()));
 }
 
@@ -57,11 +66,7 @@ int getBody(char *buf)
     while (buf[i])
     {
         if (buf[i] == '\r' && buf[i + 1] == '\n' && buf[i + 2] == '\r' && buf[i + 3] == '\n')
-        {
-            printf("%d||||\n%s\n", i+4, &buf[i+4]);
-            // exit(1);
             return (i+4);
-        }
         i++;
     }
     return 0;
@@ -74,19 +79,14 @@ int creatFile(int fd, char *buf, client *cl)
     std::string tmp = "file";
     std::stringstream s;
     s << fd;
-    printf("fd is %d--->%s\n", fd, s.str().c_str());
     tmp += s.str();
-    // std::stringstream ss;
-    // ss << cl->index;
     tmp +=  s.str() + '.' +  getExtention(buf);
-    // std::cout << "file name is " << tmp << '\n';
     cl->fileIndex = 1;
-    // std::ofstream file;
     cl->fileD.open(tmp.c_str(), std::ios::out | std::ios::app);
     if (cl->fileD.is_open())
         std::cout << tmp << " has been created\n";
     else 
-        exit(1);
+        throw ("fille can't be open\n");
     std::cout << "file name is " << tmp <<'\n';
     cl->file = tmp;
     return (getBody(buf));
@@ -101,10 +101,8 @@ int validSocket(int j, conf *conf)
 {
     for (std::vector<int>::iterator it = conf->vec.begin(); it != conf->vec.end(); it++)
     {
-        if (*it == j){
-            printf("{}{}}}}}}}}}}}}}}}}}}}}\n");
+        if (*it == j)
             return 1;
-        }
     }
     return 0;
 }
@@ -112,14 +110,11 @@ int validSocket(int j, conf *conf)
 int maxFd(conf* conf)
 {
     int tmp = 0;
-    printf("getting max...\n");
-    printf("num:%d\n", conf->serversNumber);
     for (int i = 0;i < conf->serversNumber; i++)
     {
         if (conf->ser[i].sock> tmp)
             tmp = conf->ser[i].sock;
     }
-    // std::cout << "tmp is:"<< tmp << std::endl;
     return tmp;
 
 }
@@ -139,14 +134,10 @@ void handleCtrlZ(int signum) {
 
 void getSocket(conf* conf)
 {
-    std::cout <<"{}"<< conf->serversNumber<< '\n';
-    // exit(1);
-    // for (int i = 0; i < conf->serversNumber; i++)
-    //     std::cout << "port:" << conf->ser[i].listen << " name:"<< conf->ser[i].name << '\n';
-    // exit(1);
     struct addrinfo hints[conf->serversNumber];
     struct addrinfo *result[conf->serversNumber];
     std::stringstream ss[conf->serversNumber];
+
     for (int i = 0; i < conf->serversNumber; i++)
     {
         memset(&hints[i], 0, sizeof(struct addrinfo));
@@ -155,30 +146,23 @@ void getSocket(conf* conf)
         hints[i].ai_flags = AI_PASSIVE;     // fill in my IP for me
 
         ss[i] << conf->ser[i].listen;
-        // std::cout << "before\n";
         std::cout << ss[i].str().c_str()  << '\n';
-        //  std::cout << "after\n";
         if ((conf->ser[i].socketAddr = getaddrinfo(conf->ser[i].name.c_str(),
             ss[i].str().c_str(),
-            &hints[i], &result[i])) != 0){
-                std::cout <<  "errno set to " <<  strerror(errno) << '\n';
+            &hints[i], &result[i])) != 0)
             throw ("error in addr");
-            }
         std::cout << "getting the addr..."<< conf->ser[i].socketAddr << "\n";
         if (result[i] == NULL)
             throw ("error in result");
         if ((conf->ser[i].sock = socket(result[i]->ai_family,
                                 result[i]->ai_socktype, result[i]->ai_protocol)) == -1){
-            // freeaddrinfo(result[i]);
             throw ("creating socket");
         }
         printf("socket for server %d is %d\n", i, conf->ser[i].sock);
-        // printf("socket has been created...%d\n",conf->ser[i].sock );
         int b = bind(conf->ser[i].sock, result[i]->ai_addr, result[i]->ai_addrlen);
         if (b  == -1){
             close (conf->ser[i].sock);
             continue;
-            // throw ("error in binding");
         }
         std::cout << "binding..." << b << "\n";
         freeaddrinfo(result[i]);
@@ -192,34 +176,20 @@ void getSocket(conf* conf)
         int flags = fcntl(0, F_GETFL, 0);
         fcntl(conf->ser[i].sock, F_SETFL, flags | O_NONBLOCK);
     }
-        // exit(1);
 }
 
 void multuplixing(conf* conf)
 {
     std::vector <client> mycl;
-    fd_set master_re;    // master_re file descriptor list
-    fd_set master_wr;
-    fd_set read_fds;  // temp file descriptor list for select()
-    fd_set write_fds;
+    fd_set master_re, master_wr, read_fds, write_fds;    // master_re file descriptor list
     char buf[8000];    // buffer for client data
-    int newFd;
-    int s = 0;
-
-    // exit(1);
-    // std::vector <client> cl;
+    int maxfd, index = 0, s = 0, newFd, in = 0;
     getSocket(conf);
-    int maxfd = maxFd(conf);
-    int index = 0;
-    // printf("--------------------------\n");
-    printf("max is %d\n", maxfd);
+    maxfd = maxFd(conf);
     FD_ZERO(&master_re);
     FD_ZERO(&master_wr);
     FD_ZERO(&write_fds);
     FD_ZERO(&read_fds); //clear the set
-    int in = 0;
-    // conf->vec.
-    // client tmp
     signal(SIGTSTP, handleCtrlZ);
     for (int j = 0; j < conf->serversNumber; j++){
         std::cout << j << '\n';
@@ -229,12 +199,10 @@ void multuplixing(conf* conf)
     {
         read_fds =  master_re;
         write_fds =  master_wr;
-        // printf("before select...\n");
+        printf("waiting...\n");
         if (select(maxfd + 1, &read_fds, &write_fds, NULL, NULL) == -1)
             throw ("ERROR IN SELECT");
-        printf("select...\n");
         for (int i = 0; i <= maxfd; i++){
-            // printf("i is %d\n", i);
             if(FD_ISSET(i, &read_fds) || FD_ISSET(i, &write_fds))
             {
                 if (!validSocket(i, conf))
@@ -247,7 +215,6 @@ void multuplixing(conf* conf)
                     tmp.index = in;
                     in++;
                     mycl.push_back(tmp);
-                    // cl.mycl.push_back(tmp);
                     conf->vec.push_back(newFd);
                     FD_SET(newFd, &master_re);
                     if (newFd > maxfd)
@@ -255,12 +222,10 @@ void multuplixing(conf* conf)
                 }
                 else
                 {
-                    // printf("not new connection\n");
                     if (FD_ISSET(i, &read_fds)){
                         int nbytes = recv(i, buf, sizeof(buf), 0);
                         printf("rcv read %d\n",nbytes);
                         std::cout <<  mycl[in-1].post << '\n';
-                        // exit(1);
                         getMethodes(buf, &mycl[in - 1]);
                         std::cout << "after getting what methode..." << mycl[in - 1].post << "\n";
                         if (mycl[in - 1].post == 1){
@@ -268,44 +233,37 @@ void multuplixing(conf* conf)
                             int z = 0;
                             if (index == 0){
                                 z = creatFile(i, buf, &mycl[in - 1]);
-                                std::cout << "this is what should be in " << mycl[in-1].file << "\n----------------------\n" << buf << "\n-------------------------\n";
-                                printf("header length is %d\n", z);
+                                // std::cout << "this is what should be in " << mycl[in-1].file << "\n----------------------\n" << buf << "\n-------------------------\n";
+                                // printf("header length is %d\n", z);
                                 mycl[in - 1].fileD.write(&buf[z], nbytes - z);
                                 s += nbytes - z;
-                                // exit(1);
                             }
                             else{
                                 mycl[in - 1].fileD.write(buf, nbytes);
                                 s += nbytes;
                             }
-                            printf("s is %d\n", s);
+                            // printf("s is %d\n", s);
                             index++;
-                            // exit(1);
-                        }
-                        // int tmp = getRequestLenght(buf);
-                        // int s = nbytes;
-
-                        // printf("s is %d\n", s);
-                       // s += recv(i, buf, sizeof(buf), 0);
-                            
+                        }   
                         if (nbytes == -1)
                             throw ("error in recv");
                         std::cout << "1-------------------------------------\n" << buf <<"\n2----------------------------------\n";
-                        std::cout << "s is " << s << " lenght is " << mycl[in-1].contentLenght << '\n';
+                        // std::cout << "s is " << s << " lenght is " << mycl[in-1].contentLenght << '\n';
                         if ( s >= mycl[in - 1].contentLenght){
-                            printf("time to clear\n");
-                            if (mycl[in - 1].post == 1)
-                                mycl[in - 1].fileD.close();
-                        FD_CLR(i, &master_re);
-                        FD_SET(i, &master_wr);
-                        s = 0;
-                        index = 0;
+                            clearSets(mycl[in - 1], i, &s, &index, master_re, master_wr);
+                        //     printf("time to clear\n");
+                        //     if (mycl[in - 1].post == 1)
+                        //         mycl[in - 1].fileD.close();
+                        // FD_CLR(i, &master_re);
+                        // FD_SET(i, &master_wr);
+                        // s = 0;
+                        // index = 0;
                         }
                         //working on request workREquest(buf);
                     }
                     if(FD_ISSET(i, &write_fds)){
                         printf("not new connection in write\n");
-                        send(i, "9wd", 4, 0);
+                        send(i, "slm", 4, 0);
                         //send response
                         FD_CLR(i, &master_wr);
                         close (i);
