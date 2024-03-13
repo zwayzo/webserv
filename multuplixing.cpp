@@ -11,14 +11,15 @@ void getMethodes(std::string buf, client *cl)
         cl->post = 1;
 }
 
-void clearSets(client mycl, int i, int *s, int *index, fd_set master_re, fd_set master_wr)
+void clearSets(client *mycl, int i, int *s, int *index, fd_set master_re, fd_set master_wr)
 {
-    if (mycl.post == 1)
-            mycl.fileD.close();
+    if (mycl->post == 1)
+            mycl->fileD.close();
     FD_CLR(i, &master_re);
     FD_SET(i, &master_wr);
     *s = 0;
     *index = 0;
+    mycl->post = 0;
 }
 
 std::string getExtention(char *buf)
@@ -51,6 +52,7 @@ int getRequestLenght(char *buf)
     size_t pos = tmp.find("Content-Length: ");
     std::string t;
     pos += 16;
+    std::cout << "tmp is " << tmp <<'\n';
     while (tmp[pos] != '\n'){
         t = t + tmp[pos];
         pos++;
@@ -82,11 +84,11 @@ int creatFile(int fd, char *buf, client *cl)
     tmp += s.str();
     tmp +=  s.str() + '.' +  getExtention(buf);
     cl->fileIndex = 1;
-    cl->fileD.open(tmp.c_str(), std::ios::out | std::ios::app);
+    cl->fileD.open(tmp.c_str(), std::ios::out | std::ios::trunc);
     if (cl->fileD.is_open())
         std::cout << tmp << " has been created\n";
     else 
-        throw ("fille can't be open\n");
+        throw ("file can't be open\n");
     std::cout << "file name is " << tmp <<'\n';
     cl->file = tmp;
     return (getBody(buf));
@@ -225,8 +227,11 @@ void multuplixing(conf* conf)
                     if (FD_ISSET(i, &read_fds)){
                         int nbytes = recv(i, buf, sizeof(buf), 0);
                         printf("rcv read %d\n",nbytes);
-                        std::cout <<  mycl[in-1].post << '\n';
-                        getMethodes(buf, &mycl[in - 1]);
+                        // std::cout <<  mycl[in-1].post << '\n';
+                        if (nbytes != 0)
+                            getMethodes(buf, &mycl[in - 1]);
+                        else if (nbytes == -1)
+                            throw ("error in recv\n");
                         std::cout << "after getting what methode..." << mycl[in - 1].post << "\n";
                         if (mycl[in - 1].post == 1){
                             std::cout << "WARNING.............................POST\n";
@@ -245,13 +250,15 @@ void multuplixing(conf* conf)
                             // printf("s is %d\n", s);
                             index++;
                         }   
-                        if (nbytes == -1)
-                            throw ("error in recv");
+                        if (nbytes > 0){
+                            // throw ("error in recv");
                         std::cout << "1-------------------------------------\n" << buf <<"\n2----------------------------------\n";
-                        // std::cout << "s is " << s << " lenght is " << mycl[in-1].contentLenght << '\n';
+                        std::cout << "s is " << s << " lenght is " << mycl[in-1].contentLenght << '\n';
                         if ( s >= mycl[in - 1].contentLenght){
-                            clearSets(mycl[in - 1], i, &s, &index, master_re, master_wr);
-                        //     printf("time to clear\n");
+                            printf("time to clear\n");
+                            clearSets(&mycl[in - 1], i, &s, &index, master_re, master_wr);
+                            printf("post is %d\n", mycl[in - 1].post);
+                        }
                         //     if (mycl[in - 1].post == 1)
                         //         mycl[in - 1].fileD.close();
                         // FD_CLR(i, &master_re);
@@ -262,6 +269,7 @@ void multuplixing(conf* conf)
                         //working on request workREquest(buf);
                     }
                     if(FD_ISSET(i, &write_fds)){
+                        exit(1);
                         printf("not new connection in write\n");
                         send(i, "slm", 4, 0);
                         //send response
