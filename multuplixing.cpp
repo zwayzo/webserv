@@ -11,12 +11,12 @@ void getMethodes(std::string buf, client *cl)
         cl->post = 1;
 }
 
-void clearSets(client *mycl, int i, int *s, int *index, fd_set master_re, fd_set master_wr)
+void clearSets(client *mycl, int i, int *s, int *index, fd_set *master_re, fd_set *master_wr)
 {
     if (mycl->post == 1)
             mycl->fileD.close();
-    FD_CLR(i, &master_re);
-    FD_SET(i, &master_wr);
+    FD_CLR(i, master_re);
+    FD_SET(i, master_wr);
     *s = 0;
     *index = 0;
     mycl->post = 0;
@@ -33,14 +33,15 @@ std::string getExtention(char *buf)
     while (tmp[pos] != '/')
         pos++;
     pos++;
-    char *ret = static_cast<char *>(calloc(20, 1));
+    char *ret;
+    // ret = static_cast<char *>(calloc(20, 1));
+    ret = new (20);
     while (tmp[pos] != '\n')
     {
         ret[i] += tmp[pos];
         i++;
         pos++;
     }
-    // printf("i is %d\n", i);
     ret[i - 1] = '\0';
     std::cout << "extention is '" << ret << "'\n";
     return ret;
@@ -92,10 +93,6 @@ int creatFile(int fd, char *buf, client *cl)
     std::cout << "file name is " << tmp <<'\n';
     cl->file = tmp;
     return (getBody(buf));
-    // exit(1);
-    // exit(1);
-
-    // cl->fileD = file;
 }
 
 
@@ -256,10 +253,11 @@ void multuplixing(conf* conf)
                         std::cout << "s is " << s << " lenght is " << mycl[in-1].contentLenght << '\n';
                         if ( s >= mycl[in - 1].contentLenght){
                             printf("time to clear\n");
-                            clearSets(&mycl[in - 1], i, &s, &index, master_re, master_wr);
+                            clearSets(&mycl[in - 1], i, &s, &index, &master_re, &master_wr);
                             printf("post is %d\n", mycl[in - 1].post);
+                            // FD_SET(i, &write_fds);
                         }
-                        //     if (mycl[in - 1].post == 1)
+                        //     if (mycl[in - 1]ug.post == 1)
                         //         mycl[in - 1].fileD.close();
                         // FD_CLR(i, &master_re);
                         // FD_SET(i, &master_wr);
@@ -269,7 +267,7 @@ void multuplixing(conf* conf)
                         //working on request workREquest(buf);
                     }
                     if(FD_ISSET(i, &write_fds)){
-                        exit(1);
+                        // exit(1);
                         printf("not new connection in write\n");
                         send(i, "slm", 4, 0);
                         //send response
