@@ -37,6 +37,7 @@ class client{
         int post;
         int contentLenght;
         std::ofstream fileD;
+        int method;
 };
 
 // std::vector <client> mycl;

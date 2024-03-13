@@ -5,7 +5,6 @@ int main()
     conf *config = new conf;
     try{
         config = fileConfiguration(config, "configFile.conf");
-        printf("89-521-56198\n");
         multuplixing(config);
 
     }

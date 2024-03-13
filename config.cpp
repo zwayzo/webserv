@@ -752,8 +752,8 @@ conf* fileConfiguration(conf *conf, std::string file)
 
         // std::cout <<"- server size - " <<conf->ser[j].size << " -- begin:" << conf->ser[j].begin << "  location num:"<<conf->ser[j].locationsNumber <<  "\n";
         // std::cout << "\n---------------------------\n";
-        // exit(1);
     }
+        // exit(1);
     return (conf);
 
     
