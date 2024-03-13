@@ -29,16 +29,17 @@ std::string getExtention(char *buf)
     size_t pos = tmp.find("Content-Type:");
     int i = 0;
     pos += 14;
-    // std::cout << tmp << '\n';
     while (tmp[pos] != '/')
         pos++;
     pos++;
     char *ret;
-    // ret = static_cast<char *>(calloc(20, 1));
-    ret = new (20);
+    int j = pos;
+    for (; tmp[j] != '\n'; j++)
+        j++;
+    ret = new char[j - pos];
     while (tmp[pos] != '\n')
     {
-        ret[i] += tmp[pos];
+        ret[i] = tmp[pos];
         i++;
         pos++;
     }
