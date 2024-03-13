@@ -50,7 +50,25 @@ int getRequestLenght(char *buf)
     return (std::atoi(t.c_str()));
 }
 
-void creatFile(int fd, char *buf, client *cl)
+int getBody(char *buf)
+{
+    int i = 0;
+    for (i = 0; buf[i] != '\r' && buf[i + 1] != '\n' && buf[i + 2] != '\r' && buf[i + 3] != '\n'; i++);
+    while (buf[i])
+    {
+        if (buf[i] == '\r' && buf[i + 1] == '\n' && buf[i + 2] == '\r' && buf[i + 3] == '\n')
+        {
+            printf("%d||||\n%s\n", i+4, &buf[i+4]);
+            // exit(1);
+            return (i+4);
+        }
+        i++;
+    }
+    return 0;
+
+}
+
+int creatFile(int fd, char *buf, client *cl)
 {
     cl->contentLenght =  getRequestLenght(buf);
     std::string tmp = "file";
@@ -71,6 +89,7 @@ void creatFile(int fd, char *buf, client *cl)
         exit(1);
     std::cout << "file name is " << tmp <<'\n';
     cl->file = tmp;
+    return (getBody(buf));
     // exit(1);
     // exit(1);
 
@@ -238,26 +257,29 @@ void multuplixing(conf* conf)
                 {
                     // printf("not new connection\n");
                     if (FD_ISSET(i, &read_fds)){
-                        // printf("not new connection in read\n");
-                        // printf("recv try to connect with %d\n", i);
                         int nbytes = recv(i, buf, sizeof(buf), 0);
                         printf("rcv read %d\n",nbytes);
-                        // std::cout << "after recv...\n";
-                        std::cout << buf << '\n' ;
                         std::cout <<  mycl[in-1].post << '\n';
                         // exit(1);
                         getMethodes(buf, &mycl[in - 1]);
                         std::cout << "after getting what methode..." << mycl[in - 1].post << "\n";
                         if (mycl[in - 1].post == 1){
                             std::cout << "WARNING.............................POST\n";
+                            int z = 0;
                             if (index == 0){
-                                creatFile(i, buf, &mycl[in - 1]);
+                                z = creatFile(i, buf, &mycl[in - 1]);
                                 std::cout << "this is what should be in " << mycl[in-1].file << "\n----------------------\n" << buf << "\n-------------------------\n";
+                                printf("header length is %d\n", z);
+                                mycl[in - 1].fileD.write(&buf[z], nbytes - z);
+                                s += nbytes - z;
+                                // exit(1);
                             }
-                            index++;
-                            mycl[in - 1].fileD.write(buf, sizeof(buf));
-                            s += nbytes;
+                            else{
+                                mycl[in - 1].fileD.write(buf, nbytes);
+                                s += nbytes;
+                            }
                             printf("s is %d\n", s);
+                            index++;
                             // exit(1);
                         }
                         // int tmp = getRequestLenght(buf);
