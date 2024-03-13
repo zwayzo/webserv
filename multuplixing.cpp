@@ -3,6 +3,79 @@
 #include <string>
 #include <sstream>
 #include <algorithm>
+#include <unistd.h>
+
+void getMethodes(std::string buf, client *cl)
+{
+    if (std::strncmp(buf.c_str(), "POST", 4) == 0)
+        cl->post = 1;
+}
+
+
+std::string getExtention(char *buf)
+{
+    std::string tmp = buf;
+    size_t pos = tmp.find("Content-Type:");
+    pos += 14;
+    printf("||||||||||||||||||||||||||||||||||||\n");
+    std::cout << tmp << '\n';
+    while (tmp[pos] != '/')
+        pos++;
+    pos++;
+    std::string ret;
+    while (tmp[pos] != '\n')
+    {
+        ret += tmp[pos];
+        pos++;
+    }
+    std::cout << "extention is " << ret << '\n';
+    // exit(1);
+    return ret;
+}
+
+int getRequestLenght(char *buf)
+{
+    std::string tmp = buf;
+    // std::cout << tmp;
+    // exit(2);
+    size_t pos = tmp.find("Content-Length: ");
+    std::string t;
+    pos += 16;
+    while (tmp[pos] != '\n'){
+        t = t + tmp[pos];
+        pos++;
+    }
+    printf("=======>%d\n", std::atoi(t.c_str()));
+    // exit(0);
+    return (std::atoi(t.c_str()));
+}
+
+void creatFile(int fd, char *buf, client *cl)
+{
+    cl->contentLenght =  getRequestLenght(buf);
+    std::string tmp = "file";
+    std::stringstream s;
+    s << fd;
+    printf("fd is %d--->%s\n", fd, s.str().c_str());
+    tmp += s.str();
+    // std::stringstream ss;
+    // ss << cl->index;
+    tmp +=  s.str() + '.' +  getExtention(buf);
+    // std::cout << "file name is " << tmp << '\n';
+    cl->fileIndex = 1;
+    // std::ofstream file;
+    cl->fileD.open(tmp.c_str(), std::ios::out | std::ios::app);
+    if (cl->fileD.is_open())
+        std::cout << tmp << " has been created\n";
+    else 
+        exit(1);
+    std::cout << "file name is " << tmp <<'\n';
+    cl->file = tmp;
+    // exit(1);
+    // exit(1);
+
+    // cl->fileD = file;
+}
 
 
 int validSocket(int j, conf *conf)
@@ -20,6 +93,8 @@ int validSocket(int j, conf *conf)
 int maxFd(conf* conf)
 {
     int tmp = 0;
+    printf("getting max...\n");
+    printf("num:%d\n", conf->serversNumber);
     for (int i = 0;i < conf->serversNumber; i++)
     {
         if (conf->ser[i].sock> tmp)
@@ -103,55 +178,57 @@ void getSocket(conf* conf)
 
 void multuplixing(conf* conf)
 {
-    
-    // int newFd;
-    // socklen_t addrlen;
-    // socklen_t addr_size;
-    // struct sockaddr_storage remoteaddr; // client address
-    // struct timeval tv;
+    std::vector <client> mycl;
     fd_set master_re;    // master_re file descriptor list
     fd_set master_wr;
     fd_set read_fds;  // temp file descriptor list for select()
     fd_set write_fds;
-    // int nbytes;
-    char buf[1024];    // buffer for client data
+    char buf[8000];    // buffer for client data
     int newFd;
+    int s = 0;
 
+    // exit(1);
+    // std::vector <client> cl;
     getSocket(conf);
-    printf("--------------------------\n");
     int maxfd = maxFd(conf);
+    int index = 0;
+    // printf("--------------------------\n");
     printf("max is %d\n", maxfd);
     FD_ZERO(&master_re);
     FD_ZERO(&master_wr);
     FD_ZERO(&write_fds);
     FD_ZERO(&read_fds); //clear the set
+    int in = 0;
     // conf->vec.
+    // client tmp
     signal(SIGTSTP, handleCtrlZ);
     for (int j = 0; j < conf->serversNumber; j++){
         std::cout << j << '\n';
         FD_SET(conf->ser[j].sock, &master_re);
     }
-    // int sizeReaded = 0;
-    // addSocket(conf);
     for (;;)
     {
         read_fds =  master_re;
         write_fds =  master_wr;
-        printf("before select...\n");
+        // printf("before select...\n");
         if (select(maxfd + 1, &read_fds, &write_fds, NULL, NULL) == -1)
             throw ("ERROR IN SELECT");
         printf("select...\n");
         for (int i = 0; i <= maxfd; i++){
-            printf("i is %d\n", i);
+            // printf("i is %d\n", i);
             if(FD_ISSET(i, &read_fds) || FD_ISSET(i, &write_fds))
             {
                 if (!validSocket(i, conf))
                 {
                     printf("new connection\n");
-                    printf("1-->%d\n", i);
                     if ((newFd = accept(i, NULL, NULL)) == -1)
                         throw ("ERROR IN ACCEPTING\n");
                     printf("accept...\n");
+                    client tmp(newFd);
+                    tmp.index = in;
+                    in++;
+                    mycl.push_back(tmp);
+                    // cl.mycl.push_back(tmp);
                     conf->vec.push_back(newFd);
                     FD_SET(newFd, &master_re);
                     if (newFd > maxfd)
@@ -161,23 +238,51 @@ void multuplixing(conf* conf)
                 {
                     // printf("not new connection\n");
                     if (FD_ISSET(i, &read_fds)){
-                        printf("not new connection in read\n");
-                        printf("recv try to connect with %d\n", i);
+                        // printf("not new connection in read\n");
+                        // printf("recv try to connect with %d\n", i);
                         int nbytes = recv(i, buf, sizeof(buf), 0);
+                        printf("rcv read %d\n",nbytes);
+                        // std::cout << "after recv...\n";
+                        std::cout << buf << '\n' ;
+                        std::cout <<  mycl[in-1].post << '\n';
+                        // exit(1);
+                        getMethodes(buf, &mycl[in - 1]);
+                        std::cout << "after getting what methode..." << mycl[in - 1].post << "\n";
+                        if (mycl[in - 1].post == 1){
+                            std::cout << "WARNING.............................POST\n";
+                            if (index == 0){
+                                creatFile(i, buf, &mycl[in - 1]);
+                                std::cout << "this is what should be in " << mycl[in-1].file << "\n----------------------\n" << buf << "\n-------------------------\n";
+                            }
+                            index++;
+                            mycl[in - 1].fileD.write(buf, sizeof(buf));
+                            s += nbytes;
+                            printf("s is %d\n", s);
+                            // exit(1);
+                        }
+                        // int tmp = getRequestLenght(buf);
+                        // int s = nbytes;
+
+                        // printf("s is %d\n", s);
+                       // s += recv(i, buf, sizeof(buf), 0);
+                            
                         if (nbytes == -1)
                             throw ("error in recv");
-                        
-                        // sizeReaded += nbytes;
-                        printf("size readed %d\n", nbytes);
-
-                        printf("-------------------------------------\n%s\n----------------------------------\n",buf);
-                            FD_CLR(i, &master_re);
-                            FD_SET(i, &master_wr);
+                        std::cout << "1-------------------------------------\n" << buf <<"\n2----------------------------------\n";
+                        std::cout << "s is " << s << " lenght is " << mycl[in-1].contentLenght << '\n';
+                        if ( s >= mycl[in - 1].contentLenght){
+                            printf("time to clear\n");
+                            if (mycl[in - 1].post == 1)
+                                mycl[in - 1].fileD.close();
+                        FD_CLR(i, &master_re);
+                        FD_SET(i, &master_wr);
+                        s = 0;
+                        index = 0;
+                        }
                         //working on request workREquest(buf);
                     }
                     if(FD_ISSET(i, &write_fds)){
                         printf("not new connection in write\n");
-                        // printf("2.2\n");
                         send(i, "9wd", 4, 0);
                         //send response
                         FD_CLR(i, &master_wr);
@@ -192,156 +297,5 @@ void multuplixing(conf* conf)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // buf = (char *)std::calloc(1024, 1);
-    // std::cout << conf->serversNumber;
-    // exit(1);
-    /*
-    for (int i = 0; i < conf->serversNumber; i++)
-    {
-        // fcntl(serverSocket[i], F_SETFL, flags | O_NONBLOCK);
-        getSocket(conf);
-        // fcntl(s, F_SETFL, O_NONBLOCK)
-        printf("->%d\n", conf->ser[i].sock);
-        // exit(1);
-        for (int i = 0 ;i < conf->serversNumber; i++){
-            // printf("____>%d\n", conf->ser[i].sock);
-            FD_SET(conf->ser[i].sock, &master_re);
-            // FD_SET(conf->ser[i].sock, &master_wr);
-        }
-        int maxfd = maxFd(conf);
-        printf("max is %d", maxfd);
-        signal(SIGTSTP, handleCtrlZ);
-        for (;;){
-            printf("max is %d\n", maxfd);
-            read_fds = master_re;
-            write_fds = master_wr;
-            if (select(maxfd+1, &read_fds, NULL, NULL, NULL) == -1){
-                printf("%d\n", (maxfd+1));
-                 throw("select error\n");
-            }
-            // printf("out\n");
-            for (int j = 0;j <= maxfd; j++){
-                // std::cout << "j  is:" << j <<'\n';
-                if (FD_ISSET(j, &read_fds)) // if the fd is in the set
-                {
-                    std::cout << "1\n";
-                    printf("j is %d socket %d\n", j, conf->ser[i].sock);
-                    if (validSocket(j, conf)) //the fd is in the set handel new connection
-                    {// handel new connections
-                        addrlen = sizeof(remoteaddr);
-                        std::cout << "11\n";
-                        newFd = accept(conf->ser[i].sock, NULL, NULL);
-                        printf("accepted...\n");
-                        if (newFd == -1)
-                            throw ("ERROR IN ACCEPT FUNCTION...\n");
-                        FD_SET(newFd, &master_re); //now we have fd that have the request and fd who still waiting
-                        if (newFd > maxfd)
-                            maxfd = newFd + 1;
-                        std::cout << "finish\n";
-                    }
-                    else{
-                        std::cout << "22\n";
-                        std::cout << "j is:" << j << " buf is:" << buf << " size is:"<<sizeof(buf)<< '\n';
-                        if ((nbytes = recv(j, buf, sizeof(buf), 0)) <= 0)
-                        {
-                            printf("2.1-->%d-->%d\n",j,nbytes);
-                            // close (j);
-                            // FD_CLR(j, &master_re);
-                            if (nbytes == 0)
-                                printf("selectserver: socket %d port %d hung up\n", conf->ser[i].sock, conf->ser[i].listen);
-                            else{
-                                // std::cout << "isset:" << FD_ISSET(j, &master_re)<< '\n';
-                                throw ("ERROR IN (RECV)\n");
-                            }
-                            close (j);
-                            FD_CLR(j, &master_re);
-                            FD_CLR(j, &master_wr);
-                            FD_CLR(j, &read_fds);
-                            FD_CLR(j, &write_fds);
-                        }
-                        else{
-                            printf("2.2\n");
-                            std::cout <<"nbytes:" << nbytes << '\n';
-                            std::cout <<"client:" << j << '\n';
-                            std::cout << "Received from client " << j << ": " <<  std::endl;
-                            buf[nbytes] = '\0';
-                            std::cout << "\n-------------------------------------------------\n";
-                            // for (int i = 0; i < nbytes; ++i) 
-                            std::cout << buf;
-                            // exit(1);
-                            // 
-                            std::cout << "\n-------------------------------------------------\n";
-                            // for (int x = 0; x < maxfd; x++){
-                            //     printf("1\n");
-                            //     if (FD_ISSET(x, &master_re)){
-                            //         printf("2\n");
-                            //         if (x != conf->ser[i].sock && x != j){
-                            //             printf("3\n");
-                            //             printf("bytes:%d\n", nbytes);
-                            //             int tmp = send(x, buf, nbytes, 0);
-                            //             printf("4\n");
-                            //             printf("send return:%d", tmp);
-                            //             if (tmp == -1)
-                            //                 throw ("ERROR IN SENDING...\n");
-                            //             else 
-                            //                 printf("4\n");
-                            //         }
-                            //         printf("6\n");
-                            //     }
-                            //     printf("7\n");
-                            // }
-                        }
-                        std::cout << "out\n";
-                    }
-                }//handel data from client
-            }//got new upcoming connections
-        }//looping through fd's
-    }//while 1*/
-// }
-
-                        
-        // if (FD_ISSET(serverSocket[i], &read_fds))
-        //     printf("A key was pressed!\n");
-        // else
-        //     printf("Timed out.\n");
-
-        // addr_size = sizeof their_addr[i];
-        // newFd = accept(serverSocket[i], (struct sockaddr *)&their_addr[i], &addr_size); // will creat a new fd that is ready to sent and receiv and for the socket one it's been listining
-        
-        
-        
-        // while (1);
-
-        // std::cout << serverSocket[i] << " addr:" << conf->ser[i].socketAddr << '\n';
-    // for (int i = 0;i < conf->serversNumber; i++)
-        // freeaddrinfo(result[i]);
-
-// struct addrinfo hints, *result;
-//     memset(&hints, 0, sizeof(struct addrinfo));
-//     hints.ai_family = AF_UNSPEC;     // Allow IPv4 or IPv6
-//     hints.ai_socktype = SOCK_STREAM; // Stream socket (TCP)
-
-
+//51154
 
