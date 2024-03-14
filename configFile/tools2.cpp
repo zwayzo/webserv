@@ -268,5 +268,5 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
     // printf("%d|%d|%d|%d|%d|%d|%d|%d",nn,l,m,r,in,e,me,a);
     if (nn != 1 || l != 1 )
         throw ("error in numbers of element in config file\n");
-    return info;
+    return info; 
 }
