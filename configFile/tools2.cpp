@@ -253,7 +253,6 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
             }
             else if (!std::strncmp(&mySer[i], "off;", 3))
             {
-                a++;
                 ser.autoindex = 1;
                 info->autoindex[0] = "autoindex";
                 info->autoindex[1] = "0";
@@ -261,11 +260,13 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
             }
             else
                 throw ("auto");
+                a++;
             
         }
             i++;
     }
-    if (nn != 1 || l != 1 || m != 1 || r != 1 || in != 1 || e != 1 || me > 1 || a != 1 )
+    // printf("%d|%d|%d|%d|%d|%d|%d|%d",nn,l,m,r,in,e,me,a);
+    if (nn != 1 || l != 1 )
         throw ("error in numbers of element in config file\n");
     return info;
 }

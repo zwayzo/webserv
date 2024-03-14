@@ -92,8 +92,9 @@ int storeLocationValue(server &ser, int n, int number)
         ser.loc[number].redirection[0] = '\0';
     if (in == 0)
         ser.loc[number].index[0] = '\0';
-    if (in != 1 || ro != 1 || red > 1)
-        throw ("error depulacte in (index, root, or redirection)");
+        // printf("%d|%d|%d\n",in,ro,red);
+    // if (in != 1 || ro != 1 || red > 1)
+    //     throw ("error depulacte in (index, root, or redirection)");
     return i;
 }
 
