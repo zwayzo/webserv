@@ -109,8 +109,22 @@ class conf{
 
 
 conf *fileConfiguration(conf *conf, std::string file);
-int file_size(std::string file);
 int checkServersNumber(std::string file);
+void checkComma(std::string mySer);
+void initLocation(server &ser, int n);
+void wordCounter(server &ser);
+void printArguments(infos *info, int n, server &ser);
+int storeLocationValue(server &ser, int n, int number);
+infos *checkValue(std::string mySer, infos *info, server &ser); 
+void checkPrototype(server &ser);
+void checkAcollade(server &ser);
+void stockLocation(conf *conf, int indice);
+void getBegin(int indice, conf *conf, std::string allIn);
+void stockserver(std::string allIn, conf *conf, int indice);
+void serverSize(std::string allIn, int indice, conf *conf);
+int locationsNumbers(std::string mySer);
+std::string getTheFileInOneString(std::string file);
+int file_size(std::string file);
 
 
 

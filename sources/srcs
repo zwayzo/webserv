@@ -1,6 +1,8 @@
 https://beej.us/guide/bgnet/html/#acceptman
 https://medium.com/from-the-scratch/http-server-what-do-you-need-to-know-to-build-a-simple-http-server-from-scratch-d1ef8945e4fa
 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
+figma map:https://www.figma.com/proto/tQJOYxzFdxYkPYrPIv18kg/webserv-Flow?node-id=12-3340
+
 
 GET / HTTP/1.1
 Host: localhost:8081
