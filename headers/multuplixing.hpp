@@ -35,7 +35,7 @@ class client{
         int fileIndex;
         int index;
         int post;
-        int contentLenght;
+        long long contentLenght;
         std::ofstream fileD;
         int method;
 };

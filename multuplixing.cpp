@@ -6,6 +6,9 @@
 #include <random>
 #include <unistd.h>
 #include <ctime>
+#include <cstring>
+#include <cstdlib>
+
 
 int randomNum()
 {
@@ -28,7 +31,7 @@ void getMethodes(std::string buf, client *cl)
         cl->post = 1;
 }
 
-void clearSets(client *mycl, int i, int *s, int *index, fd_set *master_re, fd_set *master_wr)
+void clearSets(client *mycl, int i, long long *s, int *index, fd_set *master_re, fd_set *master_wr)
 {
     if (mycl->post == 1)
             mycl->fileD.close();
@@ -66,7 +69,7 @@ std::string getExtention(char *buf)
     return ret;
 }
 
-int getRequestLenght(char *buf)
+void getRequestLenght(char *buf, client *cl)
 {
     std::string tmp = buf;
     size_t pos = tmp.find("Content-Length: ");
@@ -77,8 +80,11 @@ int getRequestLenght(char *buf)
         t = t + tmp[pos];
         pos++;
     }
-    // printf("content-lenght:%d\n", std::atoi(t.c_str()));
-    return (std::atoi(t.c_str()));
+    // printf("{%lu}\n", std::strlen(t.c_str()));
+    printf("content-lenght:%s\n%lld\n", t.c_str(),strtoll(t.c_str(), NULL, std::strlen(t.c_str()) - 1));
+    // exit(1);
+    cl->contentLenght = strtoll(t.c_str(), NULL, std::strlen(t.c_str()));
+    // return (strtoll(t.c_str(), NULL, std::strlen(t.c_str()) - 1));
 }
 
 int getBody(char *buf)
@@ -98,7 +104,9 @@ int getBody(char *buf)
 int creatFile(int fd, char *buf, client *cl)
 {
     (void)fd;
-    cl->contentLenght =  getRequestLenght(buf);
+    // cl->contentLenght =  getRequestLenght(buf);
+    getRequestLenght(buf, cl);
+    printf("in cre:%lld\n",  cl->contentLenght);
     std::string tmp = "file";
     std::stringstream s;
     s << randomNum();
@@ -203,7 +211,8 @@ void multuplixing(conf* conf)
     std::vector <client> mycl;
     fd_set master_re, master_wr, read_fds, write_fds;    // master_re file descriptor list
     char buf[8000];    // buffer for client data
-    int maxfd, index = 0, s = 0, newFd, in = 0;
+    int maxfd, index = 0, newFd, in = 0;
+    long long s = 0;
     getSocket(conf);
     maxfd = maxFd(conf);
 
@@ -268,19 +277,19 @@ void multuplixing(conf* conf)
                         if (nbytes > 0){
                             // throw ("error in recv");
                         
-                        // std::cout << "1-------------------------------------\n" << buf <<"\n2----------------------------------\n";
-                        // std::cout << "s is " << s << " lenght is " << mycl[in-1].contentLenght << '\n';
+                        std::cout << "1-------------------------------------\n" << buf <<"\n2----------------------------------\n";
+                        std::cout << "s is " << s << " lenght is " << mycl[in-1].contentLenght << '\n';
                         if ( s >= mycl[in - 1].contentLenght){
                             printf("time to clear\n");
                             clearSets(&mycl[in - 1], i, &s, &index, &master_re, &master_wr);
                             }
                         }
-                        //working on request workREquest(buf);
+                        //working on request workRequest(buf);
                     }
                     if(FD_ISSET(i, &write_fds)){
                         // exit(1);
                         // printf("not new connection in write\n");
-                        send(i, "slm", 4, 0);
+                        send(i, "slma", 5, 0);
                         //send response
                         FD_CLR(i, &master_wr);
                         close (i);
