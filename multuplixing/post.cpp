@@ -47,9 +47,12 @@ void getRequestLenght(char *buf, client *cl) //get the request lenght of post so
         t = t + tmp[pos];
         pos++;
     }
+    if (std::atoi(t.c_str()) < 0)
+        cl->contentLenght = strtoll(t.c_str(), NULL, std::strlen(t.c_str()));
+    else
+        cl->contentLenght = std::atoi(t.c_str());
     printf("content-lenght:%s\n%lld\n", t.c_str(),strtoll(t.c_str(), NULL, std::strlen(t.c_str()) - 1));
     // exit(1);
-    cl->contentLenght = strtoll(t.c_str(), NULL, std::strlen(t.c_str()));
 }
 
 std::string getExtention(char *buf) //get the extention of what i receive (post)
