@@ -3,8 +3,8 @@
 client&	returnClient(std::map<int, client> mycl, int i)
 {
 	std::map<int, client>::iterator iter = mycl.lower_bound(i);
-    std::cout << "i is : | " << i << " | \n";
-    std::cout << "client fd : | " << iter->second.req.fd << " | \n";
+    // std::cout << "i is : | " << i << " | \n";
+    // std::cout << "client fd : | " << iter->second.req.fd << " | \n";
 	// iter->second.clientFd = this->currentFdToWorkWith;
 	// std::cout << "second fd : " << iter->second.clientFd << "\n";
 	// std::cout << "HELLLO : " << iter->second.stageForClient << std::endl;
@@ -48,7 +48,7 @@ void multuplixing(conf* conf)
                     tmp.req.track = 0;
                     tmp.req.first = 0;
                     tmp.req.fd = newFd;
-                    std::cout << "fd: " << tmp.req.fd << "\n";
+                    // std::cout << "fd: " << tmp.req.fd << "\n";
                     in++;
                     mycl.insert(std::pair<int, client>(newFd, tmp));
                     conf->vec.push_back(newFd);
@@ -61,12 +61,12 @@ void multuplixing(conf* conf)
                     if (FD_ISSET(i, &read_fds)){
                         // client client = returnClient(mycl, i);
                         std::map<int, client>::iterator iter = mycl.lower_bound(i);
-                        std::cout << "----------- : fd: | " << iter->second.req.fd << " |\n";
+                        // std::cout << "----------- : fd: | " << iter->second.req.fd << " |\n";
                         client client = iter->second;
 
-                        std::cout << "----------------| " << i << " |---------------\n";
-                        std::cout << "client fd is : ----------------| " << iter->second.req.fd << " |---------------\n";
-                        std::cout << "client length is : ----------------| " << iter->second.req.contentLenght << " |---------------\n";
+                        // std::cout << "----------------| " << i << " |---------------\n";
+                        // std::cout << "client fd is : ----------------| " << iter->second.req.fd << " |---------------\n";
+                        // std::cout << "client length is : ----------------| " << iter->second.req.contentLenght << " |---------------\n";
 
                         int nbytes = recv(i, iter->second.req.buff, sizeof(iter->second.req.buff), 0);
                         if (nbytes != 0 && iter->second.req.method <= 0)
@@ -77,30 +77,30 @@ void multuplixing(conf* conf)
                         // exit(1);
                         // std::cout << "after getting what methode..." << iter->second.req.post << "\n";
                         if (iter->second.req.post == 1){
-                            std::cout << "WARNING.............................POST\n";
-                            std::cout << "first: ------------| " << iter->second.req.first << " |\n";
+                            // std::cout << "WARNING.............................POST\n";
+                            // std::cout << "first: ------------| " << iter->second.req.first << " |\n";
                             int z = 0;
                             if (iter->second.req.first == 0){
-                                std::cout << "in create file\n";
+                                // std::cout << "in create file\n";
                                 // std::cout << "1-------------------------------------\n" << iter->second.req.buff <<"\n2----------------------------------\n";
                                 z = creatFile(i, iter->second.req.buff, &iter->second);
                                 iter->second.req.fileD.write(&iter->second.req.buff[z], nbytes - z);
                                 iter->second.req.track += nbytes;
-                                std::cout << "track is " << iter->second.req.track << " lenght is " << iter->second.req.contentLenght << "\n-------------out-------------\n";
+                                // std::cout << "track is " << iter->second.req.track << " lenght is " << iter->second.req.contentLenght << "\n-------------out-------------\n";
                             }
                             else{
-                                std::cout << "in write to file\n";
+                                // std::cout << "in write to file\n";
                                 iter->second.req.fileD.write(iter->second.req.buff, nbytes);
                                 iter->second.req.track += nbytes;
                             }
                             iter->second.req.first++;
                         }   
                         if (nbytes > 0){
-                            std::cout << "track is " << iter->second.req.track << " lenght is " << iter->second.req.contentLenght << '\n';
+                            // std::cout << "track is " << iter->second.req.track << " lenght is " << iter->second.req.contentLenght << '\n';
                             // std::map<int, client>::iterator mapIt = mycl.lower_bound(i);
                             // iter->second.req.contentLenght = iter->second.req.contentLenght;
                             // iter->second.req.track = iter->second.req.track;
-                            std::cout << "1-------------------------------------\n" << iter->second.req.buff <<"\n2----------------------------------\n";
+                            // std::cout << "1-------------------------------------\n" << iter->second.req.buff <<"\n2----------------------------------\n";
                             // usleep(100000);
                             if ( iter->second.req.track >= iter->second.req.contentLenght){
                                 printf("time to clear\n");
@@ -113,13 +113,13 @@ void multuplixing(conf* conf)
                         // std::map<int, client>::iterator iter = mycl.lower_bound(i);
                         // std::cout << "----------- : fd: | " << iter->second.fd << " |\n";
                         // client client = iter->second;
-                        std::cout << "in write : ----------------| " << i << " |---------------\n";
+                        // std::cout << "in write : ----------------| " << i << " |---------------\n";
                         // printf("not new connection in write\n");
 
-                        std::map<int, client>::iterator it;
-                        for (it = mycl.begin(); it != mycl.end(); ++it) {
-                            std::cout << "loop ----------------- : " << it->first << ": " << it->second.req.fd << std::endl;
-                        }
+                        // std::map<int, client>::iterator it;
+                        // for (it = mycl.begin(); it != mycl.end(); ++it) {
+                        //     std::cout << "loop ----------------- : " << it->first << ": " << it->second.req.fd << std::endl;
+                        // }
 
                         send(i, "slma", 5, 0);
                         //send response
@@ -127,10 +127,10 @@ void multuplixing(conf* conf)
                         close (i);
                         mycl.erase(i);
 
-                        std::map<int, client>::iterator iter;
-                        for (iter = mycl.begin(); iter != mycl.end(); ++iter) {
-                            std::cout << "loop ----------------- : " << iter->first << ": " << iter->second.req.fd << std::endl;
-                        }
+                        // std::map<int, client>::iterator iter;
+                        // for (iter = mycl.begin(); iter != mycl.end(); ++iter) {
+                        //     std::cout << "loop ----------------- : " << iter->first << ": " << iter->second.req.fd << std::endl;
+                        // }
 
                         conf->vec.erase(std::remove(conf->vec.begin(), conf->vec.end(), i));
                     }
