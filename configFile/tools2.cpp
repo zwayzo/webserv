@@ -259,9 +259,10 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
                 i += 3 ;
             }
             else
+            {
                 throw ("auto");
                 a++;
-            
+            }
         }
             i++;
     }
