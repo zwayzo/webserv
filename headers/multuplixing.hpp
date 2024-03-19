@@ -2,6 +2,7 @@
 #define MULTUPLIXING_HPP
 
 #include "parseRequest.hpp"
+#include "request.hpp"
 #include "header.hpp"
 #include"configFile.hpp"
 #include <iostream>
@@ -25,23 +26,12 @@
 
 class client{
     public:
-        client(int n) : fd(n) , fileIndex(0), post(0), contentLenght(0){};
-        client (){};
-        client (const client &copy)
-        {
-            // this->fd = copy.fd;
-            this->index = copy.index;
-            this->post = copy.post;
-            this->contentLenght = copy.contentLenght;
-        }
-        int fd;
-        std::string file;
-        int fileIndex;
-        int index;
-        int post;
-        long long contentLenght;
-        std::ofstream fileD;
-        int method;
+        request req;
+    public:
+        int     creatFile(int fd, char *buf);
+        void    getMethodes(std::string buf);
+
+
 };
 
 // std::vector <client> mycl;
@@ -49,6 +39,7 @@ class client{
 
 
 
+class request;
 class conf;
 void multuplixing (conf *conf);
 int randomNum(); //get rendom number to add it in file[number].extention (post method)
