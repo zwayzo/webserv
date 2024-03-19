@@ -1,6 +1,7 @@
 #ifndef MULTUPLIXING_HPP
 #define MULTUPLIXING_HPP
 
+#include "parseRequest.hpp"
 #include "header.hpp"
 #include"configFile.hpp"
 #include <iostream>

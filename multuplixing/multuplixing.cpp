@@ -1,4 +1,5 @@
 #include "../headers/multuplixing.hpp"
+#include "../headers/parseRequest.hpp"
 
 void multuplixing(conf* conf)
 {
@@ -16,13 +17,14 @@ void multuplixing(conf* conf)
     FD_ZERO(&write_fds);
     FD_ZERO(&read_fds); //clear the sets
     signal(SIGTSTP, handleCtrlZ);
+    printf("go..\n");
     for (int j = 0; j < conf->serversNumber; j++)
         FD_SET(conf->ser[j].sock, &master_re);
     for (;;)
     {
         read_fds =  master_re;
         write_fds =  master_wr;
-        printf("waiting...\n");
+        // printf("waiting...\n");
         if (select(maxfd + 1, &read_fds, &write_fds, NULL, NULL) == -1)
             throw ("ERROR IN SELECT");
         for (int i = 0; i <= maxfd; i++){
@@ -47,13 +49,17 @@ void multuplixing(conf* conf)
                 {
                     if (FD_ISSET(i, &read_fds)){
                         int nbytes = recv(i, buf, sizeof(buf), 0);
+                        if (nbytes > 0)
+                            parseHttpRequest(buf, nbytes);
+
+                        
                         if (nbytes != 0 && mycl[in -1].method <= 0)
                             getMethodes(buf, &mycl[in - 1]);
                         else if (nbytes == -1)
                             throw ("error in recv\n");
                         // std::cout << "after getting what methode..." << mycl[in - 1].post << "\n";
                         if (mycl[in - 1].post == 1){
-                            std::cout << "WARNING.............................POST\n";
+                            // std::cout << "WARNING.............................POST\n";
                             int z = 0;
                             if (index == 0){
                                 z = creatFile(i, buf, &mycl[in - 1]);
@@ -74,7 +80,12 @@ void multuplixing(conf* conf)
                             clearSets(&mycl[in - 1], i, &s, &index, &master_re, &master_wr);
                             }
                         }
+                        /*
+                        if (mycl[in -1].post == 0)
+                            workOnRequest(buf);
+                        */
                         //working on request workRequest(buf);
+                        // exit(1);
                     }
                     if(FD_ISSET(i, &write_fds)){
                         // printf("not new connection in write\n");

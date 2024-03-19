@@ -3,5 +3,6 @@
 
 #include "configFile.hpp"
 #include "multuplixing.hpp"
+#include"parseRequest.hpp"
 
 #endif
