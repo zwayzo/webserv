@@ -1,4 +1,4 @@
-#include "../headers/configFile.hpp"
+#include "configFile.hpp"
 
 void serverSize(std::string allIn, int indice, conf *conf)
 {

@@ -17,6 +17,7 @@
 #include <vector>
 #include <algorithm>
 #include <random>
+#include<string>
 #include <ctime>
 
 class request

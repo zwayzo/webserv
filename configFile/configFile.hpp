@@ -1,13 +1,12 @@
 #ifndef CONFIGFILE_HPP
 #define CONFIGFILE_HPP
 
-#include"multuplixing.hpp"
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <map>
-// #include <thread>
-// #include <chrono>
+#include <thread>
+#include <chrono>
 #include <cstdlib>
 #include <cstring>
 #include <sys/types.h>

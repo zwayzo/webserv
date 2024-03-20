@@ -1,4 +1,4 @@
-#include "../headers/configFile.hpp"
+#include "configFile.hpp"
 
 void checkComma(std::string mySer)
 {

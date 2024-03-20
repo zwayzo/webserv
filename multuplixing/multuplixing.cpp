@@ -1,11 +1,4 @@
-#include "../headers/multuplixing.hpp"
-#include "../headers/parseRequest.hpp"
-#include <algorithm>
-#include <cctype>
-#include <iostream>
-#include <map>
-#include <sstream>
-#include <string>
+#include "multuplixing.hpp"
 client&	returnClient(std::map<int, client> mycl, int i)
 {
 	std::map<int, client>::iterator iter = mycl.lower_bound(i);

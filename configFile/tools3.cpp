@@ -1,4 +1,4 @@
-#include "../headers/configFile.hpp"
+#include "configFile.hpp"
 
 
 int storeLocationValue(server &ser, int n, int number)

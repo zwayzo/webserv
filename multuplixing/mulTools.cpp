@@ -1,4 +1,4 @@
-#include "../headers/multuplixing.hpp"
+#include "multuplixing.hpp"
 
 int maxFd(conf* conf)
 {

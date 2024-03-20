@@ -1,11 +1,11 @@
-#include "../headers/multuplixing.hpp"
-#include "../headers/parseRequest.hpp"
-#include <algorithm>
-#include <cctype>
-#include <iostream>
-#include <map>
-#include <sstream>
-#include <string>
+// #include "../multuplixing/multuplixing.hpp"
+#include "parseRequest.hpp"
+// #include <algorithm>
+// #include <cctype>
+// #include <iostream>
+// #include <map>
+// #include <sstream>
+// #include <string>
 
 std::string toLower(const std::string& str) 
 {
