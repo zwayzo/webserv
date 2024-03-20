@@ -23,12 +23,56 @@
 #include <ctime>
 
 
+#include "parseRequest.hpp"
+#include "request.hpp"
+#include "header.hpp"
+#include"configFile.hpp"
+#include <iostream>
+#include <fstream>
+#include <cstring>
+#include <sstream>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <fcntl.h>
+#include <netdb.h>
+#include <cstdlib>
+#include <string>
+#include <csignal>
+#include <signal.h>
+#include <unistd.h>
+#include <vector>
+#include <algorithm>
+#include <random>
+#include <ctime>
+
+#include "parseRequest.hpp"
+#include "header.hpp"
+#include"configFile.hpp"
+#include <iostream>
+#include <fstream>
+#include <cstring>
+#include <sstream>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <fcntl.h>
+#include <netdb.h>
+#include <cstdlib>
+#include <string>
+#include <csignal>
+#include <signal.h>
+#include <unistd.h>
+#include <vector>
+#include <algorithm>
+#include <random>
+#include <ctime>
+
 class client{
     public:
         request req;
     public:
         int     creatFile(int fd, char *buf);
         void    getMethodes(std::string buf);
+        // deujks
 
 
 };

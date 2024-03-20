@@ -1,5 +1,11 @@
 #include "../headers/multuplixing.hpp"
-
+#include "../headers/parseRequest.hpp"
+#include <algorithm>
+#include <cctype>
+#include <iostream>
+#include <map>
+#include <sstream>
+#include <string>
 client&	returnClient(std::map<int, client> mycl, int i)
 {
 	std::map<int, client>::iterator iter = mycl.lower_bound(i);
@@ -69,10 +75,17 @@ void multuplixing(conf* conf)
                         // std::cout << "client length is : ----------------| " << iter->second.req.contentLenght << " |---------------\n";
 
                         int nbytes = recv(i, iter->second.req.buff, sizeof(iter->second.req.buff), 0);
+                         if (nbytes > 0)
+                            parseHttpRequest(iter->second.req.buff, nbytes);
+                        
+                        
+
                         if (nbytes != 0 && iter->second.req.method <= 0)
                             getMethodes(iter->second.req.buff, &iter->second);
                         else if (nbytes == -1)
                             throw ("error in recv\n");
+                            
+
                         // std::cout << iter->second.req.buff;
                         // exit(1);
                         // std::cout << "after getting what methode..." << iter->second.req.post << "\n";
