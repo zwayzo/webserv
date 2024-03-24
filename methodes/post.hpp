@@ -11,6 +11,7 @@ int creatFile(int fd, char *buf, client *cl); //creat the file (file+'random num
 void getRequestLenght(char *buf, client *cl); //get the request lenght of post so to know how many time i nead to read(post)
 std::string getExtention(char *buf); //get the extention of what i receive (post)
 int getBody(char *buf);//get the only the body to put it in file to get the (image video or whatever the client want to post) (post method)
+std::map<int, client>::iterator post(std::map<int, client>::iterator iter, int i, int nbytes);
 
 
 #endif

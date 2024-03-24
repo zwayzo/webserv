@@ -11,7 +11,7 @@ int maxFd(conf* conf)
     return tmp;
 
 }
-
+ 
 void handleCtrlZ(int signum)
 {
     (void )signum;
