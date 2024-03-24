@@ -1,4 +1,4 @@
-#include "../headers/multuplixing.hpp"
+#include "multuplixing.hpp"
 
 int maxFd(conf* conf)
 {
@@ -11,7 +11,7 @@ int maxFd(conf* conf)
     return tmp;
 
 }
-
+ 
 void handleCtrlZ(int signum)
 {
     (void )signum;

@@ -1,16 +1,16 @@
  GET simple : 
 
-curl http://localhost:8080/chemin/vers/ressource
+curl http://localhost:8888/chemin/vers/ressource
 
 
 GET avec des paramètres
 
-curl "http://localhost:8080/chemin/vers/ressource?param1=valeur1&param2=valeur2"
+curl "http://localhost:8888/chemin/vers/ressource?param1=valeur1&param2=valeur2"
 
 
  POST avec du contenu JSON
 
-curl -X POST http://localhost:8080/chemin/vers/ressource \
+curl -X POST http://localhost:8888/chemin/vers/ressource \
      -H "Content-Type: application/json" \
      -d '{"cle":"valeur","num":12345}'
 
