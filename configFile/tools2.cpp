@@ -1,4 +1,4 @@
-#include "../headers/configFile.hpp"
+#include "configFile.hpp"
 
 void serverSize(std::string allIn, int indice, conf *conf)
 {
@@ -259,9 +259,10 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
                 i += 3 ;
             }
             else
+            {
                 throw ("auto");
                 a++;
-            
+            }
         }
             i++;
     }

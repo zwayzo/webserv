@@ -1,15 +1,16 @@
-#include "../headers/multuplixing.hpp"
+#include "multuplixing.hpp"
+#include "socket.hpp"
 
 void clearSets(client *mycl, int i, long long *s, int *index, fd_set *master_re, fd_set *master_wr) //clear the sets and initialze some variables(select)
 {
-    if (mycl->post == 1)
-            mycl->fileD.close();
+    if (mycl->req.post == 1)
+            mycl->req.fileD.close();
     FD_CLR(i, master_re);
     FD_SET(i, master_wr);
     *s = 0;
     *index = 0;
-    mycl->post = 0;
-    mycl->method = 0;
+    mycl->req.post = 0;
+    mycl->req.method = 0;
 }
 
 
