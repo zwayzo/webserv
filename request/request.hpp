@@ -34,6 +34,7 @@ class request
         std::ofstream fileD;
         int method;
         long long track;
+
     public:
         request();
         request (const request &copy);

@@ -43,6 +43,7 @@ void multuplixing(conf* conf)
                     std::cout << "new connection\n";
                     // printf("accept...\n");
                     client tmp;
+                    attachClientServer(i, conf, &tmp);
                     tmp.req.index = in;
                     tmp.req.track = 0;
                     tmp.req.first = 0;
@@ -69,8 +70,8 @@ void multuplixing(conf* conf)
                         // std::cout << "client length is : ----------------| " << iter->second.req.contentLenght << " |---------------\n";
 
                         int nbytes = recv(i, iter->second.req.buff, sizeof(iter->second.req.buff), 0);
-                         if (nbytes > 0)
-                            parseHttpRequest(iter->second.req.buff, nbytes);
+                        //  if (nbytes > 0)
+                        //     parseHttpRequest(iter->second.req.buff, nbytes);
                         
     
 

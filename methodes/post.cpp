@@ -37,19 +37,36 @@ void getRequestLenght(char *buf, client *cl) //get the request lenght of post so
 std::map<int, client>::iterator post(std::map<int, client>::iterator iter, int i, int nbytes)
 {
     int z = 0;
+    /*
+    if (iter->second.req.first)
+        ifChucked()
+    if (iter->second.req.chuncked)
+        postIsChucked()
+    else {*/
     if (iter->second.req.first == 0){
         // std::cout << "in create file\n";
         // std::cout << "1-------------------------------------\n" << iter->second.req.buff <<"\n2----------------------------------\n";
         z = creatFile(i, iter->second.req.buff, &iter->second);
+        /*if (iter->second.req.chuncked = 1)
+        {
+
+        }
+        else{*/
         iter->second.req.fileD.write(&iter->second.req.buff[z], nbytes - z);
         iter->second.req.track += nbytes;
+        // }
         // std::cout << "track is " << iter->second.req.track << " lenght is " << iter->second.req.contentLenght << "\n-------------out-------------\n";
     }
+    // else if (iter->second.req.chuncked = 1)
+    // {
+    //     //
+    // }
     else{
         // std::cout << "in write to file\n";
         iter->second.req.fileD.write(iter->second.req.buff, nbytes);
         iter->second.req.track += nbytes;
     }
+    // }
     iter->second.req.first++;
     return (iter);
 }
