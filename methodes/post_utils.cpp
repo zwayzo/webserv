@@ -11,15 +11,15 @@ int creatFile(int fd, char *buf, client *cl) //creat the file (file+'random numb
     s << randomNum();
     tmp += s.str();
     tmp = cl->upload + '/' + tmp + '.' +  getExtention(buf);
+    std::cout << tmp << '\n';
+    // exit(1);
 
     cl->req.fileIndex = 1;
     cl->req.fileD.open(tmp.c_str(), std::ios::out);
     if (cl->req.fileD.is_open())
         std::cout << tmp << " has been created\n";
-    else{
-        std::cout << cl->upload; 
-        throw (" no such directory\n");
-    }
+    else 
+        throw ("file can't be open\n");
     // std::cout << "file name is " << tmp <<'\n';
     cl->req.file = tmp;
     return (getBody(buf));
