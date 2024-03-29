@@ -5,18 +5,21 @@ int creatFile(int fd, char *buf, client *cl) //creat the file (file+'random numb
 {
     (void)fd;
     getRequestLenght(buf, cl);
-    printf("in cre:%lld\n",  cl->req.contentLenght);
+    // printf("in cre:%lld\n",  cl->req.contentLenght);
     std::string tmp = "file";
     std::stringstream s;
     s << randomNum();
     tmp += s.str();
-    tmp +=  s.str() + '.' +  getExtention(buf);
+    tmp = cl->upload + '/' + tmp + '.' +  getExtention(buf);
+
     cl->req.fileIndex = 1;
     cl->req.fileD.open(tmp.c_str(), std::ios::out);
     if (cl->req.fileD.is_open())
         std::cout << tmp << " has been created\n";
-    else 
-        throw ("file can't be open\n");
+    else{
+        std::cout << cl->upload; 
+        throw (" no such directory\n");
+    }
     // std::cout << "file name is " << tmp <<'\n';
     cl->req.file = tmp;
     return (getBody(buf));

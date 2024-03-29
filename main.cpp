@@ -12,6 +12,7 @@ int main()
     {
         // std::cout << "enter\n";
         std::cout << x << '\n' << "errno set to " <<  strerror(errno) << '\n';
+        exit(1);
     }
     catch (...)
     {
