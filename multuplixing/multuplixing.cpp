@@ -62,7 +62,7 @@ void multuplixing(conf* conf)
                         int nbytes = recv(i, iter->second.req.buff, sizeof(iter->second.req.buff), 0);
                         //  if (nbytes > 0)
                         //     parseHttpRequest(iter->second.req.buff, nbytes);
-                        
+                        std::cout << iter->second.req.buff << '\n';
                         if (nbytes != 0 && iter->second.req.method <= 0 && iter->second.post)
                             getMethodes(iter->second.req.buff, &iter->second);
                         else if (nbytes == -1)
