@@ -43,13 +43,8 @@ void multuplixing(conf* conf)
                     std::cout << "new connection\n";
                     // printf("accept...\n");
                     client tmp;
-                    attachClientServer(i, conf, &tmp);
-                    tmp.req.index = in;
-                    tmp.req.track = 0;
-                    tmp.req.first = 0;
-                    tmp.req.contentLenght = 0;
-                    tmp.req.fd = newFd;
-                    // std::cout << "fd: " << tmp.req.fd << "\n";
+                    tmp =  attachClientServer(i, conf, tmp, in, newFd);
+                    std::cout << "up: " << tmp.upload << "\n";
                     in++;
                     mycl.insert(std::pair<int, client>(newFd, tmp));
                     conf->vec.push_back(newFd);
@@ -60,35 +55,20 @@ void multuplixing(conf* conf)
                 else
                 {
                     if (FD_ISSET(i, &read_fds)){
-                        // client client = returnClient(mycl, i);
                         std::map<int, client>::iterator iter = mycl.lower_bound(i);
-                        // std::cout << "----------- : fd: | " << iter->second.req.fd << " |\n";
                         client client = iter->second;
-
-                        // std::cout << "----------------| " << i << " |---------------\n";
-                        // std::cout << "client fd is : ----------------| " << iter->second.req.fd << " |---------------\n";
-                        // std::cout << "client length is : ----------------| " << iter->second.req.contentLenght << " |---------------\n";
+                        std::cout << "client upload is : ----------------| " << iter->second.post << " |---------------\n";
 
                         int nbytes = recv(i, iter->second.req.buff, sizeof(iter->second.req.buff), 0);
                         //  if (nbytes > 0)
                         //     parseHttpRequest(iter->second.req.buff, nbytes);
                         
-    
-
-                        if (nbytes != 0 && iter->second.req.method <= 0)
+                        if (nbytes != 0 && iter->second.req.method <= 0 && iter->second.post)
                             getMethodes(iter->second.req.buff, &iter->second);
                         else if (nbytes == -1)
                             throw ("error in recv\n");
-                            
-                        // std::cout << "after getting what methode..." << iter->second.req.post << "\n";
                         if (iter->second.req.post == 1)
                             post(iter, i, nbytes);
-                        // printf("2\n");
-                        // std::cout << iter->second.req.track << '\n';
-                        // std::cout << iter->second.req.contentLenght << '\n';
-                        // std::cout << nbytes << '\n';
-                        
-                        // usleep(100000);
                         if (nbytes > 0){
                             if (iter->second.req.track >= iter->second.req.contentLenght){
                                 printf("time to clear\n");

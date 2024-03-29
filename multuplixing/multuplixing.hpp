@@ -29,6 +29,6 @@ void multuplixing (conf *conf);
 void getMethodes(std::string buf, client *cl); //check if the method is post to work with
 void handleCtrlZ(int signum);
 int maxFd(conf* conf);
-void attachClientServer(int i, conf *conf, client *tmp);
+client attachClientServer(int i, conf *conf, client tmp, int in, int newFd);
 
 #endif

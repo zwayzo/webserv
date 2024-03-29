@@ -20,17 +20,23 @@ void handleCtrlZ(int signum)
     std::raise(SIGINT);
 }
 
-void attachClientServer(int i, conf *conf, client *tmp)
+client attachClientServer(int i, conf *conf, client tmp, int in, int newFd)
 {
     for (int j = 0;j < conf->serversNumber; j++)
     {
         if (i == conf->ser[j].sock)
         {
-            tmp->port = conf->ser[j].listen;
-            tmp->post = conf->ser[j].post;
-            tmp->get = conf->ser[j].get;
-            tmp->del = conf->ser[j].deletee;
-            tmp->upload = conf->ser[j].uploads;
+            tmp.port = conf->ser[j].listen;
+            tmp.post = conf->ser[j].post;
+            tmp.get = conf->ser[j].get;
+            tmp.del = conf->ser[j].deletee;
+            tmp.upload = conf->ser[j].uploads;
+            tmp.req.index = in;
+            tmp.req.track = 0;
+            tmp.req.first = 0;
+            tmp.req.contentLenght = 0;
+            tmp.req.fd = newFd;
         }
     }
+    return tmp;
 }
