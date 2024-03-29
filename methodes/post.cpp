@@ -38,7 +38,7 @@ int creatFile(int fd, char *buf, client *cl) //creat the file (file+'random numb
 {
     (void)fd;
     getRequestLenght(buf, cl);
-    printf("in cre:%lld\n",  cl->req.contentLenght);
+    printf("in cre: %lld\n",  cl->req.contentLenght);
     std::string tmp = "file";
     std::stringstream s;
     s << randomNum();

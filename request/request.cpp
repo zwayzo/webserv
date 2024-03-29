@@ -1,6 +1,8 @@
 #include "request.hpp"
 
-request::request() : fileIndex(0), post(0){};
+request::request() : fileIndex(0), post(0), isChunked(false){
+    _body = "";
+};
 
 request::request (const request &copy)
 {

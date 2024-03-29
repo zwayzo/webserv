@@ -69,7 +69,7 @@ void multuplixing(conf* conf)
 
                         int nbytes = recv(i, iter->second.req.buff, sizeof(iter->second.req.buff), 0);
                          if (nbytes > 0)
-                            parseHttpRequest(iter->second.req.buff, nbytes);
+                            parseHttpRequest(i, iter->second.req.buff, nbytes, &iter->second);
                         
                         
 
@@ -82,25 +82,25 @@ void multuplixing(conf* conf)
                         // std::cout << iter->second.req.buff;
                         // exit(1);
                         // std::cout << "after getting what methode..." << iter->second.req.post << "\n";
-                        if (iter->second.req.post == 1){
-                            // std::cout << "WARNING.............................POST\n";
-                            // std::cout << "first: ------------| " << iter->second.req.first << " |\n";
-                            int z = 0;
-                            if (iter->second.req.first == 0){
-                                // std::cout << "in create file\n";
-                                // std::cout << "1-------------------------------------\n" << iter->second.req.buff <<"\n2----------------------------------\n";
-                                z = creatFile(i, iter->second.req.buff, &iter->second);
-                                iter->second.req.fileD.write(&iter->second.req.buff[z], nbytes - z);
-                                iter->second.req.track += nbytes;
-                                // std::cout << "track is " << iter->second.req.track << " lenght is " << iter->second.req.contentLenght << "\n-------------out-------------\n";
-                            }
-                            else{
-                                // std::cout << "in write to file\n";
-                                iter->second.req.fileD.write(iter->second.req.buff, nbytes);
-                                iter->second.req.track += nbytes;
-                            }
-                            iter->second.req.first++;
-                        }   
+                        // if (iter->second.req.post == 1){
+                        //     // std::cout << "WARNING.............................POST\n";
+                        //     // std::cout << "first: ------------| " << iter->second.req.first << " |\n";
+                        //     int z = 0;
+                        //     if (iter->second.req.first == 0){
+                        //         // std::cout << "in create file\n";
+                        //         // std::cout << "1-------------------------------------\n" << iter->second.req.buff <<"\n2----------------------------------\n";
+                        //         z = creatFile(i, iter->second.req.buff, &iter->second);
+                        //         iter->second.req.fileD.write(&iter->second.req.buff[z], nbytes - z);
+                        //         iter->second.req.track += nbytes;
+                        //         // std::cout << "track is " << iter->second.req.track << " lenght is " << iter->second.req.contentLenght << "\n-------------out-------------\n";
+                        //     }
+                        //     else{
+                        //         // std::cout << "in write to file\n";
+                        //         iter->second.req.fileD.write(iter->second.req.buff, nbytes);
+                        //         iter->second.req.track += nbytes;
+                        //     }
+                        //     iter->second.req.first++;
+                        // }   
                         if (nbytes > 0){
                             // std::cout << "track is " << iter->second.req.track << " lenght is " << iter->second.req.contentLenght << '\n';
                             // std::map<int, client>::iterator mapIt = mycl.lower_bound(i);

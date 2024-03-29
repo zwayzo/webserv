@@ -23,21 +23,23 @@
 class request
 {
     public:
-        int fd;
-        std::string file;
-        int fileIndex;
-        int index;
-        int post;
-        int first;
-        long long contentLenght;
-        char buff[1024];
-        std::ofstream fileD;
-        int method;
-        long long track;
+        int				fd;
+        std::string		file;
+        int				fileIndex;
+        int				index;
+        int				post;
+        int				first;
+        long long		contentLenght;
+        char			buff[1024];
+        std::ofstream	fileD;
+        int				method;
+        long long		track;
+        bool			isChunked;
+		std::string 	_body;
     public:
         request();
         request (const request &copy);
-        request& operator=(const request &copy);
+        request& operator=(const request &copy); 
 };
 
 #endif
