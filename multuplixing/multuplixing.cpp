@@ -8,7 +8,7 @@ client&	returnClient(std::map<int, client> mycl, int i)
 	// std::cout << "second fd : " << iter->second.clientFd << "\n";
 	// std::cout << "HELLLO : " << iter->second.stageForClient << std::endl;
 	return (iter->second);
-}
+} 
 
 void multuplixing(conf* conf)
 {

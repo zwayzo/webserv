@@ -8,7 +8,7 @@ int randomNum() //get rendom number to add it in file[number].extention (post me
     // Generate a random number between 1 and 1000
     return ((std::rand() % 1000) + 1);
     
-}
+} 
 
 void getMethodes(std::string buf, client *cl) //check if the method is post to work with
 {
@@ -16,7 +16,7 @@ void getMethodes(std::string buf, client *cl) //check if the method is post to w
     if (std::strncmp(buf.c_str(), "POST", 4) == 0)
         cl->req.post = 1;
 }
-
+ 
 void getRequestLenght(char *buf, client *cl) //get the request lenght of post so to know how many time i nead to read(post)
 {
     std::string tmp = buf;
