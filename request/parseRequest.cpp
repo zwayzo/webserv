@@ -20,11 +20,12 @@ void parseHttpRequest(int fd, const char* buf, int nbytes, client *cl)
     std::string line;
     std::string headersPart;
 
-    {//print the header request telle quelle est la premiere fois 
-        std::istringstream req1(request);
-        std::string line1;
-        while (std::getline(req1, line1))
-            std::cout << line1 << std::endl;}
+    // {//print the header request telle quelle est la premiere fois 
+    //     std::istringstream req1(request);
+    //     std::string line1;
+    //     while (std::getline(req1, line1))
+    //         std::cout << line1 << std::endl;
+    // }
 
     std::getline(requestStream, requestLine);
     httpRequest.request(requestLine);
@@ -36,15 +37,17 @@ void parseHttpRequest(int fd, const char* buf, int nbytes, client *cl)
 
     httpRequest.parseHeaders(headersPart);
 
-    std::getline(requestStream, requestLine);
-    while (getline(requestStream, requestLine));
-        cl->req._body+= requestLine;
+    size_t  headerLength = 0;
+    std::istringstream _req;
+    _req.write(buf, nbytes);
+    headerLength = _req.str().find("\r\n\r\n");
     int contentLength = 0;
-    if (httpRequest.is_body(contentLength, cl))
+    if (headerLength != std::string::npos && !cl->req._firstCheck)
     {
+		if (httpRequest.is_body(contentLength, cl))
         if (cl->req.isChunked)
         {   
-            std::cout << "isChunked" << std::endl;
+            if (_req.str().find("\r\n0\r\n\r\n", ))
             _getChunkedBody(fd, buf, cl);
            //hna fen hadi nhanlder CHunked;
         } 

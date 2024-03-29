@@ -68,15 +68,19 @@ void multuplixing(conf* conf)
                         // std::cout << "client length is : ----------------| " << iter->second.req.contentLenght << " |---------------\n";
 
                         int nbytes = recv(i, iter->second.req.buff, sizeof(iter->second.req.buff), 0);
-                         if (nbytes > 0)
-                            parseHttpRequest(i, iter->second.req.buff, nbytes, &iter->second);
-                        
+                        if (nbytes == -1)
+                            throw ("Error: recv failed\n");
+                        else if (nbytes == 0) {
+                            std::cout << "disconnected" << std::endl;
+                            return ;
+                        }
+						iter->second.req.buff[nbytes] = '\0';
+						parseHttpRequest(i, iter->second.req.buff, nbytes, &iter->second);
                         
 
                         if (nbytes != 0 && iter->second.req.method <= 0)
                             getMethodes(iter->second.req.buff, &iter->second);
-                        else if (nbytes == -1)
-                            throw ("error in recv\n");
+                        
                             
 
                         // std::cout << iter->second.req.buff;

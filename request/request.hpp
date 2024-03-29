@@ -34,6 +34,8 @@ class request
         std::ofstream	fileD;
         int				method;
         long long		track;
+
+        bool            _firstCheck;
         bool			isChunked;
 		std::string 	_body;
     public:

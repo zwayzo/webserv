@@ -2,6 +2,7 @@
 
 request::request() : fileIndex(0), post(0), isChunked(false){
     _body = "";
+    _firstCheck = false;
 };
 
 request::request (const request &copy)
