@@ -8,7 +8,7 @@ client&	returnClient(std::map<int, client> mycl, int i)
 	// std::cout << "second fd : " << iter->second.clientFd << "\n";
 	// std::cout << "HELLLO : " << iter->second.stageForClient << std::endl;
 	return (iter->second);
-}
+} 
 
 void multuplixing(conf* conf)
 {
@@ -63,6 +63,7 @@ void multuplixing(conf* conf)
                         //  if (nbytes > 0)
                         //     parseHttpRequest(iter->second.req.buff, nbytes);
                         
+                        std::cout << iter->second.req.buff << '\n';
                         if (nbytes != 0 && iter->second.req.method <= 0 && iter->second.post)
                             getMethodes(iter->second.req.buff, &iter->second);
                         else if (nbytes == -1)

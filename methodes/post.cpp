@@ -8,7 +8,7 @@ int randomNum() //get rendom number to add it in file[number].extention (post me
     // Generate a random number between 1 and 1000
     return ((std::rand() % 1000) + 1);
     
-}
+} 
 
 void getMethodes(std::string buf, client *cl) //check if the method is post to work with
 {
@@ -19,13 +19,14 @@ void getMethodes(std::string buf, client *cl) //check if the method is post to w
     if (std::strncmp(buf.c_str(), "POST", 4) == 0)
         cl->req.post = 1;
 }
-
+ 
 void getRequestLenght(char *buf, client *cl) //get the request lenght of post so to know how many time i nead to read(post)
 {
     std::string tmp = buf;
     size_t pos = tmp.find("Content-Length: ");
     std::string t;
     pos += 16;
+    if (pos != 15){
     while (tmp[pos] != '\n'){
         t = t + tmp[pos];
         pos++;
@@ -34,7 +35,8 @@ void getRequestLenght(char *buf, client *cl) //get the request lenght of post so
         cl->req.contentLenght = strtoll(t.c_str(), NULL, std::strlen(t.c_str()));
     else
         cl->req.contentLenght = std::atoi(t.c_str());
-    // std::cout << "contentLenght: ----------------| " << cl->req.contentLenght << " |\n";
+    }
+    std::cout << "contentLenght: ----------------| " << cl->req.contentLenght << " |\n";
 }
 
 std::map<int, client>::iterator post(std::map<int, client>::iterator iter, int i, int nbytes)
