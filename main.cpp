@@ -1,24 +1,32 @@
 #include "headers/header.hpp"
 
-int main()
+int main(int ac, char **av)
 {
+    if (ac > 2) {
+        std::cerr << "Error: wrong nbr of arguments!" << std::endl;
+        return 1;
+    }
+    std::string conFile;
+    if (ac == 2)
+        conFile = av[1];
+    else
+        conFile = "configFile.conf";
+
     conf *config = new conf;
     try{
-        config = fileConfiguration(config, "configFile.conf");
+        config = fileConfiguration(config, conFile);
         multuplixing(config);
 
-    }
-    catch (const char *x)
-    {
+    } catch (const char *x) {
         // std::cout << "enter\n";
         std::cout << x << '\n' << "errno set to " <<  strerror(errno) << '\n';
         exit(1);
-    }
-    catch (...)
-    {
+    } catch (...) {
         std::cout << "unhandled exception...!\n";
     }
     for (int i = 0;i < config->serversNumber; i++)
         delete config->ser[i].info;
     delete (config);
+
+    return 0;
 }

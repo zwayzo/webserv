@@ -26,6 +26,7 @@ class infos{
         std::map<std::string, std::string> errorPage;
         std::map<std::string, std::string> methodes;
         std::map<std::string, std::string> redirection;
+        std::map<std::string, std::string> uploads;
 };
 
 class location{
@@ -59,36 +60,49 @@ class location{
         std::string theLoc;
         std::string root;
         std::string redirection;
+        std::string uploads;
 };
 
 class server{
     public:
+        server();
         server(int n) : number(n){};
         // server(u)
         int socketAddr;
         int sock;
         int listen_fd;
         int listen;
+        int listen_number;
         int post;
         int get;
         int deletee;
         int autoindex;
+        int autoindex_number;
         int max_size;
+        int max_size_number;
         int number;
         int size;
         int wor;
         int locationsNumber;
+        int methodes_number;
         
         int begin;
         int close;
 
         // std::string ip;
         std::string index;
+        int index_number;
         std::string error_page;
+        int error_page_number;
         std::string name;
+        int name_number;
         std::string mySer;
         std::string redirection;
+        int redirection_number;
         std::string root;
+        int root_number;
+        std::string uploads;
+        int uploads_number;
 
         std::vector<location> loc;
         infos *info;
@@ -124,7 +138,7 @@ void serverSize(std::string allIn, int indice, conf *conf);
 int locationsNumbers(std::string mySer);
 std::string getTheFileInOneString(std::string file);
 int file_size(std::string file);
-
-
+void checkConfigFileRules(server &ser);
+void init_variables(server &ser);
 
 #endif

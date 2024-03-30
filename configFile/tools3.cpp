@@ -119,7 +119,8 @@ void checkPrototype(server &ser)
         if (std::strncmp("name", &ser.mySer[i],  n) && std::strncmp("listen", &ser.mySer[i], n) && std::strncmp("root", &ser.mySer[i], n)
         && std::strncmp("error_page", &ser.mySer[i], n) && std::strncmp("max_body", &ser.mySer[i], n) && std::strncmp("location", &ser.mySer[i], n)
         && std::strncmp("index", &ser.mySer[i], n) && std::strncmp("methodes", &ser.mySer[i], n) && std::strncmp("redirection", &ser.mySer[i], n)
-        && std::strncmp("server", &ser.mySer[i], n) && std::strncmp("}", &ser.mySer[i], n) && std::strncmp("autoindex", &ser.mySer[i], n))
+        && std::strncmp("server", &ser.mySer[i], n) && std::strncmp("}", &ser.mySer[i], n) && std::strncmp("autoindex", &ser.mySer[i], n)
+        && std::strncmp("uploads", &ser.mySer[i], n))
             throw ("error in prototype\n");
         while (ser.mySer[j] != '\n' &&  ser.mySer[j])
             j++;
@@ -162,4 +163,29 @@ std::string getTheFileInOneString(std::string file)
     allIn.push_back('\n');
     return allIn;
     
+}
+
+void checkConfigFileRules(server &ser)
+{
+    printf("%d\n", ser.index_number);
+    if (ser.index_number != 1)
+        throw ("eroor in index number");
+    if (!ser.error_page_number)
+        throw ("eroor in eroor_page numbers");
+    if (ser.name_number != 1)
+        throw ("eroor in server name");
+    if (ser.redirection_number != 1)
+        throw ("eroor in redirection number");
+    if (ser.root_number != 1)
+        throw ("eroor in root number");
+    if (ser.uploads_number != 1)
+        throw ("eroor in uploads_number number");
+    if (ser.listen_number != 1)
+        throw ("eroor in listen number");
+    if (ser.autoindex_number != 1)
+        throw ("eroor in autoindex_number");
+    if (ser.max_size_number != 1)
+        throw ("eroor in max_size number");
+    if (ser.methodes_number != 1)
+        throw ("eroor in methodes number");
 }

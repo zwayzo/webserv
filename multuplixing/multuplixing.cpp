@@ -56,20 +56,20 @@ void multuplixing(conf* conf)
                 {
                     if (FD_ISSET(i, &read_fds)){
                         std::map<int, client>::iterator iter = mycl.lower_bound(i);
-                        client client = iter->second;
-                        std::cout << "client upload is : ----------------| " << iter->second.post << " |---------------\n";
+                        client cl = iter->second;
+                        std::cout << "client upload is : ----------------| " << cl.post << " |---------------\n";
 
-                        int nbytes = recv(i, iter->second.req.buff, sizeof(iter->second.req.buff), 0);
+                        int nbytes = recv(i, cl.req.buff, sizeof(cl.req.buff), 0);
                         if (nbytes == -1)
                             throw ("Error: recv failed\n");
-                        else if (nbytes == 0) {
-                            std::cout << "Disconnected" << std::endl;
+						else if (nbytes == 0) {
+							std::cout << "Disconnected" << std::endl;
                             return ;
                         }
-						iter->second.req.buff[nbytes] = '\0';
-						parseHttpRequest(iter->second.req.buff, nbytes, iter);
-                        
-                        std::cout << iter->second.req.buff << '\n';
+						cl.req.buff[nbytes] = '\0';
+						cl.httpRequest.parseHttpRequest(cl.req.buff, nbytes, &cl);
+						
+                        std::cout << cl.httpRequest._request << '\n';
                         if (nbytes != 0 && iter->second.req.method <= 0 && iter->second.post)
                             getMethodes(iter->second.req.buff, &iter->second);
                         // if (iter->second.req.post == 1)

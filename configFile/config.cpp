@@ -67,10 +67,7 @@ conf* fileConfiguration(conf *conf, std::string file)
         serverSize(conf->allIn, j, conf);
         stockserver(conf->allIn, conf, j);
         checkAcollade(conf->ser[j]);
-        conf->ser[j].get = 0;
-        conf->ser[j].deletee = 0;
-        conf->ser[j].post = 0;
-        conf->ser[j].autoindex = 2;
+        init_variables(conf->ser[j]);
         conf->ser[j].locationsNumber = locationsNumbers(conf->ser[j].mySer);
         conf->ser[j].loc.reserve(conf->ser[j].locationsNumber);
         stockLocation(conf, j);
@@ -78,8 +75,10 @@ conf* fileConfiguration(conf *conf, std::string file)
         wordCounter(conf->ser[j]);
         conf->ser[j].info = new infos;
         conf->ser[j].info = checkValue(conf->ser[j].mySer, conf->ser[j].info, conf->ser[j]);
-        // printArguments(conf->ser[j].info, conf->ser[j].locationsNumber, conf->ser[j]);
+        checkConfigFileRules(conf->ser[j]);
+        printArguments(conf->ser[j].info, conf->ser[j].locationsNumber, conf->ser[j]);
+        printf("\n-------------------------------------------------------------------\n");
     }
-        // exit(1);
+    // exit(1);
     return (conf);
 }

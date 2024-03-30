@@ -3,10 +3,12 @@
 
 #include "../headers/header.hpp"
 #include "../request/request.hpp"
+#include "../request/parseRequest.hpp"
 
 class client{
     public:
         request req;
+        HttpRequest httpRequest;
         int port;
         int post;
         int get;

@@ -59,6 +59,9 @@ void printArguments(infos *info, int n, server &ser)
     for (std::map<std::string, std::string>::iterator it = info->root.begin(); it != info->root.end(); ++it)
         std::cout << "Key: " << it->first << ", Value: " << it->second << std::endl;
 
+    for (std::map<std::string, std::string>::iterator it = info->uploads.begin(); it != info->uploads.end(); ++it)
+        std::cout << "Key: " << it->first << ", Value: " << it->second << std::endl;
+    
     for (std::map<std::string, std::string>::iterator it = info->Index.begin(); it != info->Index.end(); ++it)
         std::cout << "Key: " << it->first << ", Value: " << it->second << std::endl;
 
@@ -79,6 +82,7 @@ void printArguments(infos *info, int n, server &ser)
     std::cout << "redirection:" << ser.redirection << '\n';
     std::cout << "name:" << ser.name << '\n';
     std::cout << "auto:" << ser.autoindex << '\n';
+    std::cout << "uploads:" << ser.uploads << '\n';
 
 
     for (int j = 0;j < n; j++)
@@ -111,4 +115,23 @@ void getBegin(int indice, conf *conf, std::string allIn)
         conf->ser[indice].begin = n;
     else
         conf->ser[indice].begin = n + 1;
+}
+
+void init_variables(server &ser)
+{
+    ser.autoindex_number = 0;
+    ser.error_page_number = 0;
+    ser.index_number = 0;
+    ser.listen_number = 0;
+    ser.max_size_number = 0;
+    ser.methodes_number = 0;
+    ser.name_number = 0;
+    ser.redirection_number = 0;
+    ser.root_number = 0;
+    ser.uploads_number = 0;
+    ser.get = 0;
+    ser.deletee = 0;
+    ser.post = 0;
+    ser.autoindex = 2;
+    
 }

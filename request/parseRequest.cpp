@@ -1,6 +1,11 @@
 #include "parseRequest.hpp"
 
-HttpRequest::HttpRequest() : _request("") {}
+HttpRequest::HttpRequest() :
+	_request(""),
+	isChunked(false), _body(""), _bodySize(0),
+	_serv(),
+	_servers() {
+}
 
 std::string toLower(const std::string& str) 
 {
@@ -9,40 +14,37 @@ std::string toLower(const std::string& str)
                    static_cast<int(*)(int)>(std::tolower));
     return lowerStr;
 }
-// bach ila kan edna chi body dakh b Maj n7awloh l miniscule bach mnin nbghiw n comparew mal9awch probleme
 
-
-void parseHttpRequest(const char* buf, int nbytes, std::map<int, client>::iterator iter)
+void HttpRequest::parseHttpRequest(const char* buf, int nbytes, client *cl)
 {
-    HttpRequest 		httpRequest;
-    _request(buf, nbytes);
-    std::istringstream	requestStream(_request);
-    std::string 		requestLine;
+    // HttpRequest 		httpRequest;
+	this->_request(buf, nbytes);
+    std::istringstream	requestStream(this->_request);
+    std::string 		reqLine;
     std::string	line;
     std::string headersPart;
 
     // {//print the header request telle quelle est la premiere fois 
-    //     std::istringstream req1(request);
+    //     std::istringstream req1(this->_request);
     //     std::string line1;
     //     while (std::getline(req1, line1))
     //         std::cout << line1 << std::endl;
     // }
 
-    std::getline(requestStream, requestLine);
-    httpRequest.request(requestLine);
-
-    httpRequest.parseRequestLine(requestLine); 
+    std::getline(requestStream, reqLine);
+    parseRequestLine(reqLine);
+    parseURI();
 
     while (std::getline(requestStream, line) && !line.empty() && line != "\r")
         headersPart += line + "\n";
-
-    httpRequest.parseHeaders(headersPart);
+	parseHeaders(headersPart);
 
 	std::streampos endHdrPos = requestStream.tellg();
 	size_t bodypos = static_cast<size_t>(endHdrPos);
 	std::cout << "Pos aprs Header: " << bodypos << std::endl;
 
-	parseBody(bodypos, &iter->second);
+	// this->_port = cl->port;
+	parseBody(bodypos, cl);
     
     // std::cout << "Method: " << httpRequest.method << std::endl;
     // std::cout << "URI: " << httpRequest.uri << std::endl;
@@ -51,30 +53,26 @@ void parseHttpRequest(const char* buf, int nbytes, std::map<int, client>::iterat
     // httpRequest.printHeaders();
 }
 
-void HttpRequest::request(const std::string& requestLine) 
+void HttpRequest::parseRequestLine(const std::string& reqLine) 
 {
-    std::istringstream iss(requestLine);
-    std::getline(iss, method, ' ');
-    method = toLower(method);
-    std::getline(iss, uri, ' ');
+    std::istringstream iss(reqLine);
+    std::getline(iss, _method, ' ');
+    _method = toLower(_method);
+    std::getline(iss, _uri, ' ');
     std::getline(iss, httpVersion);
 }
 
-
-void HttpRequest::parseRequestLine(const std::string& requestLine) 
+void HttpRequest::parseURI(void) 
 {
-    (void)requestLine;
-    std::size_t questionMarkPos = uri.find('?');
+    std::size_t questionMarkPos = _uri.find('?');
     if (questionMarkPos != std::string::npos) 
     {
-        queryString = uri.substr(questionMarkPos + 1);
-        uri = uri.substr(0, questionMarkPos);
+        queryString = _uri.substr(questionMarkPos + 1);
+		_uri = _uri.substr(0, questionMarkPos);
     } 
     else
         queryString.clear();
 }
-
-
 
 void HttpRequest::parseHeaders(const std::string& headersPart)
 {
