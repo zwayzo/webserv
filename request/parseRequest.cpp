@@ -2,7 +2,10 @@
 
 HttpRequest::HttpRequest() :
 	_request(""),
+	_method(""),
+	_uri(""),
 	isChunked(false), _body(""), _bodySize(0),
+	_statusCode(0);
 	_serv(),
 	_servers() {
 }
@@ -33,18 +36,24 @@ void HttpRequest::parseHttpRequest(const char* buf, int nbytes, client *cl)
 
     std::getline(requestStream, reqLine);
     parseRequestLine(reqLine);
-    parseURI();
+	if (this->_statusCode != 400)
+	{
+		parseURI();
+		if (this->_statusCode != 403)
+		{
+			while (std::getline(requestStream, line) && !line.empty() && line != "\r")
+				headersPart += line + "\n";
+			parseHeaders(headersPart);
 
-    while (std::getline(requestStream, line) && !line.empty() && line != "\r")
-        headersPart += line + "\n";
-	parseHeaders(headersPart);
+			std::streampos endHdrPos = requestStream.tellg();
+			size_t bodypos = static_cast<size_t>(endHdrPos);
+			std::cout << "Pos aprs Header: " << bodypos << std::endl;
 
-	std::streampos endHdrPos = requestStream.tellg();
-	size_t bodypos = static_cast<size_t>(endHdrPos);
-	std::cout << "Pos aprs Header: " << bodypos << std::endl;
-
-	// this->_port = cl->port;
-	parseBody(bodypos, cl);
+			// this->_port = cl->port;
+			parseBody(bodypos, cl);
+			//shouldHandleDelete
+		}
+	}
     
     // std::cout << "Method: " << httpRequest.method << std::endl;
     // std::cout << "URI: " << httpRequest.uri << std::endl;
@@ -57,6 +66,9 @@ void HttpRequest::parseRequestLine(const std::string& reqLine)
 {
     std::istringstream iss(reqLine);
     std::getline(iss, _method, ' ');
+    if (_method != "POST" && _method !="GET" && _method != "DELETE")
+		this->_statusCode = 400; /*bad Request {malformed request syntax,
+		invalid request message framing, or deceptive request routing*/
     _method = toLower(_method);
     std::getline(iss, _uri, ' ');
     std::getline(iss, httpVersion);
@@ -72,6 +84,8 @@ void HttpRequest::parseURI(void)
     } 
     else
         queryString.clear();
+	if (_uri.find("..") != std::string::npos)
+		this->_statusCode = 403; //403 Forbidden: Accès interdit. Traversée de répertoire non autorisée.
 }
 
 void HttpRequest::parseHeaders(const std::string& headersPart)

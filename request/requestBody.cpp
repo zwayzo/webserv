@@ -25,7 +25,8 @@ void	HttpRequest::parseBody(size_t &bodypos, client *cl) {
 					&& this->_uri.find(".rb") == std::string::npos) {
 						if (_methodExist()) {
 							std::string	file = _randomName();
-							std::string	upload = _findUploadPath();
+							std::string	uploadPath = _findUploadPath();
+							_creatFile(uploadPath + file, this->_body)
 							//should check if the _method is within the allowed method in the conf file
 							//should check the uri and location
 							//should generate a random file name and find the uploadPath
@@ -53,17 +54,16 @@ void	HttpRequest::parseBody(size_t &bodypos, client *cl) {
 
 bool HttpRequest::is_body(int& contentLength, client *cl)
 {
-    contentLength = 0;
-    std::string transfer_encod("Transfer-Encoding");
+	contentLength = 0;
+	std::string transfer_encod("Transfer-Encoding");
 
-        //kan9lab ela encoding morceau b morceau 
-    if (headers.find("Transfer-Encoding") != headers.end() \
+	if (headers.find("Transfer-Encoding") != headers.end() \
 		&& headers[transfer_encod].find("chunked") != std::string::npos) {
-        this->isChunked = true;
-        return true;
-    }
-    if (toLower(this->_method) == "post")
-        return true;
+		this->isChunked = true;
+		return true;
+	}
+	if (toLower(this->_method) == "post")
+		return true;
 
     //find contenu dial content-lenght
     // std::map<std::string, std::string>::const_iterator it = headers.find("Content-Length");
@@ -72,7 +72,7 @@ bool HttpRequest::is_body(int& contentLength, client *cl)
     //     contentLength = atoi(it->second.c_str());
     //     return true; // true l9inaah
     // }
-    return false; //ayaetina makaynch body but we should first check l function li qade loujdi hit howa li mqade contentlenght
+	return false; //ayaetina makaynch body but we should first check l function li qade loujdi hit howa li mqade contentlenght
 }
 
 void	HttpRequest::_getChunkedBody(size_t &bodypos, client *cl) {
@@ -108,6 +108,19 @@ std::string	HttpRequest::_findUploadPath(void) {
 			upload = this->_serv.loc[i].uploads; //get the upload Path
 	}
 	return upload;
+}
+
+void	HttpRequest::_creatFile(std::string name, std::string reqBody) {
+	std::ofstream	file(name.c_str());
+
+	if (!file)
+		this->_statusCode = 500; //500 Internal Server Error
+	else {
+		file << reqBody;
+		file.close();
+		this->_statusCode = 201; /*201 Created success status response code indicates
+		that the request has succeeded and has led to the creation of a resource*/
+	}
 }
 
 std::string	HttpRequest::_randomName(void) {

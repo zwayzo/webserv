@@ -24,9 +24,10 @@ class HttpRequest {
 
     public:
         std::string _method;
-        std::string uri;
+        std::string _uri;
         std::string httpVersion;
         std::string queryString;
+
         std::map<std::string, std::string>	headers;
 
         std::string			_request;
@@ -59,6 +60,7 @@ class HttpRequest {
 		bool		_methodExist(void);
 		std::string	_randomName(void);
 		std::string	_findUploadPath(void);
+		void		_creatFile(std::string name, std::string reqBody)
 };
     void unchunkBody(std::istringstream& requestStream);
     void readFixedLengthBody(std::istringstream& requestStream, int contentLength);
