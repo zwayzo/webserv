@@ -13,6 +13,8 @@
 #include <string>
 #include "chunkedPost.hpp"
 
+class client;
+
 class HttpRequest {
 
     public:

@@ -8,7 +8,7 @@ client&	returnClient(std::map<int, client> mycl, int i)
 	// std::cout << "second fd : " << iter->second.clientFd << "\n";
 	// std::cout << "HELLLO : " << iter->second.stageForClient << std::endl;
 	return (iter->second);
-}
+} 
 
 void multuplixing(conf* conf)
 {
@@ -43,11 +43,8 @@ void multuplixing(conf* conf)
                     std::cout << "new connection\n";
                     // printf("accept...\n");
                     client tmp;
-                    tmp.req.index = in;
-                    tmp.req.track = 0;
-                    tmp.req.first = 0;
-                    tmp.req.fd = newFd;
-                    // std::cout << "fd: " << tmp.req.fd << "\n";
+                    tmp =  attachClientServer(i, conf, tmp, in, newFd);
+                    std::cout << "up: " << tmp.upload << "\n";
                     in++;
                     mycl.insert(std::pair<int, client>(newFd, tmp));
                     conf->vec.push_back(newFd);
@@ -58,61 +55,27 @@ void multuplixing(conf* conf)
                 else
                 {
                     if (FD_ISSET(i, &read_fds)){
-                        // client client = returnClient(mycl, i);
                         std::map<int, client>::iterator iter = mycl.lower_bound(i);
-                        // std::cout << "----------- : fd: | " << iter->second.req.fd << " |\n";
                         client client = iter->second;
-
-                        // std::cout << "----------------| " << i << " |---------------\n";
-                        // std::cout << "client fd is : ----------------| " << iter->second.req.fd << " |---------------\n";
-                        // std::cout << "client length is : ----------------| " << iter->second.req.contentLenght << " |---------------\n";
+                        std::cout << "client upload is : ----------------| " << iter->second.post << " |---------------\n";
 
                         int nbytes = recv(i, iter->second.req.buff, sizeof(iter->second.req.buff), 0);
                         if (nbytes == -1)
                             throw ("Error: recv failed\n");
                         else if (nbytes == 0) {
-                            std::cout << "disconnected" << std::endl;
+                            std::cout << "Disconnected" << std::endl;
                             return ;
                         }
 						iter->second.req.buff[nbytes] = '\0';
 						parseHttpRequest(i, iter->second.req.buff, nbytes, &iter->second);
                         
-
-                        if (nbytes != 0 && iter->second.req.method <= 0)
+                        std::cout << iter->second.req.buff << '\n';
+                        if (nbytes != 0 && iter->second.req.method <= 0 && iter->second.post)
                             getMethodes(iter->second.req.buff, &iter->second);
-                        
-                            
-
-                        // std::cout << iter->second.req.buff;
-                        // exit(1);
-                        // std::cout << "after getting what methode..." << iter->second.req.post << "\n";
-                        // if (iter->second.req.post == 1){
-                        //     // std::cout << "WARNING.............................POST\n";
-                        //     // std::cout << "first: ------------| " << iter->second.req.first << " |\n";
-                        //     int z = 0;
-                        //     if (iter->second.req.first == 0){
-                        //         // std::cout << "in create file\n";
-                        //         // std::cout << "1-------------------------------------\n" << iter->second.req.buff <<"\n2----------------------------------\n";
-                        //         z = creatFile(i, iter->second.req.buff, &iter->second);
-                        //         iter->second.req.fileD.write(&iter->second.req.buff[z], nbytes - z);
-                        //         iter->second.req.track += nbytes;
-                        //         // std::cout << "track is " << iter->second.req.track << " lenght is " << iter->second.req.contentLenght << "\n-------------out-------------\n";
-                        //     }
-                        //     else{
-                        //         // std::cout << "in write to file\n";
-                        //         iter->second.req.fileD.write(iter->second.req.buff, nbytes);
-                        //         iter->second.req.track += nbytes;
-                        //     }
-                        //     iter->second.req.first++;
-                        // }   
+                        // if (iter->second.req.post == 1)
+                        //     post(iter, i, nbytes);
                         if (nbytes > 0){
-                            // std::cout << "track is " << iter->second.req.track << " lenght is " << iter->second.req.contentLenght << '\n';
-                            // std::map<int, client>::iterator mapIt = mycl.lower_bound(i);
-                            // iter->second.req.contentLenght = iter->second.req.contentLenght;
-                            // iter->second.req.track = iter->second.req.track;
-                            // std::cout << "1-------------------------------------\n" << iter->second.req.buff <<"\n2----------------------------------\n";
-                            // usleep(100000);
-                            if ( iter->second.req.track >= iter->second.req.contentLenght){
+                            if (iter->second.req.track >= iter->second.req.contentLenght){
                                 printf("time to clear\n");
                                 clearSets(&iter->second, i, &iter->second.req.track, &iter->second.req.first, &master_re, &master_wr);
                             }
@@ -124,7 +87,7 @@ void multuplixing(conf* conf)
                         // std::cout << "----------- : fd: | " << iter->second.fd << " |\n";
                         // client client = iter->second;
                         // std::cout << "in write : ----------------| " << i << " |---------------\n";
-                        // printf("not new connection in write\n");
+                        printf("not new connection in write\n");
 
                         // std::map<int, client>::iterator it;
                         // for (it = mycl.begin(); it != mycl.end(); ++it) {
@@ -150,7 +113,4 @@ void multuplixing(conf* conf)
     }
 }
 
-
-
 //51154
-

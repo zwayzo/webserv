@@ -37,18 +37,13 @@ void parseHttpRequest(int fd, const char* buf, int nbytes, client *cl)
 
     httpRequest.parseHeaders(headersPart);
 
-    size_t  headerLength = 0;
-    std::istringstream _req;
-    _req.write(buf, nbytes);
-    headerLength = _req.str().find("\r\n\r\n");
     int contentLength = 0;
     if (headerLength != std::string::npos && !cl->req._firstCheck)
     {
 		if (httpRequest.is_body(contentLength, cl))
         if (cl->req.isChunked)
-        {   
-            if (_req.str().find("\r\n0\r\n\r\n", ))
-            _getChunkedBody(fd, buf, cl);
+        {
+			_getChunkedBody(fd, buf, cl);
            //hna fen hadi nhanlder CHunked;
         } 
         // else if (contentLength > 0)
