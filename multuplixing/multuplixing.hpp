@@ -4,11 +4,12 @@
 #include "../headers/header.hpp"
 #include "../request/request.hpp"
 #include "../request/parseRequest.hpp"
-
+#include "../response/Response.hpp"
 class client{
     public:
         request req;
         HttpRequest httpRequest;
+        Response    httpResponse;
         int port;
         int post;
         int get;

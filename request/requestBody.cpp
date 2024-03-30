@@ -14,7 +14,7 @@ void	HttpRequest::findServer(client *cl) {
 }
 
 void	HttpRequest::parseBody(size_t &bodypos, client *cl) {
-	findServer(cl);
+	findServer(cl); //which server if there is multiple ones
 	int contentLength = 0;
 	if (is_body(contentLength, cl)) {
         if (this->isChunked) {
@@ -33,11 +33,11 @@ void	HttpRequest::parseBody(size_t &bodypos, client *cl) {
 							//should create the file
 						}
 						else
-							this->_statusCode = 405; //Method Not Allowed
+							this->_err = 405; //Method Not Allowed
 				}
 			}
 			else
-				this->_statusCode = 413; /*Content Too Large response status code indicates that
+				this->_err = 413; /*Content Too Large response status code indicates that
 			the request entity is larger than limits defined by server*/
         }
 	}
@@ -114,11 +114,11 @@ void	HttpRequest::_creatFile(std::string name, std::string reqBody) {
 	std::ofstream	file(name.c_str());
 
 	if (!file)
-		this->_statusCode = 500; //500 Internal Server Error
+		this->_err = 500; //500 Internal Server Error
 	else {
 		file << reqBody;
 		file.close();
-		this->_statusCode = 201; /*201 Created success status response code indicates
+		this->_err = 201; /*201 Created success status response code indicates
 		that the request has succeeded and has led to the creation of a resource*/
 	}
 }

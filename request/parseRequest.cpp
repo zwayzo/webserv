@@ -4,10 +4,15 @@ HttpRequest::HttpRequest() :
 	_request(""),
 	_method(""),
 	_uri(""),
+	httpVersion("");
 	isChunked(false), _body(""), _bodySize(0),
-	_statusCode(0);
+	_err(0);
 	_serv(),
 	_servers() {
+}
+
+HttpRequest::~HttpRequest() {
+	this->headers.clear();
 }
 
 std::string toLower(const std::string& str) 
@@ -36,10 +41,10 @@ void HttpRequest::parseHttpRequest(const char* buf, int nbytes, client *cl)
 
     std::getline(requestStream, reqLine);
     parseRequestLine(reqLine);
-	if (this->_statusCode != 400)
+	if (this->_err != 400)
 	{
 		parseURI();
-		if (this->_statusCode != 403)
+		if (this->_err != 403)
 		{
 			while (std::getline(requestStream, line) && !line.empty() && line != "\r")
 				headersPart += line + "\n";
@@ -67,7 +72,7 @@ void HttpRequest::parseRequestLine(const std::string& reqLine)
     std::istringstream iss(reqLine);
     std::getline(iss, _method, ' ');
     if (_method != "POST" && _method !="GET" && _method != "DELETE")
-		this->_statusCode = 400; /*bad Request {malformed request syntax,
+		this->_err = 400; /*bad Request {malformed request syntax,
 		invalid request message framing, or deceptive request routing*/
     _method = toLower(_method);
     std::getline(iss, _uri, ' ');
@@ -85,7 +90,7 @@ void HttpRequest::parseURI(void)
     else
         queryString.clear();
 	if (_uri.find("..") != std::string::npos)
-		this->_statusCode = 403; //403 Forbidden: Accès interdit. Traversée de répertoire non autorisée.
+		this->_err = 403; //403 Forbidden: Accès interdit. Traversée de répertoire non autorisée.
 }
 
 void HttpRequest::parseHeaders(const std::string& headersPart)

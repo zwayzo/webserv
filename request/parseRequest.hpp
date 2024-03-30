@@ -12,7 +12,6 @@
 #include <map>
 #include <sstream>
 #include <iomanip>
-#include "chunkedPost.hpp"
 
 class server;
 class conf;
@@ -37,7 +36,7 @@ class HttpRequest {
 		server				_serv;
 		std::vector<server>	_servers;
 		int					_port;
-		int					_statusCode;
+		int					_err;
 		// bool            _firstCheck;
 
         HttpRequest();

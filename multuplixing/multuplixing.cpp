@@ -64,9 +64,11 @@ void multuplixing(conf* conf)
                             throw ("Error: recv failed\n");
 						else if (nbytes == 0) {
 							std::cout << "Disconnected" << std::endl;
-                            return ;
+							close(i);
+                            //should close the client connection
                         }
 						cl.req.buff[nbytes] = '\0';
+						//should check th first time body
 						cl.httpRequest.parseHttpRequest(cl.req.buff, nbytes, &cl);
 						
                         std::cout << cl.httpRequest._request << '\n';
@@ -83,6 +85,19 @@ void multuplixing(conf* conf)
                         //working on request workRequest(buf);
                     }
                     if(FD_ISSET(i, &write_fds)){
+						// int response = 0;
+						// if (cl.httpRequest._err == 0 && (cl.httpRequest._uri.find(".py") != std::string::npos
+						// 	|| cl.httpRequest._uri.find(".rb") != std::string::npos)) {
+						// 	//CGI handler
+						// 	//cgi Done
+						// 	//send resp
+						// }
+						// else {
+						// 	//send response
+						// 	// _response[i] = Response(i, conf->ser);
+						// 	//response = cl.httpResponse.sendResponse(cl.httpRequest, NULL);//NULL MEANS NO CGI
+						// 	response = cl.httpResponse.sendResponse(cl.httpRequest);
+						// }
                         // std::map<int, client>::iterator iter = mycl.lower_bound(i);
                         // std::cout << "----------- : fd: | " << iter->second.fd << " |\n";
                         // client client = iter->second;
