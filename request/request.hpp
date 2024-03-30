@@ -52,9 +52,10 @@ class request
         int method;
         long long track;
 
-		bool            _firstCheck;
+		// bool            _firstCheck;
         bool			isChunked;
 		std::string 	_body;
+		size_t			_bodySize;
 
         int port;
         int post_indice;

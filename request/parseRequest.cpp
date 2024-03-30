@@ -1,5 +1,7 @@
 #include "parseRequest.hpp"
 
+HttpRequest::HttpRequest() : _request("") {}
+
 std::string toLower(const std::string& str) 
 {
     std::string lowerStr = str;
@@ -10,14 +12,13 @@ std::string toLower(const std::string& str)
 // bach ila kan edna chi body dakh b Maj n7awloh l miniscule bach mnin nbghiw n comparew mal9awch probleme
 
 
-void parseHttpRequest(int fd, const char* buf, int nbytes, client *cl)
+void parseHttpRequest(const char* buf, int nbytes, std::map<int, client>::iterator iter)
 {
-    std::string request(buf, nbytes);
-    HttpRequest httpRequest;
-
-    std::istringstream requestStream(request);
-    std::string requestLine;
-    std::string line;
+    HttpRequest 		httpRequest;
+    _request(buf, nbytes);
+    std::istringstream	requestStream(_request);
+    std::string 		requestLine;
+    std::string	line;
     std::string headersPart;
 
     // {//print the header request telle quelle est la premiere fois 
@@ -37,26 +38,11 @@ void parseHttpRequest(int fd, const char* buf, int nbytes, client *cl)
 
     httpRequest.parseHeaders(headersPart);
 
-    int contentLength = 0;
-    if (headerLength != std::string::npos && !cl->req._firstCheck)
-    {
-		if (httpRequest.is_body(contentLength, cl))
-        if (cl->req.isChunked)
-        {
-			_getChunkedBody(fd, buf, cl);
-           //hna fen hadi nhanlder CHunked;
-        } 
-        // else if (contentLength > 0)
-        // {
-        //     std::vector<char> bodyBuffer(contentLength);
-        //     requestStream.read(&bodyBuffer[0], contentLength);
-        //     std::string body(bodyBuffer.begin(), bodyBuffer.end());
-        //     std::cout << "Corps RQ: " << body << std::endl;
-        // }
-    }
-    else
-        std::cout << "NO BODY FOUND*******" << std::endl;
+	std::streampos endHdrPos = requestStream.tellg();
+	size_t bodypos = static_cast<size_t>(endHdrPos);
+	std::cout << "Pos aprs Header: " << bodypos << std::endl;
 
+	parseBody(bodypos, &iter->second);
     
     // std::cout << "Method: " << httpRequest.method << std::endl;
     // std::cout << "URI: " << httpRequest.uri << std::endl;
@@ -111,29 +97,4 @@ void HttpRequest::printHeaders() const
 {
     for (std::map<std::string, std::string>::const_iterator it = headers.begin(); it != headers.end(); ++it)
         std::cout << it->first << ": " << it->second << std::endl;
-}
-
-bool HttpRequest::is_body(int& contentLength, client *cl)
-{
-    contentLength = 0;
-
-    //find contenu dial content-lenght
-    std::map<std::string, std::string>::const_iterator it = headers.find("Content-Length");
-    if (it != headers.end())
-    {
-        contentLength = atoi(it->second.c_str());
-        return true; // true l9inaah
-    }
-    std::string transfer_encod("Transfer-Encoding");
-        //kan9lab ela encoding norceau b morceau 
-    if (headers.find("Transfer-Encoding") != headers.end() && headers[transfer_encod].find("chunked") != std::string::npos) 
-    {
-        cl->req.isChunked = true;
-        return true; // hnaa hayl9aah apres w han9ado liha chnuked dialhaa
-    }
-    
-    if (toLower(method) == "post")
-        return true;
-
-    return false; //ilaaa mal9inaaa walooo false 
 }
