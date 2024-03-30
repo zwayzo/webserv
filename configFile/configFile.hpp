@@ -91,16 +91,16 @@ class server{
 
         // std::string ip;
         std::string index;
-        int index_number;
+        int			index_number;
         std::string error_page;
-        int error_page_number;
+        int			error_page_number;
         std::string name;
-        int name_number;
+        int			name_number;
         std::string mySer;
         std::string redirection;
-        int redirection_number;
-        std::string root;
-        int root_number;
+        int			redirection_number;
+        std::string	root;
+        int			root_number;
         std::string uploads;
         int uploads_number;
 

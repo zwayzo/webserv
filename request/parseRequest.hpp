@@ -7,6 +7,7 @@
 #include <string>
 #include <algorithm>
 #include <cctype>
+#include <cstdlib>
 #include <iostream>
 #include <map>
 #include <sstream>
@@ -54,6 +55,10 @@ class HttpRequest {
         void    findServer();
         void	_getChunkedBody(size_t &bodypos, client *cl);
 
+		//Allowed methods and randName
+		bool		_methodExist(void);
+		std::string	_randomName(void);
+		std::string	_findUploadPath(void);
 };
     void unchunkBody(std::istringstream& requestStream);
     void readFixedLengthBody(std::istringstream& requestStream, int contentLength);

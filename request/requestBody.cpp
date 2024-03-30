@@ -20,16 +20,24 @@ void	HttpRequest::parseBody(size_t &bodypos, client *cl) {
         if (this->isChunked) {
 			_getChunkedBody(bodypos, &iter->second);
 			this->_bodySize = this->_body.size();
-			if ((this->_method == "POST") && this->_uri.find(".py") == std::string::npos
-				&& this->_uri.find(".rb") == std::string::npos) {
-					if (methodExist()) {
-
-					}
-					else
-						this->_statusCode = 405;
-				//should check if the _method is within the allowed method in the conf file
-				//
+			if (this->_serv.info->maxBody.second >= _bodySize) {//should check the max body in the conf file >= _bodySize
+				if ((this->_method == "POST") && this->_uri.find(".py") == std::string::npos
+					&& this->_uri.find(".rb") == std::string::npos) {
+						if (_methodExist()) {
+							std::string	file = _randomName();
+							std::string	upload = _findUploadPath();
+							//should check if the _method is within the allowed method in the conf file
+							//should check the uri and location
+							//should generate a random file name and find the uploadPath
+							//should create the file
+						}
+						else
+							this->_statusCode = 405; //Method Not Allowed
+				}
 			}
+			else
+				this->_statusCode = 413; /*Content Too Large response status code indicates that
+			the request entity is larger than limits defined by server*/
         }
 	}
 	else
@@ -84,6 +92,33 @@ void	HttpRequest::_getChunkedBody(size_t &bodypos, client *cl) {
 		this->_body += tmp.substr(i, chunkedSize);
 		i += chunkedSize + 1;
 	}
+}
+
+bool	HttpRequest::_methodExist(void) {
+	//check if the method exist in the server in conf file
+	return true;
+}
+
+std::string	HttpRequest::_findUploadPath(void) {
+	size_t	len = this->_serv.loc.size();
+	std::string	upload = this->_serv.uploads; // get the uploadPath in the conf File if there is a section named upload
+
+	for(size_t i = 0; i < len; i++) {
+		if (this->_uri.find(this->_serv.loc[i].) != std::string::npos) //find the location Name in the uri
+			upload = this->_serv.loc[i].uploads; //get the upload Path
+	}
+	return upload;
+}
+
+std::string	HttpRequest::_randomName(void) {
+	const std::string	alphanum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-&^$@(#)";
+	std::string			randName = "";
+	std::srand(static_cast<unsigned int>(time(NULL)));
+	for(int i = 0; i < 15; i++) {
+		int _rand = std::rand() % alphanum.length();
+		randName += alphanum[_rand];
+	}
+	return randName;
 }
 
 int hextoint(const std::string str) {
