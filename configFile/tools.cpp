@@ -44,6 +44,7 @@ void printArguments(infos *info, int n, server &ser)
     // (void &) ser;
     // int i = 0;
     // std::map<std::string, std::string>::iterator it = info->errorPage.begin();
+    // printf("location number:%d\n", ser.locationsNumber);
     for (std::map<std::string, std::string>::iterator it = info->errorPage.begin(); it != info->errorPage.end(); ++it)
         std::cout <<"Key: " << it->first << ", Value: " << it->second << std::endl;
 

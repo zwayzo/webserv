@@ -44,7 +44,7 @@ void multuplixing(conf* conf)
                     // printf("accept...\n");
                     client tmp;
                     tmp =  attachClientServer(i, conf, tmp, in, newFd);
-                    std::cout << "up: " << tmp.upload << "\n";
+                    // std::cout << "up: " << tmp.upload << "\n";
                     in++;
                     mycl.insert(std::pair<int, client>(newFd, tmp));
                     conf->vec.push_back(newFd);
@@ -57,19 +57,22 @@ void multuplixing(conf* conf)
                     if (FD_ISSET(i, &read_fds)){
                         std::map<int, client>::iterator iter = mycl.lower_bound(i);
                         client client = iter->second;
-                        std::cout << "client upload is : ----------------| " << iter->second.post << " |---------------\n";
+                        // std::cout << "client upload is : ----------------| " << iter->second.post << " |---------------\n";
 
                         int nbytes = recv(i, iter->second.req.buff, sizeof(iter->second.req.buff), 0);
                         //  if (nbytes > 0)
                         //     parseHttpRequest(iter->second.req.buff, nbytes);
                         
                         std::cout << iter->second.req.buff << '\n';
+                        //this will be removed after the parse will be ready
+                        //--------------------------------
                         if (nbytes != 0 && iter->second.req.method <= 0 && iter->second.post)
                             getMethodes(iter->second.req.buff, &iter->second);
                         else if (nbytes == -1)
                             throw ("error in recv\n");
                         if (iter->second.req.post == 1)
                             post(iter, i, nbytes);
+                        //----------------------------------
                         if (nbytes > 0){
                             if (iter->second.req.track >= iter->second.req.contentLenght){
                                 printf("time to clear\n");
