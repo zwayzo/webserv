@@ -26,8 +26,6 @@ void stockLocation(conf *conf, int indice)
             newLocation.theLoc.push_back('\n');
             // Assuming loc is a vector of location objects
             conf->ser[indice].loc.push_back(newLocation); // Add the newLocation to the loc vector
-            // std::cout << newLocation.theLoc;
-            // exit(1);
             // std::cout << "enter2\n";
         }
         i++;
@@ -81,7 +79,7 @@ conf* fileConfiguration(conf *conf, std::string file)
         conf->ser[j].info = checkValue(conf->ser[j].mySer, conf->ser[j].info, conf->ser[j]);
         checkConfigFileRules(conf->ser[j]);
         printArguments(conf->ser[j].info, conf->ser[j].locationsNumber, conf->ser[j]);
-        printf("\n---------------------------x----------------------------------------\n");
+        printf("\n-------------------------------------------------------------------\n");
     }
     // exit(1);
     return (conf);

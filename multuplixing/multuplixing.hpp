@@ -1,25 +1,23 @@
-
 #ifndef MULTUPLIXING_HPP
 #define MULTUPLIXING_HPP
 
 #include "../headers/header.hpp"
 #include "../request/request.hpp"
 #include "../request/parseRequest.hpp"
-// #include "../response/Response.hpp"
-
-class request;
-// class HttpRequest;
 
 class client{
     public:
-        request req;
         HttpRequest httpRequest;
-        // Response    httpResponse;
+        request req;
         int port;
         int post;
         int get;
         int del;
         std::string upload;
+        int max_size;
+        std::vector<location> loc;
+        std::string name;
+        // std::vector <lo
     public:
         int     creatFile(int fd, char *buf);
         void    getMethodes(std::string buf);
@@ -28,6 +26,10 @@ class client{
 
 // std::vector <client> mycl;
 
+
+
+
+class request;
 class conf;
 void multuplixing (conf *conf);
 void getMethodes(std::string buf, client *cl); //check if the method is post to work with

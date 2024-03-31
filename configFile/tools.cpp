@@ -44,6 +44,7 @@ void printArguments(infos *info, int n, server &ser)
     // (void &) ser;
     // int i = 0;
     // std::map<std::string, std::string>::iterator it = info->errorPage.begin();
+    // printf("location number:%d\n", ser.locationsNumber);
     for (std::map<std::string, std::string>::iterator it = info->errorPage.begin(); it != info->errorPage.end(); ++it)
         std::cout <<"Key: " << it->first << ", Value: " << it->second << std::endl;
 
@@ -83,19 +84,20 @@ void printArguments(infos *info, int n, server &ser)
     std::cout << "name:" << ser.name << '\n';
     std::cout << "auto:" << ser.autoindex << '\n';
     std::cout << "uploads:" << ser.uploads << '\n';
-    std::cout << "server has " << ser.locationsNumber << " locations\n";
+    std::cout << "max:" << ser.max_size << '\n';
+    std::cout << "thi server has " << ser.locationsNumber << " locations\n";
 
 
     for (int j = 0;j < n; j++)
     {
         std::cout << "\n\nlocation number:" << j << '\n';
+        std::cout << "name:" << ser.loc[j].name << '\n';
         std::cout << "index:" << ser.loc[j].index << '\n';
         // std::cout "index:" << << ser.loc[j].listen << '\n';
         // std::cout "index:" << << ser.loc[j].post << '\n';
-        std::cout << "name:" <<  ser.loc[j].name << '\n';
         std::cout << "redirection:" << ser.loc[j].redirection << '\n';
         std::cout << "autoindex:" << ser.loc[j].autoindex << '\n';
-        std::cout << "root:" << ser.loc[j].root << "\n";
+        std::cout << "root:" << ser.loc[j].root << '\n';
         // std::cout << ser->loc[j].error_page << '\n';
     }
 

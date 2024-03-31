@@ -12,12 +12,12 @@ int randomNum() //get rendom number to add it in file[number].extention (post me
 
 void getMethodes(std::string buf, client *cl) //check if the method is post to work with
 {
-    // printf("her\n");
+
     cl->req.method = 1;
-    // printf("%s\n", buf.c_str());
-    // exit(1);
     if (std::strncmp(buf.c_str(), "POST", 4) == 0)
         cl->req.post = 1;
+
+    printf("-------------- getting methode -------- post:%d\n", cl->req.post);
 }
  
 void getRequestLenght(char *buf, client *cl) //get the request lenght of post so to know how many time i nead to read(post)
@@ -52,7 +52,6 @@ std::map<int, client>::iterator post(std::map<int, client>::iterator iter, int i
         // std::cout << "in create file\n";
         // std::cout << "1-------------------------------------\n" << iter->second.req.buff <<"\n2----------------------------------\n";
         z = creatFile(i, iter->second.req.buff, &iter->second);
-
         /*if (iter->second.req.chuncked = 1)
         {
 
@@ -72,6 +71,7 @@ std::map<int, client>::iterator post(std::map<int, client>::iterator iter, int i
         iter->second.req.fileD.write(iter->second.req.buff, nbytes);
         iter->second.req.track += nbytes;
     }
+    // }
     iter->second.req.first++;
     return (iter);
 }

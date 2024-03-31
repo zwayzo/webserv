@@ -1,3 +1,4 @@
+
 #ifndef CONFIGFILE_HPP
 #define CONFIGFILE_HPP
 
@@ -57,11 +58,11 @@ class location{
         int autoindex;
 
         std::string index;
+        std::string name;
         std::string theLoc;
         std::string root;
         std::string redirection;
         std::string uploads;
-        std::string name;
 };
 
 class server{
@@ -141,5 +142,6 @@ std::string getTheFileInOneString(std::string file);
 int file_size(std::string file);
 void checkConfigFileRules(server &ser);
 void init_variables(server &ser);
+int skipLocation(server &ser, int i);
 
 #endif

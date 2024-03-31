@@ -1,7 +1,6 @@
 NAME = webserv
 
-FLAGS = c++ -Wall -Wextra -Werror -std=c++98 #-fsanitize=address -g3
-
+FLAGS = c++ -Wall -Wextra -Werror -std=c++98 -fsanitize=address -g3
 
 SRC =   configFile/config.cpp \
 		main.cpp multuplixing/multuplixing.cpp \

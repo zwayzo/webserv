@@ -31,12 +31,21 @@ client attachClientServer(int i, conf *conf, client tmp, int in, int newFd)
             tmp.get = conf->ser[j].get;
             tmp.del = conf->ser[j].deletee;
             tmp.upload = conf->ser[j].uploads;
+            // printf("%d\n", conf->ser[i].max_size);
+            tmp.max_size = conf->ser[j].max_size;
+            // exit(1);
+            // tmp.loc = conf->ser[i].loc;
+            tmp.name = conf->ser[i].name;
+
+
+
 
             tmp.req.index = in;
             tmp.req.track = 0;
-            tmp.req.first = 0;
             tmp.req.contentLenght = 0;
             tmp.req.fd = newFd;
+            std::cout << "up: " << tmp.req.first << "\n";
+
         }
     }
     return tmp;
