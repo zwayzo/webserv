@@ -1,5 +1,5 @@
 #include "configFile.hpp"
-
+#include "unistd.h"
 
 int storeLocationValue(server &ser, int n, int number)
 {
@@ -101,8 +101,7 @@ int storeLocationValue(server &ser, int n, int number)
 
 void checkPrototype(server &ser)
 {
-    int i = 0 ,j = 0, n = 0;
-    int x = 0;
+    int i = 0 ,j = 0, n = 0, x = 0;
     while (ser.mySer[i])
     {
         i = j;
@@ -116,6 +115,8 @@ void checkPrototype(server &ser)
         x++;
         if (ser.mySer[j] == '\0')
             break;
+        // write(1, &ser.mySer[i], n);
+        // printf("'  %d\n\n", n);
         if (std::strncmp("name", &ser.mySer[i],  n) && std::strncmp("listen", &ser.mySer[i], n) && std::strncmp("root", &ser.mySer[i], n)
         && std::strncmp("error_page", &ser.mySer[i], n) && std::strncmp("max_body", &ser.mySer[i], n) && std::strncmp("location", &ser.mySer[i], n)
         && std::strncmp("index", &ser.mySer[i], n) && std::strncmp("methodes", &ser.mySer[i], n) && std::strncmp("redirection", &ser.mySer[i], n)
@@ -189,4 +190,6 @@ void checkConfigFileRules(server &ser)
         throw ("eroor in max_size number");
     if (ser.methodes_number != 1)
         throw ("eroor in methodes number");
+    if (ser.locationsNumber != 1)
+        throw ("eroor in location number");
 }

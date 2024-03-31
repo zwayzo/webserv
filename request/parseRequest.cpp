@@ -16,7 +16,6 @@ std::string toLower(const std::string& str)
 }
 // bach ila kan edna chi body dakh b Maj n7awloh l miniscule bach mnin nbghiw n comparew mal9awch probleme
 
-
 void parseHttpRequest(const char* buf, int nbytes)
 {
     std::string request(buf, nbytes); 

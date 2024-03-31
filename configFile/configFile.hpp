@@ -70,18 +70,24 @@ class server{
         int socketAddr;
         int sock;
         int listen_fd;
+
         int listen;
         int listen_number;
+
         int post;
         int get;
         int deletee;
+
         int autoindex;
         int autoindex_number;
+
         int max_size;
         int max_size_number;
+
         int number;
         int size;
         int wor;
+
         int locationsNumber;
         int methodes_number;
         
@@ -117,7 +123,6 @@ class conf{
         std::string allIn;
         std::vector<int> vec;
 };
-
 
 
 conf *fileConfiguration(conf *conf, std::string file);
