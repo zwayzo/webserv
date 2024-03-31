@@ -52,6 +52,7 @@ std::map<int, client>::iterator post(std::map<int, client>::iterator iter, int i
         // std::cout << "in create file\n";
         // std::cout << "1-------------------------------------\n" << iter->second.req.buff <<"\n2----------------------------------\n";
         z = creatFile(i, iter->second.req.buff, &iter->second);
+
         /*if (iter->second.req.chuncked = 1)
         {
 
@@ -71,7 +72,6 @@ std::map<int, client>::iterator post(std::map<int, client>::iterator iter, int i
         iter->second.req.fileD.write(iter->second.req.buff, nbytes);
         iter->second.req.track += nbytes;
     }
-    // }
     iter->second.req.first++;
     return (iter);
 }

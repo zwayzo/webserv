@@ -1,5 +1,5 @@
 #include "configFile.hpp"
-
+#include <unistd.h>
 void serverSize(std::string allIn, int indice, conf *conf)
 {
     getBegin(indice, conf, allIn);

@@ -60,10 +60,15 @@ void multuplixing(conf* conf)
                         // std::cout << "client upload is : ----------------| " << iter->second.post << " |---------------\n";
 
                         int nbytes = recv(i, iter->second.req.buff, sizeof(iter->second.req.buff), 0);
+                        std::cout << iter->second.req.buff;
+                        if (nbytes == 0) {
+							std::cout << "Disconnected" << std::endl;
+							close(i);
+                            //should close the client connection
+                        }
+                        client.req.buff[nbytes] = '\0';
                         //  if (nbytes > 0)
-                        //     parseHttpRequest(iter->second.req.buff, nbytes);
-                        
-                        std::cout << iter->second.req.buff << '\n';
+                        //     client.httpRequest.parseHttpRequest(iter->second.req.buff, nbytes, &client);
                         //this will be removed after the parse will be ready
                         //--------------------------------
                         if (nbytes != 0 && iter->second.req.method <= 0 && iter->second.post)
@@ -72,6 +77,7 @@ void multuplixing(conf* conf)
                             throw ("error in recv\n");
                         if (iter->second.req.post == 1)
                             post(iter, i, nbytes);
+                        // printf("track:%lld | %lld\n", iter->second.req.track, iter->second.req.contentLenght);
                         //----------------------------------
                         if (nbytes > 0){
                             if (iter->second.req.track >= iter->second.req.contentLenght){

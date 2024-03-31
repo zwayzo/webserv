@@ -61,33 +61,29 @@ class location{
         std::string root;
         std::string redirection;
         std::string uploads;
+        std::string name;
 };
 
 class server{
     public:
+        server();
         server(int n) : number(n){};
         // server(u)
         int socketAddr;
         int sock;
         int listen_fd;
-
         int listen;
         int listen_number;
-
         int post;
         int get;
         int deletee;
-
         int autoindex;
         int autoindex_number;
-
         int max_size;
         int max_size_number;
-
         int number;
         int size;
         int wor;
-
         int locationsNumber;
         int methodes_number;
         
@@ -96,16 +92,16 @@ class server{
 
         // std::string ip;
         std::string index;
-        int index_number;
+        int			index_number;
         std::string error_page;
-        int error_page_number;
+        int			error_page_number;
         std::string name;
-        int name_number;
+        int			name_number;
         std::string mySer;
         std::string redirection;
-        int redirection_number;
-        std::string root;
-        int root_number;
+        int			redirection_number;
+        std::string	root;
+        int			root_number;
         std::string uploads;
         int uploads_number;
 
@@ -123,6 +119,7 @@ class conf{
         std::string allIn;
         std::vector<int> vec;
 };
+
 
 
 conf *fileConfiguration(conf *conf, std::string file);
