@@ -1,5 +1,7 @@
 #include "configFile.hpp"
 
+server::server() {}
+
 void stockLocation(conf *conf, int indice)
 {
     int i = 0, j = 0;
@@ -79,6 +81,6 @@ conf* fileConfiguration(conf *conf, std::string file)
         printArguments(conf->ser[j].info, conf->ser[j].locationsNumber, conf->ser[j]);
         printf("\n-------------------------------------------------------------------\n");
     }
-    exit(1);
+    // exit(1);
     return (conf);
 }

@@ -1,3 +1,4 @@
+
 #include "multuplixing.hpp"
 client&	returnClient(std::map<int, client> mycl, int i)
 {
@@ -44,7 +45,8 @@ void multuplixing(conf* conf)
                     // printf("accept...\n");
                     client tmp;
                     tmp =  attachClientServer(i, conf, tmp, in, newFd);
-                    // std::cout << "up: " << tmp.upload << "\n";
+                    tmp.req.first = 0;
+                    std::cout << "up: " << tmp.req.first << "\n";
                     in++;
                     mycl.insert(std::pair<int, client>(newFd, tmp));
                     conf->vec.push_back(newFd);
@@ -71,6 +73,7 @@ void multuplixing(conf* conf)
                             throw ("error in recv\n");
                         if (iter->second.req.post == 1)
                             post(iter, i, nbytes);
+                        printf("%lld|%lld\n", iter->second.req.track, iter->second.req.contentLenght);
                         //----------------------------------
                         if (nbytes > 0){
                             if (iter->second.req.track >= iter->second.req.contentLenght){

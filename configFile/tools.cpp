@@ -84,15 +84,16 @@ void printArguments(infos *info, int n, server &ser)
     std::cout << "name:" << ser.name << '\n';
     std::cout << "auto:" << ser.autoindex << '\n';
     std::cout << "uploads:" << ser.uploads << '\n';
+    std::cout << "max:" << ser.max_size << '\n';
 
 
     for (int j = 0;j < n; j++)
     {
         std::cout << "\n\nlocation number:" << j << '\n';
+        std::cout << "name:" << ser.loc[j].name << '\n';
         std::cout << "index:" << ser.loc[j].index << '\n';
         // std::cout "index:" << << ser.loc[j].listen << '\n';
         // std::cout "index:" << << ser.loc[j].post << '\n';
-        // std::cout "index:" << << ser.loc[j].get << '\n';
         std::cout << "redirection:" << ser.loc[j].redirection << '\n';
         std::cout << "autoindex:" << ser.loc[j].autoindex << '\n';
         std::cout << "root:" << ser.loc[j].root << '\n';

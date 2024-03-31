@@ -35,6 +35,11 @@ class request
         int method;
         long long track;
 
+        int port;
+        int post_indice;
+        int get;
+        int del;
+
         std::string upload;
 
     public:
