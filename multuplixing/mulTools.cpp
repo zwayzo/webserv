@@ -31,6 +31,8 @@ client attachClientServer(int i, conf *conf, client tmp, int in, int newFd)
             tmp.get = conf->ser[j].get;
             tmp.del = conf->ser[j].deletee;
             tmp.upload = conf->ser[j].uploads;
+            tmp.loc = conf->ser[i].loc;
+            tmp.name = conf->ser[i].name;
 
             tmp.req.index = in;
             tmp.req.track = 0;

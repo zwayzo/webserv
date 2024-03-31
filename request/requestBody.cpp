@@ -4,14 +4,11 @@
 void	HttpRequest::findServer(client *cl) {
 	if (headers.find("Host") != headers.end()) {
 		std::string host = headers["Host"];
-		for (std::vector<server>::iterator it = _servers.begin(); it != _servers.end(); it++) {
-			if (it->name == host || it->name+":"+std::to_string(cl->port) == host) {
-				this->_serv = *it;
+		if (cl->name == host || cl->name+":"+std::to_string(cl->port) == host) {
+				this->_servName = cl->name;
 				return ;
-			}
 		}
 	}
-	this->_serv = this->_servers[0];
 }
 
 void	HttpRequest::parseBody(size_t &bodypos, client *cl) {
@@ -21,25 +18,25 @@ void	HttpRequest::parseBody(size_t &bodypos, client *cl) {
 		if (this->isChunked) {
 			_getChunkedBody(bodypos, cl);
 			this->_bodySize = this->_body.size();
-			// if (this->_serv.info->maxBody >= _bodySize) {//should check the max body in the conf file >= _bodySize
-			// 	if ((this->_method == "POST") && this->_uri.find(".py") == std::string::npos
-			// 		&& this->_uri.find(".rb") == std::string::npos) {
-			// 			if (_methodExist()) {
-			// 				std::string	file = _randomName();
-			// 				std::string	uploadPath = _findUploadPath();
+			if (cl->max_size >= _bodySize) {//should check the max body in the conf file >= _bodySize
+				if ((this->_method == "post") && this->_uri.find(".py") == std::string::npos
+					&& this->_uri.find(".rb") == std::string::npos) {
+						if (cl->post == 1) {
+							std::string	file = _randomName();
+							// std::string	uploadPath = _findUploadPath(cl);
 			// 				_creatFile(uploadPath + file, this->_body);
 			// 				//should check if the _method is within the allowed method in the conf file
 			// 				//should check the uri and location
 			// 				//should generate a random file name and find the uploadPath
 			// 				//should create the file
-			// 			}
-			// 			else
-			// 				this->_err = 405; //Method Not Allowed
-			// 	}
-			// }
-			// else
-			// 	this->_err = 413; /*Content Too Large response status code indicates that
-			// the request entity is larger than limits defined by server*/
+						}
+						else
+							this->_err = 405; //Method Not Allowed
+				}
+			}
+			else
+				this->_err = 413; /*Content Too Large response status code indicates that
+			the request entity is larger than limits defined by server*/
 		}
 	}
 	else
@@ -102,16 +99,16 @@ bool	HttpRequest::_methodExist(void) {
 	return true;
 }
 
-std::string	HttpRequest::_findUploadPath(void) {
-	// size_t	len = this->_serv.loc.size();
-	std::string	upload = this->_serv.uploads; // get the uploadPath in the conf File if there is a section named upload
+// std::string	HttpRequest::_findUploadPath(client *cl) {
+// 	size_t	len = cl->loc.size();
+// 	std::string	download = cl->upload; // get the uploadPath in the conf File if there is a section named upload
 
-	// for(size_t i = 0; i < len; i++) {
-	// 	if (this->_uri.find(this->_serv.loc[i].) != std::string::npos) //find the location Name in the uri
-	// 		upload = this->_serv.loc[i].uploads; //get the upload Path
-	// }
-	return upload;
-}
+// 	for(size_t i = 0; i < len; i++) {
+// 		if (this->_uri.find(cl->loc[i].) != std::string::npos) //find the location Name in the uri
+// 			download = cl->loc[i].uploads; //get the upload Path
+// 	}
+// 	return download;
+// }
 
 void	HttpRequest::_creatFile(std::string name, std::string reqBody) {
 	std::ofstream	file(name.c_str());

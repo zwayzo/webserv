@@ -7,8 +7,8 @@ HttpRequest::HttpRequest() :
 	httpVersion(""),
 	_request(""),
 	isChunked(false), _body(""), _bodySize(0),
-	_serv(),
-	_servers(),
+	_servName(""),
+	// _servers(),
 	_err(0) {
 }
 
@@ -56,7 +56,7 @@ void HttpRequest::parseHttpRequest(const char* buf, int nbytes, client *cl)
 			size_t bodypos = static_cast<size_t>(endHdrPos);
 			std::cout << "Pos aprs Header: " << bodypos << std::endl;
 
-			// this->_port = cl->port;
+			this->_port = cl->port;
 			parseBody(bodypos, cl);
 			//shouldHandleDelete
 		}

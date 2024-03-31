@@ -34,8 +34,7 @@ class HttpRequest {
         bool				isChunked;
 		std::string 		_body;
 		size_t				_bodySize;
-		server				_serv;
-		std::vector<server>	_servers;
+		std::string			_servName;
 		int					_port;
 		int					_err;
 		// bool            _firstCheck;
@@ -59,7 +58,7 @@ class HttpRequest {
 		//Allowed methods and randName
 		bool		_methodExist(void);
 		std::string	_randomName(void);
-		std::string	_findUploadPath(void);
+		std::string	_findUploadPath(client *cl);
 		void		_creatFile(std::string name, std::string reqBody);
 };
 

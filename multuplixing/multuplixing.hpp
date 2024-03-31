@@ -19,6 +19,10 @@ class client{
         int get;
         int del;
         std::string upload;
+        int						max_size;
+        std::vector<location>	loc;
+        std::string				name;
+
     public:
         int     creatFile(int fd, char *buf);
         void    getMethodes(std::string buf);
