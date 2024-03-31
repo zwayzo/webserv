@@ -85,6 +85,7 @@ void printArguments(infos *info, int n, server &ser)
     std::cout << "auto:" << ser.autoindex << '\n';
     std::cout << "uploads:" << ser.uploads << '\n';
     std::cout << "max:" << ser.max_size << '\n';
+    std::cout << "this server has " << ser.locationsNumber << " locations\n";
 
 
     for (int j = 0;j < n; j++)
