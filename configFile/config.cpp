@@ -1,5 +1,7 @@
 #include "configFile.hpp"
 
+server::server() {}
+
 void stockLocation(conf *conf, int indice)
 {
     int i = 0, j = 0;

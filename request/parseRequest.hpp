@@ -17,7 +17,8 @@ class server;
 class conf;
 class client;
 
-int hextoint(const std::string str);
+int     hextoint(const std::string str);
+std::string toLower(const std::string& str);
 
 class HttpRequest {
 
@@ -52,16 +53,17 @@ class HttpRequest {
 
         //body (chunked)
         void    parseBody(size_t &bodypos, client *cl);
-        void    findServer();
+        void    findServer(client *cl);
         void	_getChunkedBody(size_t &bodypos, client *cl);
 
 		//Allowed methods and randName
 		bool		_methodExist(void);
 		std::string	_randomName(void);
 		std::string	_findUploadPath(void);
-		void		_creatFile(std::string name, std::string reqBody)
+		void		_creatFile(std::string name, std::string reqBody);
 };
-    void unchunkBody(std::istringstream& requestStream);
-    void readFixedLengthBody(std::istringstream& requestStream, int contentLength);
+
+void unchunkBody(std::istringstream& requestStream);
+void readFixedLengthBody(std::istringstream& requestStream, int contentLength);
 
 #endif

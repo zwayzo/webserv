@@ -1,23 +1,24 @@
+#include "../multuplixing/multuplixing.hpp"
 #include "parseRequest.hpp"
 
 HttpRequest::HttpRequest() :
-	_request(""),
 	_method(""),
 	_uri(""),
-	httpVersion("");
+	httpVersion(""),
+	_request(""),
 	isChunked(false), _body(""), _bodySize(0),
-	_err(0);
 	_serv(),
-	_servers() {
+	_servers(),
+	_err(0) {
 }
 
 HttpRequest::~HttpRequest() {
 	this->headers.clear();
 }
 
-std::string toLower(const std::string& str) 
+std::string toLower(const std::string& str)
 {
-    std::string lowerStr = str;
+	std::string lowerStr = str;
     std::transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), 
                    static_cast<int(*)(int)>(std::tolower));
     return lowerStr;
@@ -26,7 +27,8 @@ std::string toLower(const std::string& str)
 void HttpRequest::parseHttpRequest(const char* buf, int nbytes, client *cl)
 {
     // HttpRequest 		httpRequest;
-	this->_request(buf, nbytes);
+	std::string	tmp(buf, nbytes);
+	this->_request = tmp;
     std::istringstream	requestStream(this->_request);
     std::string 		reqLine;
     std::string	line;
