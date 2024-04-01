@@ -91,8 +91,10 @@ void HttpRequest::parseURI(void)
     } 
     else
         queryString.clear();
-	if (_uri.find("..") != std::string::npos)
-		this->_err = 403; //403 Forbidden: Accès interdit. Traversée de répertoire non autorisée.
+    if (_uri.length() > 2048)
+        this->_err = 414; //414 URI Too Long
+	// else if (_uri.find("..") != std::string::npos)
+	// 	this->_err = 403; //403 Forbidden: Accès interdit. Traversée de répertoire non autorisée.
 }
 
 void HttpRequest::parseHeaders(const std::string& headersPart)

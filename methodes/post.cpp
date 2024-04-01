@@ -3,7 +3,7 @@
 
 int randomNum() //get rendom number to add it in file[number].extention (post method)
 {
-    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+    std::srand(static_cast<unsigned int>(std::time(NULL)));
     
     // Generate a random number between 1 and 1000
     return ((std::rand() % 1000) + 1);

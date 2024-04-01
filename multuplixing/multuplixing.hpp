@@ -19,7 +19,7 @@ class client{
         int get;
         int del;
         std::string upload;
-        int						max_size;
+        size_t					max_size;
         std::vector<location>	loc;
         std::string				name;
 

@@ -21,10 +21,11 @@ void	HttpRequest::parseBody(size_t &bodypos, client *cl) {
 			if (cl->max_size >= _bodySize) {//should check the max body in the conf file >= _bodySize
 				if ((this->_method == "post") && this->_uri.find(".py") == std::string::npos
 					&& this->_uri.find(".rb") == std::string::npos) {
-						if (cl->post == 1) {
+						if (cl->post == 1) //isMethodAllowed
+						{
 							std::string	file = _randomName();
 							// std::string	uploadPath = _findUploadPath(cl);
-			// 				_creatFile(uploadPath + file, this->_body);
+			//_creatFile(uploadPath + file, this->_body);
 			// 				//should check if the _method is within the allowed method in the conf file
 			// 				//should check the uri and location
 			// 				//should generate a random file name and find the uploadPath

@@ -1,5 +1,5 @@
 #ifndef PARSEREQUEST_HPP
-#define PARSEREQUEST_HPP
+# define PARSEREQUEST_HPP
 
 // #include "../headers/header.hpp"
 #include "../multuplixing/multuplixing.hpp"
@@ -12,6 +12,7 @@
 #include <map>
 #include <sstream>
 #include <iomanip>
+#include <iterator>
 
 class server;
 class conf;
