@@ -60,7 +60,7 @@ class location{
         // same as the server just if we don't have like the root in
         //the location it will set to the server root par default
         std::string index;
-        std::string name;
+        std::string name; //name of location (profile/ name/)
         std::string theLoc;
         std::string root;
         std::string redirection;
@@ -123,7 +123,7 @@ class server{
         int			index_number;
         std::string error_page; //error pages path 404 403 etc mazal mamriglin 100%
         int			error_page_number;
-        std::string name; //name of server
+        std::string name; //name of server (localhost)
         int			name_number;
         std::string mySer;
         std::string redirection; //the redirection path
