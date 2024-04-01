@@ -8,7 +8,8 @@ SRC =   configFile/config.cpp \
 		multuplixing/sockets.cpp multuplixing/mulTools.cpp \
 		configFile/tools.cpp configFile/tools2.cpp \
 		configFile/tools3.cpp request/parseRequest.cpp \
-		request/requestBody.cpp
+		request/requestBody.cpp methodes/post_common_utils.cpp \
+		
 
 all : $(NAME) $(SRC) 
 

@@ -69,6 +69,29 @@ class server{
     public:
         server();
         server(int n) : number(n){};
+        server(const server& copy)
+        {
+            this->autoindex = copy.autoindex;
+            this->listen = copy.listen;
+            this->post = copy.post;
+            this->get = copy.get;
+            this->deletee = copy.deletee;
+            this->max_size = copy.max_size;
+            this->methodes_number = copy.methodes_number;
+            this->locationsNumber = copy.locationsNumber;
+            this->index = copy.index;
+            this->error_page = copy.error_page;
+            this->redirection = copy.redirection;
+            this->root = copy.root;
+            this->uploads = copy.uploads;
+            for (int i = 0; i < this->locationsNumber; i++)
+                this->loc[i] = copy.loc[i];
+        }
+        // server& operator=(const server& other)
+        // {
+        //     this->autoindex = other.autoindex;
+        //     return *this;
+        // }
         // server(u)
         int socketAddr;
         int sock;

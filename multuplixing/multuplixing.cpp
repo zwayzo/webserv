@@ -46,7 +46,7 @@ void multuplixing(conf* conf)
                     client tmp;
                     tmp =  attachClientServer(i, conf, tmp, in, newFd);
                     tmp.req.first = 0;
-                    std::cout << "up: " << tmp.req.first << "\n";
+                    // std::cout << "up: " << tmp.req.first << "\n";
                     in++;
                     mycl.insert(std::pair<int, client>(newFd, tmp));
                     conf->vec.push_back(newFd);
@@ -65,36 +65,16 @@ void multuplixing(conf* conf)
                         //  if (nbytes > 0)
                         //     parseHttpRequest(iter->second.req.buff, nbytes);
                         std::cout << iter->second.req.buff << '\n';
-                        //this will be removed after the parse will be ready
-                        //--------------------------------
-                        if (nbytes != 0 && iter->second.req.method <= 0 && iter->second.post)
-                            getMethodes(iter->second.req.buff, &iter->second);
-                        else if (nbytes == -1)
-                            throw ("error in recv\n");
-                        if (iter->second.req.post == 1)
-                            post(iter, i, nbytes);
-                        printf("%lld|%lld\n", iter->second.req.track, iter->second.req.contentLenght);
-                        //----------------------------------
+                        post_contentLenght(iter, i, nbytes);
                         if (nbytes > 0){
                             if (iter->second.req.track >= iter->second.req.contentLenght){
                                 printf("time to clear\n");
                                 clearSets(&iter->second, i, &iter->second.req.track, &iter->second.req.first, &master_re, &master_wr);
                             }
                         }
-                        //working on request workRequest(buf);
                     }
                     if(FD_ISSET(i, &write_fds)){
-                        // std::map<int, client>::iterator iter = mycl.lower_bound(i);
-                        // std::cout << "----------- : fd: | " << iter->second.fd << " |\n";
-                        // client client = iter->second;
-                        // std::cout << "in write : ----------------| " << i << " |---------------\n";
-                        printf("not new connection in write\n");
-
-                        // std::map<int, client>::iterator it;
-                        // for (it = mycl.begin(); it != mycl.end(); ++it) {
-                        //     std::cout << "loop ----------------- : " << it->first << ": " << it->second.req.fd << std::endl;
-                        // }
-
+                       printf("not new connection in write\n");
                         send(i, "slma", 5, 0);
                         //send response
                         FD_CLR(i, &master_wr);

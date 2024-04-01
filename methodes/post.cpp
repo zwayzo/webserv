@@ -15,9 +15,13 @@ void getMethodes(std::string buf, client *cl) //check if the method is post to w
 
     cl->req.method = 1;
     if (std::strncmp(buf.c_str(), "POST", 4) == 0)
-        cl->req.post = 1;
+    {
+        if (cl->post)
+            cl->req.post = 1;
+        else 
+            std::cout << "Sorry can't post\n";
+    }
 
-    printf("-------------- getting methode -------- post:%d\n", cl->req.post);
 }
  
 void getRequestLenght(char *buf, client *cl) //get the request lenght of post so to know how many time i nead to read(post)
