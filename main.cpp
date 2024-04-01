@@ -12,21 +12,28 @@ int main(int ac, char **av)
     else
         conFile = "configFile.conf";
 
+    
     conf *config = new conf;
+    multuplix *multup = new multuplix;
     try{
-        config = fileConfiguration(config, conFile);
-        multuplixing(config);
+        config = fileConfiguration(config, "configFile.conf");
+        multup->multuplixing(config);
 
-    } catch (const char *x) {
+    }
+    catch (const char *x)
+    {
         // std::cout << "enter\n";
         std::cout << x << '\n' << "errno set to " <<  strerror(errno) << '\n';
         exit(1);
-    } catch (...) {
+    }
+    catch (...)
+    {
         std::cout << "unhandled exception...!\n";
     }
     for (int i = 0;i < config->serversNumber; i++)
         delete config->ser[i].info;
     delete (config);
+    delete multup;
 
     return 0;
 }

@@ -2,6 +2,59 @@
 
 server::server() {}
 
+server::server(int n) : number(n){}
+
+server::server(const server& copy) {
+        this->post = copy.post;
+		this->get = copy.get;
+        this->deletee = copy.deletee;
+        this->methodes_number = copy.methodes_number;
+        this->locationsNumber = copy.locationsNumber;
+
+		this->name = copy.name;
+        this->listen = copy.listen;
+        this->autoindex = copy.autoindex;
+        this->max_size = copy.max_size;
+		this->root = copy.root;
+        this->uploads = copy.uploads;
+        this->error_page = copy.error_page;
+        this->index = copy.index;
+		this->redirection = copy.redirection;
+            // Copy the location objects
+		this->loc.resize(copy.loc.size()); // Ensure the same size
+		for (size_t i = 0; i < copy.loc.size(); ++i) {
+        	this->loc[i] = copy.loc[i]; // Assuming location has a proper copy constructor
+    }
+}
+
+server& server::operator=(const server& copy) {
+    if (this != &copy) {
+		this->post = copy.post;
+		this->get = copy.get;
+        this->deletee = copy.deletee;
+        this->methodes_number = copy.methodes_number;
+        this->locationsNumber = copy.locationsNumber;
+
+		this->name = copy.name;
+        this->listen = copy.listen;
+        this->autoindex = copy.autoindex;
+        this->max_size = copy.max_size;
+		this->root = copy.root;
+        this->uploads = copy.uploads;
+        this->error_page = copy.error_page;
+        this->index = copy.index;
+		this->redirection = copy.redirection;
+            // Copy the location objects
+		this->loc.resize(copy.loc.size()); // Ensure the same size
+		for (size_t i = 0; i < copy.loc.size(); ++i) {
+        	this->loc[i] = copy.loc[i]; // Assuming location has a proper copy constructor
+    	}
+    }
+	*this = copy;
+}
+
+server::~server() {}
+
 void stockLocation(conf *conf, int indice)
 {
     int i = 0, j = 0;

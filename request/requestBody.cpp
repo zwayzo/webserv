@@ -1,18 +1,18 @@
 #include "../multuplixing/multuplixing.hpp"
 #include "HttpRequest.hpp"
 
-void	HttpRequest::findServer(client *cl) {
+void	HttpRequest::findServer() {
 	if (headers.find("Host") != headers.end()) {
 		std::string host = headers["Host"];
-		if (cl->name == host || cl->name+":"+toString(cl->port) == host) {
-				this->_servName = cl->name;
+		if (this->_confServ.name == host) {
+				= cl->name;
 				return ;
 		}
 	}
 }
 
 void	HttpRequest::parseBody(size_t &bodypos, client *cl) {
-	findServer(cl); //which server if there is multiple ones
+	findServer(); //which server if there is multiple ones
 	int contentLength = 0;
 	if (is_body(contentLength, cl)) {
 		if (this->isChunked) {

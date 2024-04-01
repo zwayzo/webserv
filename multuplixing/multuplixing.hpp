@@ -3,37 +3,19 @@
 
 #include "../headers/header.hpp"
 #include "../request/request.hpp"
-#include "../request/parseRequest.hpp"
-// #include "../response/Response.hpp"
+#include "../request/HttpRequest.hpp"
+#include "../multuplixing/client.hpp"
 
-class request;
-// class HttpRequest;
-
-class client{
+class multuplix{
     public:
-        request req;
-        int port;
-        int post;
-        int get;
-        int del;
-        std::string upload;
-        size_t					max_size;
-        std::vector<location>	loc;
-        std::string				name;
+        std::map <int, client>		mycl;
+		std::map<int, HttpRequest>	_httpRequest;
 
-    public:
-        int     creatFile(int fd, char *buf);
-        void    getMethodes(std::string buf);
-        // deujks
+        multuplix(){};
+        multuplix(multuplix &copy){(void)copy;};
+        ~multuplix(){};
+        void multuplixing(conf* conf);
 };
 
-// std::vector <client> mycl;
-
-class conf;
-void multuplixing (conf *conf);
-void getMethodes(std::string buf, client *cl); //check if the method is post to work with
-void handleCtrlZ(int signum);
-int maxFd(conf* conf);
-client attachClientServer(int i, conf *conf, client tmp, int in, int newFd);
 
 #endif

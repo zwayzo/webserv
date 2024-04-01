@@ -1,21 +1,33 @@
 #include "configFile.hpp"
-
+#include "unistd.h"
 
 int storeLocationValue(server &ser, int n, int number)
 {
     ser.loc[number].autoindex = 2;
-    ser.loc[number].root = ser.root;
-    ser.loc[number].index = ser.index;
+    // ser.loc[number].root = ser.root;
+    // ser.loc[number].index = ser.index;
     // std::cout << "in\n";
-    int i = n + 9;
+    int i = n ;
     // std::cout << "i is:" << i << '\n';
-    while (ser.mySer[i] != '{')
-        i++;
-    i += 2;
-    int in=0, ro=0, red=0, au=0;
+    // while (ser.mySer[i] != '{')
+    //     i++;
+    // i += 2;
+    int in=0, ro=0, red=0, au=0, na=0;
     while (ser.mySer[i] != '}')
     {
-        if (std::strncmp(&ser.mySer[i], "index", 5) == 0)
+        if (std::strncmp(&ser.mySer[i], "location", 8) == 0)
+        {
+            // exit(0);
+            na++;
+            i += 9;
+            for (;ser.mySer[i] != '{'; i++){
+                ser.loc[number].name.push_back(ser.mySer[i]);
+            }
+            i += 1;
+            //     printf("%s\n", &ser.mySer[i]);
+            // exit(1);
+        }
+        else if (std::strncmp(&ser.mySer[i], "index", 5) == 0)
         {
             in++;
             i = i + 6;
@@ -85,13 +97,14 @@ int storeLocationValue(server &ser, int n, int number)
         i++;
     }
     if (in == 0)
-        ser.loc[number].index[0] = '\0';
+        ser.loc[number].index = ser.index;
     if (ro == 0)
-        ser.loc[number].root[0] = '\0';
+        ser.loc[number].root = ser.root;
     if (red == 0)
-        ser.loc[number].redirection[0] = '\0';
-    if (in == 0)
-        ser.loc[number].index[0] = '\0';
+        ser.loc[number].redirection = ser.redirection;
+    printf("-->{%s}\n", ser.redirection.c_str());
+    printf("{%s}\n", ser.loc[number].redirection.c_str());
+    // if (in == 0)
         // printf("%d|%d|%d\n",in,ro,red);
     // if (in != 1 || ro != 1 || red > 1)
     //     throw ("error depulacte in (index, root, or redirection)");
@@ -101,8 +114,7 @@ int storeLocationValue(server &ser, int n, int number)
 
 void checkPrototype(server &ser)
 {
-    int i = 0 ,j = 0, n = 0;
-    int x = 0;
+    int i = 0 ,j = 0, n = 0, x = 0;
     while (ser.mySer[i])
     {
         i = j;
@@ -116,6 +128,8 @@ void checkPrototype(server &ser)
         x++;
         if (ser.mySer[j] == '\0')
             break;
+        // write(1, &ser.mySer[i], n);
+        // printf("'  %d\n\n", n);
         if (std::strncmp("name", &ser.mySer[i],  n) && std::strncmp("listen", &ser.mySer[i], n) && std::strncmp("root", &ser.mySer[i], n)
         && std::strncmp("error_page", &ser.mySer[i], n) && std::strncmp("max_body", &ser.mySer[i], n) && std::strncmp("location", &ser.mySer[i], n)
         && std::strncmp("index", &ser.mySer[i], n) && std::strncmp("methodes", &ser.mySer[i], n) && std::strncmp("redirection", &ser.mySer[i], n)
@@ -165,9 +179,10 @@ std::string getTheFileInOneString(std::string file)
     
 }
 
+
 void checkConfigFileRules(server &ser)
 {
-    printf("%d\n", ser.index_number);
+    printf("%d\n", ser.root_number);
     if (ser.index_number != 1)
         throw ("eroor in index number");
     if (!ser.error_page_number)
@@ -188,4 +203,13 @@ void checkConfigFileRules(server &ser)
         throw ("eroor in max_size number");
     if (ser.methodes_number != 1)
         throw ("eroor in methodes number");
+    if (ser.locationsNumber != 1)
+        throw ("eroor in location number");
+}
+
+int skipLocation(server &ser, int i)
+{
+    while (ser.mySer[i] != '}')
+        i++;
+    return (i + 1);
 }

@@ -1,9 +1,9 @@
-#include "../multuplixing/multuplixing.hpp"
+#include "../multuplixing/client.hpp"
 #include "post.hpp"
 
 int randomNum() //get rendom number to add it in file[number].extention (post method)
 {
-    std::srand(static_cast<unsigned int>(std::time(NULL)));
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
     
     // Generate a random number between 1 and 1000
     return ((std::rand() % 1000) + 1);
@@ -12,12 +12,17 @@ int randomNum() //get rendom number to add it in file[number].extention (post me
 
 void getMethodes(std::string buf, client *cl) //check if the method is post to work with
 {
-    // printf("her\n");
+
     cl->req.method = 1;
-    // printf("%s\n", buf.c_str());
-    // exit(1);
+
     if (std::strncmp(buf.c_str(), "POST", 4) == 0)
-        cl->req.post = 1;
+    {
+        if (cl->clientServer.post)
+            cl->req.post = 1;
+        else 
+            std::cout << "Sorry can't post\n";
+    }
+
 }
  
 void getRequestLenght(char *buf, client *cl) //get the request lenght of post so to know how many time i nead to read(post)
@@ -36,7 +41,7 @@ void getRequestLenght(char *buf, client *cl) //get the request lenght of post so
     else
         cl->req.contentLenght = std::atoi(t.c_str());
     }
-    std::cout << "contentLenght: ----------------| " << cl->req.contentLenght << " |\n";
+    // std::cout << "contentLenght: ----------------| " << cl->req.contentLenght << " |\n";
 }
 
 std::map<int, client>::iterator post(std::map<int, client>::iterator iter, int i, int nbytes)

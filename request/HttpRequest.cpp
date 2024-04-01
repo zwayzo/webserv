@@ -2,13 +2,27 @@
 #include "HttpRequest.hpp"
 
 HttpRequest::HttpRequest() :
+	_clSocket(-1),
+	_confServ(),
+	_serv(),
+	_method(""),
+	_uri(""),
+	httpVersion(""),
+	_request(""),
+	isChunked(false),
+	_body(""), _bodySize(0),
+	_err(0) {
+}
+
+HttpRequest::HttpRequest(int clSock, server clientServ) :
+	_clSocket(clSock),
+	_confServ(clientServ),
+	_serv(),
 	_method(""),
 	_uri(""),
 	httpVersion(""),
 	_request(""),
 	isChunked(false), _body(""), _bodySize(0),
-	_servName(""),
-	// _servers(),
 	_err(0) {
 }
 
@@ -26,7 +40,6 @@ std::string toLower(const std::string& str)
 
 void HttpRequest::parseHttpRequest(const char* buf, int nbytes, client *cl)
 {
-    // HttpRequest 		httpRequest;
 	std::string	tmp(buf, nbytes);
 	this->_request = tmp;
     std::istringstream	requestStream(this->_request);
@@ -56,7 +69,7 @@ void HttpRequest::parseHttpRequest(const char* buf, int nbytes, client *cl)
 			size_t bodypos = static_cast<size_t>(endHdrPos);
 			std::cout << "Pos aprs Header: " << bodypos << std::endl;
 
-			this->_port = cl->port;
+			this->_port = this->_confServ.listen;
 			parseBody(bodypos, cl);
 			//shouldHandleDelete
 		}

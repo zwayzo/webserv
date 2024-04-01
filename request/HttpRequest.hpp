@@ -31,6 +31,9 @@ std::string toString(const T& value) {
 class HttpRequest {
 
     public:
+		int			_clSocket;
+		server		_confServ;
+		server		_serv;
         std::string _method;
         std::string _uri;
         std::string httpVersion;
@@ -42,12 +45,11 @@ class HttpRequest {
         bool				isChunked;
 		std::string 		_body;
 		size_t				_bodySize;
-		std::string			_servName;
 		int					_port;
 		int					_err;
-		// bool            _firstCheck;
 
         HttpRequest();
+        HttpRequest(int clSocket, server clientServ);
         ~HttpRequest();
         bool is_body(int& contentLength, client *cl);
         void parseHeaders(const std::string& headersPart);

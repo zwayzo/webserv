@@ -1,4 +1,6 @@
 #include "multuplixing.hpp"
+#include "multuplixing.hpp"
+#include "client.hpp"
 client&	returnClient(std::map<int, client> mycl, int i)
 {
 	std::map<int, client>::iterator iter = mycl.lower_bound(i);
@@ -8,17 +10,16 @@ client&	returnClient(std::map<int, client> mycl, int i)
 	// std::cout << "second fd : " << iter->second.clientFd << "\n";
 	// std::cout << "HELLLO : " << iter->second.stageForClient << std::endl;
 	return (iter->second);
-} 
+}
 
-void multuplixing(conf* conf)
+void	multuplix::multuplixing(conf* conf)
 {
-    std::map <int, client> mycl;
     fd_set master_re, master_wr, read_fds, write_fds;    // master_re file descriptor list
     int maxfd, clSocket, in = 0;
     getSocket(conf);
     maxfd = maxFd(conf);
 
-    FD_ZERO(&master_re);
+	FD_ZERO(&master_re);
     FD_ZERO(&master_wr);
     FD_ZERO(&write_fds);
     FD_ZERO(&read_fds); //clear the sets
@@ -28,7 +29,7 @@ void multuplixing(conf* conf)
         FD_SET(conf->ser[j].sock, &master_re);
     for (;;)
     {
-        read_fds =  master_re;
+		read_fds =  master_re;
         write_fds =  master_wr;
         // printf("waiting...\n");
         if (select(maxfd + 1, &read_fds, &write_fds, NULL, NULL) == -1)
@@ -41,14 +42,15 @@ void multuplixing(conf* conf)
                     if ((clSocket = accept(i, NULL, NULL)) == -1)
                         throw ("ERROR IN ACCEPTING\n");
                     std::cout << "new connection\n";
-                    // printf("accept...\n");
+                    printf("accept...\n");
                     client tmp;
-                    tmp =  attachClientServer(i, conf, tmp, in, clSocket);
-                    std::cout << "up: " << tmp.upload << "\n";
+                    tmp = attachClientServer(i, conf, tmp, in, clSocket);
+                    tmp.req.first = 0;
                     in++;
                     mycl.insert(std::pair<int, client>(clSocket, tmp));
                     conf->vec.push_back(clSocket);
                     FD_SET(clSocket, &master_re);
+					_httpRequest[clSocket] = HttpRequest(clSocket, mycl[clSocket].clientServer);
                     if (clSocket > maxfd)
                         maxfd = clSocket;
                 }
@@ -63,27 +65,23 @@ void multuplixing(conf* conf)
                         int nbytes = recv(i, cl.req.buff, sizeof(cl.req.buff), 0);
                         if (nbytes == -1)
                             throw ("Error: recv failed\n");
-						else if (nbytes == 0) {
-							std::cout << "Disconnected" << std::endl;
-							close(i);
-                            //should close the client connection
-                        }
 						cl.req.buff[nbytes] = '\0';
+						if (nbytes == 0) {
+							std::cout << "Disconnected" << std::endl;
+							_httpRequest.erase(_clSock);
+							close(_clSock); //should close the client connection
+                        }
+						_httpRequest[_clSock].parseHttpRequest(cl.req.buff, nbytes, &cl);
+                        std::cout << _httpRequest[_clSock]._request << '\n';
+
 						//should check th first time body
-						_httpRequest.parseHttpRequest(cl.req.buff, nbytes, &cl);
-						
-                        std::cout << _httpRequest._request << '\n';
-                        if (nbytes != 0 && iter->second.req.method <= 0 && iter->second.post)
-                            getMethodes(iter->second.req.buff, &iter->second);
-                        // if (iter->second.req.post == 1)
-                        //     post(iter, i, nbytes);
+                         post_contentLenght(iter, i, nbytes);
                         if (nbytes > 0){
                             if (iter->second.req.track >= iter->second.req.contentLenght){
                                 printf("time to clear\n");
                                 clearSets(&iter->second, i, &iter->second.req.track, &iter->second.req.first, &master_re, &master_wr);
                             }
                         }
-                        //working on request workRequest(buf);
                     }
                     if(FD_ISSET(i, &write_fds)){
 						// int response = 0;
