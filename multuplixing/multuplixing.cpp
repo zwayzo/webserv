@@ -14,7 +14,7 @@ void multuplixing(conf* conf)
 {
     std::map <int, client> mycl;
     fd_set master_re, master_wr, read_fds, write_fds;    // master_re file descriptor list
-    int maxfd, newFd, in = 0;
+    int maxfd, clSocket, in = 0;
     getSocket(conf);
     maxfd = maxFd(conf);
 
@@ -38,26 +38,27 @@ void multuplixing(conf* conf)
             {
                 if (!validSocket(i, conf))
                 {
-                    if ((newFd = accept(i, NULL, NULL)) == -1)
+                    if ((clSocket = accept(i, NULL, NULL)) == -1)
                         throw ("ERROR IN ACCEPTING\n");
                     std::cout << "new connection\n";
                     // printf("accept...\n");
                     client tmp;
-                    tmp =  attachClientServer(i, conf, tmp, in, newFd);
+                    tmp =  attachClientServer(i, conf, tmp, in, clSocket);
                     std::cout << "up: " << tmp.upload << "\n";
                     in++;
-                    mycl.insert(std::pair<int, client>(newFd, tmp));
-                    conf->vec.push_back(newFd);
-                    FD_SET(newFd, &master_re);
-                    if (newFd > maxfd)
-                        maxfd = newFd;
+                    mycl.insert(std::pair<int, client>(clSocket, tmp));
+                    conf->vec.push_back(clSocket);
+                    FD_SET(clSocket, &master_re);
+                    if (clSocket > maxfd)
+                        maxfd = clSocket;
                 }
                 else
                 {
+                    std::map<int, client>::iterator iter = mycl.lower_bound(i); //iter to the client with the same socket as the server
+					int _clSock = iter->first;
                     if (FD_ISSET(i, &read_fds)){
-                        std::map<int, client>::iterator iter = mycl.lower_bound(i);
                         client cl = iter->second;
-                        std::cout << "client upload is : ----------------| " << cl.post << " |---------------\n";
+                        // std::cout << "client upload is : ----------------| " << cl.post << " |---------------\n";
 
                         int nbytes = recv(i, cl.req.buff, sizeof(cl.req.buff), 0);
                         if (nbytes == -1)
@@ -69,9 +70,9 @@ void multuplixing(conf* conf)
                         }
 						cl.req.buff[nbytes] = '\0';
 						//should check th first time body
-						cl.httpRequest.parseHttpRequest(cl.req.buff, nbytes, &cl);
+						_httpRequest.parseHttpRequest(cl.req.buff, nbytes, &cl);
 						
-                        std::cout << cl.httpRequest._request << '\n';
+                        std::cout << _httpRequest._request << '\n';
                         if (nbytes != 0 && iter->second.req.method <= 0 && iter->second.post)
                             getMethodes(iter->second.req.buff, &iter->second);
                         // if (iter->second.req.post == 1)

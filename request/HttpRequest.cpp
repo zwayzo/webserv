@@ -1,5 +1,5 @@
 #include "../multuplixing/multuplixing.hpp"
-#include "parseRequest.hpp"
+#include "HttpRequest.hpp"
 
 HttpRequest::HttpRequest() :
 	_method(""),

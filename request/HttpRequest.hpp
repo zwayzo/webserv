@@ -1,5 +1,5 @@
-#ifndef PARSEREQUEST_HPP
-# define PARSEREQUEST_HPP
+#ifndef HTTPREQUEST_HPP
+# define HTTPREQUEST_HPP
 
 // #include "../headers/header.hpp"
 #include "../multuplixing/multuplixing.hpp"
@@ -20,6 +20,13 @@ class client;
 
 int     hextoint(const std::string str);
 std::string toLower(const std::string& str);
+
+template <typename T>
+std::string toString(const T& value) {
+    std::ostringstream oss;
+    oss << value;
+    return oss.str();
+}
 
 class HttpRequest {
 

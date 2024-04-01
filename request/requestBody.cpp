@@ -1,10 +1,10 @@
 #include "../multuplixing/multuplixing.hpp"
-#include "parseRequest.hpp"
+#include "HttpRequest.hpp"
 
 void	HttpRequest::findServer(client *cl) {
 	if (headers.find("Host") != headers.end()) {
 		std::string host = headers["Host"];
-		if (cl->name == host || cl->name+":"+std::to_string(cl->port) == host) {
+		if (cl->name == host || cl->name+":"+toString(cl->port) == host) {
 				this->_servName = cl->name;
 				return ;
 		}
@@ -18,18 +18,18 @@ void	HttpRequest::parseBody(size_t &bodypos, client *cl) {
 		if (this->isChunked) {
 			_getChunkedBody(bodypos, cl);
 			this->_bodySize = this->_body.size();
-			if (cl->max_size >= _bodySize) {//should check the max body in the conf file >= _bodySize
+			if (cl->max_size >= this->_bodySize) {//should check the max body in the conf file >= _bodySize
 				if ((this->_method == "post") && this->_uri.find(".py") == std::string::npos
 					&& this->_uri.find(".rb") == std::string::npos) {
 						if (cl->post == 1) //isMethodAllowed
 						{
 							std::string	file = _randomName();
 							// std::string	uploadPath = _findUploadPath(cl);
-			//_creatFile(uploadPath + file, this->_body);
-			// 				//should check if the _method is within the allowed method in the conf file
-			// 				//should check the uri and location
-			// 				//should generate a random file name and find the uploadPath
-			// 				//should create the file
+							//_creatFile(uploadPath + file, this->_body);
+							//should check if the _method is within the allowed method in the conf file
+							//should check the uri and location
+							//should generate a random file name and find the uploadPath
+							//should create the file
 						}
 						else
 							this->_err = 405; //Method Not Allowed
@@ -39,27 +39,28 @@ void	HttpRequest::parseBody(size_t &bodypos, client *cl) {
 				this->_err = 413; /*Content Too Large response status code indicates that
 			the request entity is larger than limits defined by server*/
 		}
+		// else if (contentLength > 0)
+			// {
+			//     std::vector<char> bodyBuffer(contentLength);
+			//     requestStream.read(&bodyBuffer[0], contentLength);
+			//     std::string body(bodyBuffer.begin(), bodyBuffer.end());
+			//     std::cout << "Corps RQ: " << body << std::endl;
+			// }
 	}
 	else {
-		std::cout << "NO BODY FOUND*******" << std::endl;
+		std::cout << "NO BODY FOUND*******" << std::endl; //3andna GET wla DELETE
 	}
-    // else if (contentLength > 0)
-        // {
-        //     std::vector<char> bodyBuffer(contentLength);
-        //     requestStream.read(&bodyBuffer[0], contentLength);
-        //     std::string body(bodyBuffer.begin(), bodyBuffer.end());
-        //     std::cout << "Corps RQ: " << body << std::endl;
-        // }
 }
 
 bool HttpRequest::is_body(int& contentLength, client *cl)
 {
 	(void)cl;
-	contentLength = 0;
+	// contentLength = 0;
 
     //find contenu dial content-lenght
-    if (headers.find("Content-Length") != headers.end()) {
-        contentLength = atoi(it->second.c_str());
+	std::map<std::string, std::string>::iterator iter = headers.find("Content-Length");
+    if (iter != headers.end()) {
+        contentLength = atoi(iter->second.c_str());
         return true; // true l9inaah
     }
 	std::string transfer_encod("Transfer-Encoding");

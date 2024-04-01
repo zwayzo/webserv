@@ -12,8 +12,6 @@ class request;
 class client{
     public:
         request req;
-        HttpRequest httpRequest;
-        // Response    httpResponse;
         int port;
         int post;
         int get;
