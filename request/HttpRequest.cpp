@@ -4,7 +4,6 @@
 HttpRequest::HttpRequest() :
 	_clSocket(-1),
 	_confServ(),
-	_serv(),
 	_method(""),
 	_uri(""),
 	httpVersion(""),
@@ -17,12 +16,12 @@ HttpRequest::HttpRequest() :
 HttpRequest::HttpRequest(int clSock, server clientServ) :
 	_clSocket(clSock),
 	_confServ(clientServ),
-	_serv(),
 	_method(""),
 	_uri(""),
 	httpVersion(""),
 	_request(""),
-	isChunked(false), _body(""), _bodySize(0),
+	isChunked(false),
+	_body(""), _bodySize(0),
 	_err(0) {
 }
 
@@ -38,7 +37,7 @@ std::string toLower(const std::string& str)
     return lowerStr;
 }
 
-void HttpRequest::parseHttpRequest(const char* buf, int nbytes, client *cl)
+void HttpRequest::parseHttpRequest(const char* buf, int nbytes)
 {
 	std::string	tmp(buf, nbytes);
 	this->_request = tmp;
@@ -70,7 +69,7 @@ void HttpRequest::parseHttpRequest(const char* buf, int nbytes, client *cl)
 			std::cout << "Pos aprs Header: " << bodypos << std::endl;
 
 			this->_port = this->_confServ.listen;
-			parseBody(bodypos, cl);
+			parseBody(bodypos);
 			//shouldHandleDelete
 		}
 	}

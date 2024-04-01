@@ -33,7 +33,6 @@ class HttpRequest {
     public:
 		int			_clSocket;
 		server		_confServ; //Config Serv of the required client
-		server		_serv;
         std::string _method;
         std::string _uri;
         std::string httpVersion;
@@ -51,7 +50,7 @@ class HttpRequest {
         HttpRequest();
         HttpRequest(int clSocket, server clientServ);
         ~HttpRequest();
-        void parseHttpRequest(const char* buf, int nbytes, client *cl);
+        void parseHttpRequest(const char* buf, int nbytes);
         void parseHeaders(const std::string& headersPart);
         void printHeaders() const ;
 
@@ -61,7 +60,7 @@ class HttpRequest {
 
         //body (chunked)
         bool	is_body(int& contentLength);
-        void    parseBody(size_t &bodypos, client *cl);
+        void    parseBody(size_t &bodypos);
         void	_getChunkedBody(size_t &bodypos);
         // void    findServer();
 

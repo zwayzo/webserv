@@ -12,7 +12,7 @@
 	// }
 // }
 
-void	HttpRequest::parseBody(size_t &bodypos, client *cl) {
+void	HttpRequest::parseBody(size_t &bodypos) {
 	// findServer(); //which server if there is multiple ones
 	int contentLength = 0;
 	if (is_body(contentLength)) {
@@ -113,9 +113,7 @@ bool	HttpRequest::_methodExist(void) {
 		} //update the method vector
 	}
 		// Check if the request method is found in the vect of allowed methods
-    if (std::find(_isAllowedMeth.begin(), _isAllowedMeth.end(), this->_method) != _isAllowedMeth.end())
-        return true; // Method is allowed
-    return false; // Method is not allowed
+    return (std::find(_isAllowedMeth.begin(), _isAllowedMeth.end(), this->_method) != _isAllowedMeth.end());
 }
 
 std::string	HttpRequest::_findUploadPath(void) {

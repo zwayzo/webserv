@@ -51,6 +51,7 @@ void	multuplix::multuplixing(conf* conf)
                     conf->vec.push_back(clSocket);
                     FD_SET(clSocket, &master_re);
 					_httpRequest[clSocket] = HttpRequest(clSocket, mycl[clSocket].clientServer);
+					// _httpResponse[clSocket] = HttpResponse(clSocket, mycl[clSocket].clientServer);
                     if (clSocket > maxfd)
                         maxfd = clSocket;
                 }
@@ -69,13 +70,14 @@ void	multuplix::multuplixing(conf* conf)
 						if (nbytes == 0) {
 							std::cout << "Disconnected" << std::endl;
 							_httpRequest.erase(_clSock);
+							// _httpResponse.erase(_clSock);
 							close(_clSock); //should close the client connection
                         }
-						_httpRequest[_clSock].parseHttpRequest(cl.req.buff, nbytes, &cl);
+						_httpRequest[_clSock].parseHttpRequest(cl.req.buff, nbytes);
                         std::cout << _httpRequest[_clSock]._request << '\n';
 
 						//should check th first time body
-                         post_contentLenght(iter, i, nbytes);
+                        post_contentLenght(iter, i, nbytes);
                         if (nbytes > 0){
                             if (iter->second.req.track >= iter->second.req.contentLenght){
                                 printf("time to clear\n");
@@ -85,30 +87,18 @@ void	multuplix::multuplixing(conf* conf)
                     }
                     if(FD_ISSET(i, &write_fds)){
 						// int response = 0;
-						// if (cl.httpRequest._err == 0 && (cl.httpRequest._uri.find(".py") != std::string::npos
-						// 	|| cl.httpRequest._uri.find(".rb") != std::string::npos)) {
+						// if (_httpRequest._err == 0) {
 						// 	//CGI handler
 						// 	//cgi Done
 						// 	//send resp
+						// response = _httpResponse[_clSock].sendResponse(_httpRequest[_clSock], _cgi);
 						// }
 						// else {
 						// 	//send response
-						// 	// _response[i] = Response(i, conf->ser);
-						// 	//response = cl.httpResponse.sendResponse(cl.httpRequest, NULL);//NULL MEANS NO CGI
-						// 	response = cl.httpResponse.sendResponse(cl.httpRequest);
+						// 	//response = httpResponse.sendResponse(_httpRequest[_clSock], NULL);//NULL MEANS NO CGI
 						// }
-                        // std::map<int, client>::iterator iter = mycl.lower_bound(i);
-                        // std::cout << "----------- : fd: | " << iter->second.fd << " |\n";
-                        // client client = iter->second;
-                        // std::cout << "in write : ----------------| " << i << " |---------------\n";
-                        printf("not new connection in write\n");
-
-                        // std::map<int, client>::iterator it;
-                        // for (it = mycl.begin(); it != mycl.end(); ++it) {
-                        //     std::cout << "loop ----------------- : " << it->first << ": " << it->second.req.fd << std::endl;
-                        // }
-
-                        send(i, "slma", 5, 0);
+                        // printf("not new connection in write\n");
+                        // send(i, "slma", 5, 0);
                         //send response
                         FD_CLR(i, &master_wr);
                         close (i);
