@@ -24,7 +24,7 @@ void	HttpRequest::parseBody(size_t &bodypos) {
 					&& this->_uri.find(".rb") == std::string::npos) {
 						if (_methodExist()) //isMethodAllowed
 						{
-							std::string	file = _randomName();
+							std::string	file = _generateTempFileName();
 							std::string	uploadPath = _findUploadPath();
 							_creatFile(uploadPath + file, this->_body);
 							//should check the uri and location
@@ -140,7 +140,7 @@ void	HttpRequest::_creatFile(std::string name, std::string reqBody) {
 	}
 }
 
-std::string	HttpRequest::_randomName(void) {
+std::string	HttpRequest::_generateTempFileName(void) {
 	const std::string	alphanum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-&$@(#)";
 	std::string			randName = "";
 	std::srand(static_cast<unsigned int>(time(NULL)));

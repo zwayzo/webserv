@@ -74,10 +74,10 @@ void	multuplix::multuplixing(conf* conf)
 							close(_clSock); //should close the client connection
                         }
 						_httpRequest[_clSock].parseHttpRequest(cl.req.buff, nbytes);
-                        std::cout << _httpRequest[_clSock]._request << '\n';
+                        // std::cout << _httpRequest[_clSock]._request << '\n';
 
 						//should check th first time body
-                        post_contentLenght(iter, i, nbytes);
+                        // post_contentLenght(iter, i, nbytes);
                         if (nbytes > 0){
                             if (iter->second.req.track >= iter->second.req.contentLenght){
                                 printf("time to clear\n");

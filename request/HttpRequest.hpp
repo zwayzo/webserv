@@ -30,7 +30,7 @@ std::string toString(const T& value) {
 
 class HttpRequest {
 
-    public:
+	private:
 		int			_clSocket;
 		server		_confServ; //Config Serv of the required client
         std::string _method;
@@ -47,6 +47,7 @@ class HttpRequest {
 		int					_port;
 		int					_err;
 
+	public:
         HttpRequest();
         HttpRequest(int clSocket, server clientServ);
         ~HttpRequest();
@@ -56,7 +57,6 @@ class HttpRequest {
 
         void parseRequestLine(const std::string& reqLine);
         void parseURI(void);
-        // void requestRequest();
 
         //body (chunked)
         bool	is_body(int& contentLength);
@@ -66,7 +66,7 @@ class HttpRequest {
 
 		//Allowed methods and randName
 		bool		_methodExist(void);
-		std::string	_randomName(void);
+		std::string	_generateTempFileName(void);
 		std::string	_findUploadPath(void);
 		void		_creatFile(std::string name, std::string reqBody);
 };

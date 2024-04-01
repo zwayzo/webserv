@@ -77,7 +77,7 @@ class server{
         server();
         server(int n);
         server(const server& copy);
-        server& server::operator=(const server& copy);
+        server& operator=(const server& copy);
         ~server();
 
         //--------

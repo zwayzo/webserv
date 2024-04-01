@@ -50,7 +50,7 @@ server& server::operator=(const server& copy) {
         	this->loc[i] = copy.loc[i]; // Assuming location has a proper copy constructor
     	}
     }
-	*this = copy;
+	return *this;
 }
 
 server::~server() {}

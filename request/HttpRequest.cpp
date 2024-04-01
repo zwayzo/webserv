@@ -58,7 +58,7 @@ void HttpRequest::parseHttpRequest(const char* buf, int nbytes)
 	if (this->_err != 400)
 	{
 		parseURI();
-		if (this->_err != 403)
+		if (this->_err != 414)
 		{
 			while (std::getline(requestStream, line) && !line.empty() && line != "\r")
 				headersPart += line + "\n";
@@ -67,7 +67,7 @@ void HttpRequest::parseHttpRequest(const char* buf, int nbytes)
 			std::streampos endHdrPos = requestStream.tellg();
 			size_t bodypos = static_cast<size_t>(endHdrPos);
 			std::cout << "Pos aprs Header: " << bodypos << std::endl;
-
+            
 			this->_port = this->_confServ.listen;
 			parseBody(bodypos);
 			//shouldHandleDelete
