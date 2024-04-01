@@ -39,8 +39,9 @@ void	HttpRequest::parseBody(size_t &bodypos, client *cl) {
 			the request entity is larger than limits defined by server*/
 		}
 	}
-	else
+	else {
 		std::cout << "NO BODY FOUND*******" << std::endl;
+	}
     // else if (contentLength > 0)
         // {
         //     std::vector<char> bodyBuffer(contentLength);
@@ -54,23 +55,30 @@ bool HttpRequest::is_body(int& contentLength, client *cl)
 {
 	(void)cl;
 	contentLength = 0;
-	std::string transfer_encod("Transfer-Encoding");
 
+    //find contenu dial content-lenght
+    if (headers.find("Content-Length") != headers.end()) {
+        contentLength = atoi(it->second.c_str());
+        return true; // true l9inaah
+    }
+	std::string transfer_encod("Transfer-Encoding");
 	if (headers.find("Transfer-Encoding") != headers.end() \
 		&& headers[transfer_encod].find("chunked") != std::string::npos) {
 		this->isChunked = true;
 		return true;
 	}
-	if (toLower(this->_method) == "post")
-		return true;
-
-    //find contenu dial content-lenght
-    // std::map<std::string, std::string>::const_iterator it = headers.find("Content-Length");
-    // if (it != headers.end())
-    // {
-    //     contentLength = atoi(it->second.c_str());
-    //     return true; // true l9inaah
-    // }
+	else if (headers.find("Transfer-Encoding") != headers.end() \
+		&& headers[transfer_encod].find("chunked") == std::string::npos) {
+		this->_err = 501; //Not implemented
+		return false;
+	}
+	else if (this->_method == "post" && headers.find("Content-Length") == headers.end()
+		&& headers.find("Transfer-Encoding") == headers.end()) {
+		this->_err = 400; //Bad Request
+		return false;
+	}
+	// if (toLower(this->_method) == "post")
+	// 	return true;
 	return false; //ayaetina makaynch body but we should first check l function li qade loujdi hit howa li mqade contentlenght
 }
 
