@@ -1,5 +1,5 @@
-
 #include "multuplixing.hpp"
+#include "client.hpp"
 client&	returnClient(std::map<int, client> mycl, int i)
 {
 	std::map<int, client>::iterator iter = mycl.lower_bound(i);
@@ -11,9 +11,8 @@ client&	returnClient(std::map<int, client> mycl, int i)
 	return (iter->second);
 } 
 
-void multuplixing(conf* conf)
+void multuplix::multuplixing(conf* conf)
 {
-    std::map <int, client> mycl;
     fd_set master_re, master_wr, read_fds, write_fds;    // master_re file descriptor list
     int maxfd, newFd, in = 0;
     getSocket(conf);
@@ -42,11 +41,10 @@ void multuplixing(conf* conf)
                     if ((newFd = accept(i, NULL, NULL)) == -1)
                         throw ("ERROR IN ACCEPTING\n");
                     std::cout << "new connection\n";
-                    // printf("accept...\n");
+                    printf("accept...\n");
                     client tmp;
                     tmp =  attachClientServer(i, conf, tmp, in, newFd);
                     tmp.req.first = 0;
-                    // std::cout << "up: " << tmp.req.first << "\n";
                     in++;
                     mycl.insert(std::pair<int, client>(newFd, tmp));
                     conf->vec.push_back(newFd);

@@ -2,7 +2,7 @@
 #define PARSEREQUEST_HPP
 
 // #include "../headers/header.hpp"
-#include "../multuplixing/multuplixing.hpp"
+#include "../multuplixing/client.hpp"
 #include "../configFile/configFile.hpp"
 #include <string>
 #include <algorithm>

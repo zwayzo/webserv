@@ -1,4 +1,4 @@
-#include "../multuplixing/multuplixing.hpp"
+#include "../multuplixing/client.hpp"
 #include "post.hpp"
 
 int randomNum() //get rendom number to add it in file[number].extention (post method)
@@ -14,9 +14,10 @@ void getMethodes(std::string buf, client *cl) //check if the method is post to w
 {
 
     cl->req.method = 1;
+
     if (std::strncmp(buf.c_str(), "POST", 4) == 0)
     {
-        if (cl->post)
+        if (cl->clientServer.post)
             cl->req.post = 1;
         else 
             std::cout << "Sorry can't post\n";
@@ -40,7 +41,7 @@ void getRequestLenght(char *buf, client *cl) //get the request lenght of post so
     else
         cl->req.contentLenght = std::atoi(t.c_str());
     }
-    std::cout << "contentLenght: ----------------| " << cl->req.contentLenght << " |\n";
+    // std::cout << "contentLenght: ----------------| " << cl->req.contentLenght << " |\n";
 }
 
 std::map<int, client>::iterator post(std::map<int, client>::iterator iter, int i, int nbytes)
