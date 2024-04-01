@@ -12,6 +12,7 @@ client&	returnClient(std::map<int, client> mycl, int i)
 
 void multuplixing(conf* conf)
 {
+    HttpRequest httpRequest;
     std::map <int, client> mycl;
     fd_set master_re, master_wr, read_fds, write_fds;    // master_re file descriptor list
     int maxfd, newFd, in = 0;
@@ -70,7 +71,7 @@ void multuplixing(conf* conf)
 
                         int nbytes = recv(i, iter->second.req.buff, sizeof(iter->second.req.buff), 0);
                          if (nbytes > 0)
-                            parseHttpRequest(iter->second.req.buff, nbytes);
+                            httpRequest.parseHttpRequest(iter->second.req.buff, nbytes);
                         
     
 
