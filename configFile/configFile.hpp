@@ -67,6 +67,9 @@ class location{
         std::string root;
         std::string redirection;
         std::string uploads;
+        //you should add a string vector that contains all methods in location
+        // like: 
+        std::vector<std::string> _methods;
 };
 
 class server{
@@ -90,7 +93,7 @@ class server{
         int deletee; //if it's allowed will be 1 else it 0
         int autoindex; //if we don't have it's 2 , if it's on it's 1 , off 0
         int autoindex_number;
-        int max_size; //max bosy size
+        size_t max_size; //max bosy size
         int max_size_number;
         int number;
         int size;
@@ -115,6 +118,8 @@ class server{
         int			redirection_number;
         std::string uploads; //wher should the post be uploaded
         int uploads_number;
+
+        std::vector<std::string> _methods; //nouhaila add this
 
         std::vector<location> loc; //verctors of location we reserve x if we have x locations in the server
         infos *info;

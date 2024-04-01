@@ -22,7 +22,7 @@ void handleCtrlZ(int signum)
 
 client attachClientServer(int i, conf *conf, client tmp, int in, int newFd)
 {
-    for (int j = 0;j < conf->serversNumber; j++)
+    for (int j = 0; j < conf->serversNumber; j++)
     {
         if (i == conf->ser[j].sock)
             tmp.clientServer = conf->ser[j];

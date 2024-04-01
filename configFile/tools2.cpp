@@ -217,12 +217,18 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
             i = i + 9;
             while (mySer[i] != ';' && mySer[i])
             {
-                if (!std::strncmp(&mySer[i], "GET", 3))
+                if (!std::strncmp(&mySer[i], "GET", 3)) {
                     ser.get = 1;
-                if (!std::strncmp(&mySer[i], "DELETE", 6))
+					ser._methods.push_back("GET");
+                }
+                if (!std::strncmp(&mySer[i], "DELETE", 6)) {
                     ser.deletee = 1;
-                if (!std::strncmp(&mySer[i], "POST", 4))
+					ser._methods.push_back("DELETE");
+				}
+                if (!std::strncmp(&mySer[i], "POST", 4)) {
                     ser.post = 1;
+					ser._methods.push_back("POST");
+				}
                 tmp6.push_back(mySer[i]);
                 i++;
                 if (mySer[i] == ';' || mySer[i] == '\0'){

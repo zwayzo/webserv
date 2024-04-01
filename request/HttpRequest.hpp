@@ -32,7 +32,7 @@ class HttpRequest {
 
     public:
 		int			_clSocket;
-		server		_confServ;
+		server		_confServ; //Config Serv of the required client
 		server		_serv;
         std::string _method;
         std::string _uri;
@@ -51,24 +51,24 @@ class HttpRequest {
         HttpRequest();
         HttpRequest(int clSocket, server clientServ);
         ~HttpRequest();
-        bool is_body(int& contentLength, client *cl);
+        void parseHttpRequest(const char* buf, int nbytes, client *cl);
         void parseHeaders(const std::string& headersPart);
         void printHeaders() const ;
 
         void parseRequestLine(const std::string& reqLine);
         void parseURI(void);
         // void requestRequest();
-        void parseHttpRequest(const char* buf, int nbytes, client *cl);
 
         //body (chunked)
+        bool	is_body(int& contentLength);
         void    parseBody(size_t &bodypos, client *cl);
-        void    findServer(client *cl);
-        void	_getChunkedBody(size_t &bodypos, client *cl);
+        void	_getChunkedBody(size_t &bodypos);
+        // void    findServer();
 
 		//Allowed methods and randName
 		bool		_methodExist(void);
 		std::string	_randomName(void);
-		std::string	_findUploadPath(client *cl);
+		std::string	_findUploadPath(void);
 		void		_creatFile(std::string name, std::string reqBody);
 };
 

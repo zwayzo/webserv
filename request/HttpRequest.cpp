@@ -34,7 +34,7 @@ std::string toLower(const std::string& str)
 {
 	std::string lowerStr = str;
     std::transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), 
-                   static_cast<int(*)(int)>(std::tolower));
+			static_cast<int(*)(int)>(std::tolower));
     return lowerStr;
 }
 

@@ -1,32 +1,32 @@
 #include "../multuplixing/multuplixing.hpp"
 #include "HttpRequest.hpp"
 
-void	HttpRequest::findServer() {
-	if (headers.find("Host") != headers.end()) {
-		std::string host = headers["Host"];
-		if (this->_confServ.name == host) {
-				= cl->name;
-				return ;
-		}
-	}
-}
+// void	HttpRequest::findServer() {
+
+	// if (headers.find("Host") != headers.end()) {
+	// 	std::string host = headers["Host"];
+	// 	if (this->_confServ.name == host) {
+	// 			= cl->name;
+	// 			return ;
+	// 	}
+	// }
+// }
 
 void	HttpRequest::parseBody(size_t &bodypos, client *cl) {
-	findServer(); //which server if there is multiple ones
+	// findServer(); //which server if there is multiple ones
 	int contentLength = 0;
-	if (is_body(contentLength, cl)) {
+	if (is_body(contentLength)) {
 		if (this->isChunked) {
-			_getChunkedBody(bodypos, cl);
+			_getChunkedBody(bodypos);
 			this->_bodySize = this->_body.size();
-			if (cl->max_size >= this->_bodySize) {//should check the max body in the conf file >= _bodySize
+			if (this->_confServ.max_size >= this->_bodySize) {//should check the max body in the conf file >= _bodySize
 				if ((this->_method == "post") && this->_uri.find(".py") == std::string::npos
 					&& this->_uri.find(".rb") == std::string::npos) {
-						if (cl->post == 1) //isMethodAllowed
+						if (_methodExist()) //isMethodAllowed
 						{
 							std::string	file = _randomName();
-							// std::string	uploadPath = _findUploadPath(cl);
-							//_creatFile(uploadPath + file, this->_body);
-							//should check if the _method is within the allowed method in the conf file
+							std::string	uploadPath = _findUploadPath();
+							_creatFile(uploadPath + file, this->_body);
 							//should check the uri and location
 							//should generate a random file name and find the uploadPath
 							//should create the file
@@ -52,9 +52,8 @@ void	HttpRequest::parseBody(size_t &bodypos, client *cl) {
 	}
 }
 
-bool HttpRequest::is_body(int& contentLength, client *cl)
+bool HttpRequest::is_body(int& contentLength)
 {
-	(void)cl;
 	// contentLength = 0;
 
     //find contenu dial content-lenght
@@ -84,8 +83,7 @@ bool HttpRequest::is_body(int& contentLength, client *cl)
 	return false; //ayaetina makaynch body but we should first check l function li qade loujdi hit howa li mqade contentlenght
 }
 
-void	HttpRequest::_getChunkedBody(size_t &bodypos, client *cl) {
-	(void)cl;
+void	HttpRequest::_getChunkedBody(size_t &bodypos) {
 	std::string	tmp = this->_request.substr(bodypos + 2);
 	size_t	bodySize = tmp.size();
 
@@ -105,20 +103,31 @@ void	HttpRequest::_getChunkedBody(size_t &bodypos, client *cl) {
 }
 
 bool	HttpRequest::_methodExist(void) {
-	//check if the method exist in the server in conf file
-	return true;
+	std::vector<std::string> _isAllowedMeth = this->_confServ._methods;
+	size_t	len = this->_confServ.loc.size();
+
+	for(size_t i = 0; i < len; i++) {
+		if (this->_uri.find(this->_confServ.loc[i].name) != std::string::npos) {//find the location Name in the uri
+			_isAllowedMeth = this->_confServ.loc[i]._methods;
+			break ;
+		} //update the method vector
+	}
+		// Check if the request method is found in the vect of allowed methods
+    if (std::find(_isAllowedMeth.begin(), _isAllowedMeth.end(), this->_method) != _isAllowedMeth.end())
+        return true; // Method is allowed
+    return false; // Method is not allowed
 }
 
-// std::string	HttpRequest::_findUploadPath(client *cl) {
-// 	size_t	len = cl->loc.size();
-// 	std::string	download = cl->upload; // get the uploadPath in the conf File if there is a section named upload
+std::string	HttpRequest::_findUploadPath(void) {
+	size_t	len = this->_confServ.loc.size();
+	std::string	download = this->_confServ.uploads; // get the uploadPath in the conf File if there is a section named upload
 
-// 	for(size_t i = 0; i < len; i++) {
-// 		if (this->_uri.find(cl->loc[i].) != std::string::npos) //find the location Name in the uri
-// 			download = cl->loc[i].uploads; //get the upload Path
-// 	}
-// 	return download;
-// }
+	for(size_t i = 0; i < len; i++) {
+		if (this->_uri.find(this->_confServ.loc[i].name) != std::string::npos) //find the location Name in the uri
+			download = this->_confServ.loc[i].uploads; //get the upload Path
+	}
+	return download;
+}
 
 void	HttpRequest::_creatFile(std::string name, std::string reqBody) {
 	std::ofstream	file(name.c_str());
@@ -134,7 +143,7 @@ void	HttpRequest::_creatFile(std::string name, std::string reqBody) {
 }
 
 std::string	HttpRequest::_randomName(void) {
-	const std::string	alphanum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-&^$@(#)";
+	const std::string	alphanum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-&$@(#)";
 	std::string			randName = "";
 	std::srand(static_cast<unsigned int>(time(NULL)));
 	for(int i = 0; i < 15; i++) {
