@@ -7,6 +7,7 @@ HttpRequest::HttpRequest() :
 	_method(""),
 	_uri(""),
 	httpVersion(""),
+    queryString(""),
 	_request(""),
 	isChunked(false),
 	_body(""), _bodySize(0),
@@ -19,14 +20,49 @@ HttpRequest::HttpRequest(int clSock, server clientServ) :
 	_method(""),
 	_uri(""),
 	httpVersion(""),
+    queryString(""),
 	_request(""),
 	isChunked(false),
 	_body(""), _bodySize(0),
-	_err(0) {
+	_err(0) {}
+
+HttpRequest::HttpRequest(const HttpRequest& other) :
+	_clSocket(other._clSocket),
+	_confServ(other._confServ),
+	_method(other._method),
+	_uri(other._uri),
+	httpVersion(other.httpVersion),
+    queryString(other.queryString),
+	headerFields(other.headerFields),
+	_request(other._request),
+	isChunked(isChunked),
+	_body(_body),
+	_bodySize(other._bodySize),
+	_err(other._err) {}
+
+HttpRequest& HttpRequest::operator=(const HttpRequest& other) 
+{
+    if (this != &other) 
+    {
+        _clSocket = other._clSocket;
+        _confServ = other._confServ;
+        _method = other._method;
+        _uri = other._uri;
+        httpVersion = other.httpVersion;
+        queryString = other.queryString;
+        headerFields = other.headerFields;
+        _request = other._request;
+        isChunked = other.isChunked;
+        _body = other._body;
+        _bodySize = other._bodySize;
+        _port = other._port;
+        _err = other._err;
+    }
+    return *this;
 }
 
 HttpRequest::~HttpRequest() {
-	this->headers.clear();
+	this->headerFields.clear();
 }
 
 std::string toLower(const std::string& str)
@@ -45,13 +81,6 @@ void HttpRequest::parseHttpRequest(const char* buf, int nbytes)
     std::string 		reqLine;
     std::string	line;
     std::string headersPart;
-
-    // {//print the header request telle quelle est la premiere fois 
-    //     std::istringstream req1(this->_request);
-    //     std::string line1;
-    //     while (std::getline(req1, line1))
-    //         std::cout << line1 << std::endl;
-    // }
 
     std::getline(requestStream, reqLine);
     parseRequestLine(reqLine);
@@ -121,13 +150,13 @@ void HttpRequest::parseHeaders(const std::string& headersPart)
             std::string headerName = line.substr(0, colonPos);
             std::string headerValue = line.substr(colonPos + 2);
             headerValue.erase(0, headerValue.find_first_not_of(" \t"));
-            headers[headerName] = headerValue;
+            headerFields[headerName] = headerValue;
         }
     }
 }
 
 void HttpRequest::printHeaders() const 
 {
-    for (std::map<std::string, std::string>::const_iterator it = headers.begin(); it != headers.end(); ++it)
+    for (std::map<std::string, std::string>::const_iterator it = headerFields.begin(); it != headerFields.end(); ++it)
         std::cout << it->first << ": " << it->second << std::endl;
 }

@@ -38,7 +38,7 @@ class HttpRequest {
         std::string httpVersion;
         std::string queryString;
 
-        std::map<std::string, std::string>	headers;
+        std::map<std::string, std::string>	headerFields;
 
         std::string			_request;
         bool				isChunked;
@@ -50,13 +50,15 @@ class HttpRequest {
 	public:
         HttpRequest();
         HttpRequest(int clSocket, server clientServ);
+		HttpRequest(const HttpRequest&);
+		HttpRequest& operator=(const HttpRequest&);
         ~HttpRequest();
-        void parseHttpRequest(const char* buf, int nbytes);
-        void parseHeaders(const std::string& headersPart);
-        void printHeaders() const ;
 
-        void parseRequestLine(const std::string& reqLine);
-        void parseURI(void);
+        void	parseHttpRequest(const char* buf, int nbytes);
+        void	parseRequestLine(const std::string& reqLine);
+        void	parseURI(void);
+        void	parseHeaders(const std::string& headersPart);
+        void	printHeaders() const ;
 
         //body (chunked)
         bool	is_body(int& contentLength);
