@@ -7,6 +7,7 @@
 
 class client{
     public:
+        server clientServer;
         HttpRequest httpRequest;
         request req;
         int port;
@@ -15,7 +16,8 @@ class client{
         int del;
         std::string upload;
         int max_size;
-        std::vector<location> loc;
+        server ser;
+        // std::vector<location> loc;
         std::string name;
         // std::vector <lo
     public:
