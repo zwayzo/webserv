@@ -2,11 +2,13 @@
 #define HEADER_HPP
 
 #include "../configFile/configFile.hpp"
-#include "../multuplixing/multuplixing.hpp"
+#include "../multuplixing/client.hpp"
 #include "../request/parseRequest.hpp"
 #include "../methodes/post.hpp"
 #include "../request/request.hpp"
 #include "../multuplixing/socket.hpp"
+#include "../multuplixing/client.hpp"
+#include "../multuplixing/multuplixing.hpp"
 
 #include<string>
 #include <iostream>

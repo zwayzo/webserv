@@ -1,4 +1,4 @@
-#include "../multuplixing/multuplixing.hpp"
+#include "../multuplixing/client.hpp"
 #include "parseRequest.hpp"
 
 void	HttpRequest::findServer(client *cl) {

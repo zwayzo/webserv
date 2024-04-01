@@ -3,9 +3,10 @@
 int main()
 {
     conf *config = new conf;
+    multuplix *multup = new multuplix;
     try{
         config = fileConfiguration(config, "configFile.conf");
-        multuplixing(config);
+        multup->multuplixing(config);
 
     }
     catch (const char *x)
