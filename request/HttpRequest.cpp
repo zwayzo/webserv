@@ -11,7 +11,7 @@ HttpRequest::HttpRequest() :
 	_request(""),
 	isChunked(false),
 	_body(""), _bodySize(0),
-	_err(0) {
+	_errCode(0) {
 }
 
 HttpRequest::HttpRequest(int clSock, server clientServ) :
@@ -24,7 +24,7 @@ HttpRequest::HttpRequest(int clSock, server clientServ) :
 	_request(""),
 	isChunked(false),
 	_body(""), _bodySize(0),
-	_err(0) {}
+	_errCode(0) {}
 
 HttpRequest::HttpRequest(const HttpRequest& other) :
 	_clSocket(other._clSocket),
@@ -38,7 +38,7 @@ HttpRequest::HttpRequest(const HttpRequest& other) :
 	isChunked(other.isChunked),
 	_body(other._body),
 	_bodySize(other._bodySize),
-	_err(other._err) {}
+	_errCode(other._errCode) {}
 
 HttpRequest& HttpRequest::operator=(const HttpRequest& other) 
 {
@@ -56,7 +56,7 @@ HttpRequest& HttpRequest::operator=(const HttpRequest& other)
         _body = other._body;
         _bodySize = other._bodySize;
         _port = other._port;
-        _err = other._err;
+        _errCode = other._errCode;
     }
     return *this;
 }
@@ -111,7 +111,7 @@ size_t	HttpRequest::getBodySize() const {
 }
 
 int	HttpRequest::getCodeError() const {
-	return this->_err;
+	return this->_errCode;
 }
 
 std::string toLower(const std::string& str)
@@ -141,10 +141,10 @@ void HttpRequest::parseHttpRequest(const char* buf, int nbytes)
 
     std::getline(requestStream, reqLine);
     parseRequestLine(reqLine);
-	if (this->_err != 400)
+	if (this->_errCode != 400)
 	{
 		parseURI();
-		if (this->_err != 414)
+		if (this->_errCode != 414)
 		{
 			while (std::getline(requestStream, line) && !line.empty() && line != "\r")
 				headersPart += line + "\n";
@@ -173,7 +173,7 @@ void HttpRequest::parseRequestLine(const std::string& reqLine)
     std::istringstream iss(reqLine);
     std::getline(iss, _method, ' ');
     if (_method != "POST" && _method !="GET" && _method != "DELETE")
-		this->_err = 400; /*bad Request {malformed request syntax,
+		this->_errCode = 400; /*bad Request {malformed request syntax,
 		invalid request message framing, or deceptive request routing*/
     _method = toLower(_method);
     std::getline(iss, _uri, ' ');
@@ -191,9 +191,9 @@ void HttpRequest::parseURI(void)
     else
         queryString.clear();
     if (_uri.length() > 2048)
-        this->_err = 414; //414 URI Too Long
+        this->_errCode = 414; //414 URI Too Long
 	// else if (_uri.find("..") != std::string::npos)
-	// 	this->_err = 403; //403 Forbidden: Accès interdit. Traversée de répertoire non autorisée.
+	// 	this->_errCode = 403; //403 Forbidden: Accès interdit. Traversée de répertoire non autorisée.
 }
 
 void HttpRequest::parseHeaders(const std::string& headersPart)

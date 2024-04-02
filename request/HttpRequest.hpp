@@ -46,7 +46,7 @@ class HttpRequest {
 		std::string 		_body;
 		size_t				_bodySize;
 		int					_port;
-		int					_err;
+		int					_errCode;
 
 	public:
         HttpRequest();

@@ -77,7 +77,7 @@ void printArguments(infos *info, int n, server &ser)
     
     std::cout << "\n\n";
     std::cout << "methodes:\n" << "get:" << ser.get << '\n' << "delete:" << ser.deletee << '\n' << "post:" << ser.post << '\n';
-    std::cout << "AllowedMethods:";
+    std::cout << "Allowed Methods:";
     for(std::vector<std::string>::iterator it= ser._methods.begin(); it != ser._methods.end(); it++)
        std::cout << *it << " ";
     std::cout << "\n";

@@ -87,7 +87,7 @@ void	multuplix::multuplixing(conf* conf)
                     }
                     if(FD_ISSET(i, &write_fds)){
 						// int response = 0;
-						// if (_httpRequest._err == 0) {
+						// if (_httpRequest[_clSock].getCodeError()) == 0) {
 						// 	//CGI handler
 						// 	//cgi Done
 						// 	//send resp

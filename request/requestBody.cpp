@@ -32,11 +32,11 @@ void	HttpRequest::parseBody(size_t &bodypos) {
 							//should create the file
 						}
 						else
-							this->_err = 405; //Method Not Allowed
+							this->_errCode = 405; //Method Not Allowed
 				}
 			}
 			else
-				this->_err = 413; /*Content Too Large response status code indicates that
+				this->_errCode = 413; /*Content Too Large response status code indicates that
 			the request entity is larger than limits defined by server*/
 		}
 		// else if (contentLength > 0)
@@ -68,12 +68,12 @@ bool HttpRequest::is_body(int& contentLength)
 	}
 	else if (headerFields.find("Transfer-Encoding") != headerFields.end() \
 		&& headerFields[transfer_encod].find("chunked") == std::string::npos) {
-		this->_err = 501; //Not implemented
+		this->_errCode = 501; //Not implemented
 		return false;
 	}
 	else if (this->_method == "post" && headerFields.find("Content-Length") == headerFields.end()
 		&& headerFields.find("Transfer-Encoding") == headerFields.end()) {
-		this->_err = 400; //Bad Request
+		this->_errCode = 400; //Bad Request
 		return false;
 	}
 	// if (toLower(this->_method) == "post")
@@ -136,11 +136,11 @@ void	HttpRequest::_creatFile(std::string name, std::string reqBody) {
 	std::ofstream	file(name.c_str());
 
 	if (!file)
-		this->_err = 500; //500 Internal Server Error
+		this->_errCode = 500; //500 Internal Server errCodeor
 	else {
 		file << reqBody;
 		file.close();
-		this->_err = 201; /*201 Created success status response code indicates
+		this->_errCode = 201; /*201 Created success status response code indicates
 		that the request has succeeded and has led to the creation of a resource*/
 	}
 }
