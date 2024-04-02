@@ -13,7 +13,7 @@
 // }
 
 void	HttpRequest::parseBody(size_t &bodypos) {
-	// findServer(); //which server if there is multiple ones
+	// std::cout << "Server for our request is: " << this->_confServ.listen << std::endl;
 	int contentLength = 0;
 	if (is_body(contentLength)) {
 		if (this->isChunked) {
@@ -76,9 +76,8 @@ bool HttpRequest::is_body(int& contentLength)
 		this->_errCode = 400; //Bad Request
 		return false;
 	}
-	// if (toLower(this->_method) == "post")
-	// 	return true;
-	return false; //ayaetina makaynch body but we should first check l function li qade loujdi hit howa li mqade contentlenght
+	return false; /*ayaetina makaynch body but we should first check l function li qade loujdi 
+	so we need to call it inside our parseBody function */
 }
 //29\r\nmoi nouhaila\r\nje suis etudiante\r\na l'um6p\r\n0\r\n\r\n
 
