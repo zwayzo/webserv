@@ -54,6 +54,21 @@ class HttpRequest {
 		HttpRequest& operator=(const HttpRequest&);
         ~HttpRequest();
 
+		// Getters
+		int			getClSocket() const;
+		server		getConfServ() const;
+		std::string	getMethod() const;
+		std::string	getUri() const;
+		std::string	getHttpVersion() const;
+		std::string	getQueryString() const;
+		std::map<std::string, std::string> getHeaderFields() const;
+		std::string	getRequest() const;
+		bool		getChunkedStatus() const;
+		std::string	getBody() const;
+		size_t		getBodySize() const;
+		int			getCodeError() const;
+
+		/* MEMBER FUNCTIONS */
         void	parseHttpRequest(const char* buf, int nbytes);
         void	parseRequestLine(const std::string& reqLine);
         void	parseURI(void);

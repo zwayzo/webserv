@@ -35,8 +35,8 @@ HttpRequest::HttpRequest(const HttpRequest& other) :
     queryString(other.queryString),
 	headerFields(other.headerFields),
 	_request(other._request),
-	isChunked(isChunked),
-	_body(_body),
+	isChunked(other.isChunked),
+	_body(other._body),
 	_bodySize(other._bodySize),
 	_err(other._err) {}
 
@@ -63,6 +63,55 @@ HttpRequest& HttpRequest::operator=(const HttpRequest& other)
 
 HttpRequest::~HttpRequest() {
 	this->headerFields.clear();
+}
+
+//Getters
+int	HttpRequest::getClSocket() const {
+	return this->_clSocket;
+}
+
+server HttpRequest::getConfServ() const {
+	return this->_confServ;
+}
+
+std::string HttpRequest::getMethod() const {
+	return this->_method;
+}
+
+std::string HttpRequest::getUri() const {
+	return this->_uri;
+}
+
+std::string HttpRequest::getHttpVersion() const {
+	return this->httpVersion;
+}
+
+std::string HttpRequest::getQueryString() const {
+	return this->queryString;
+}
+
+std::map<std::string, std::string> HttpRequest::getHeaderFields() const {
+	return this->headerFields;
+}
+
+std::string HttpRequest::getRequest() const {
+	return this->_request;
+}
+
+bool	HttpRequest::getChunkedStatus() const {
+	return this->isChunked;
+}
+
+std::string	HttpRequest::getBody() const {
+	return this->_body;
+}
+
+size_t	HttpRequest::getBodySize() const {
+	return this->_bodySize;
+}
+
+int	HttpRequest::getCodeError() const {
+	return this->_err;
 }
 
 std::string toLower(const std::string& str)

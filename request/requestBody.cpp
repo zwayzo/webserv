@@ -3,8 +3,8 @@
 
 // void	HttpRequest::findServer() {
 
-	// if (headers.find("Host") != headers.end()) {
-	// 	std::string host = headers["Host"];
+	// if (headerFields.find("Host") != headerFields.end()) {
+	// 	std::string host = headerFields["Host"];
 	// 	if (this->_confServ.name == host) {
 	// 			= cl->name;
 	// 			return ;
@@ -54,27 +54,25 @@ void	HttpRequest::parseBody(size_t &bodypos) {
 
 bool HttpRequest::is_body(int& contentLength)
 {
-	// contentLength = 0;
-
     //find contenu dial content-lenght
-	std::map<std::string, std::string>::iterator iter = headers.find("Content-Length");
-    if (iter != headers.end()) {
+	std::map<std::string, std::string>::iterator iter = headerFields.find("Content-Length");
+    if (iter != headerFields.end()) {
         contentLength = atoi(iter->second.c_str());
         return true; // true l9inaah
     }
 	std::string transfer_encod("Transfer-Encoding");
-	if (headers.find("Transfer-Encoding") != headers.end() \
-		&& headers[transfer_encod].find("chunked") != std::string::npos) {
+	if (headerFields.find("Transfer-Encoding") != headerFields.end() \
+		&& headerFields[transfer_encod].find("chunked") != std::string::npos) {
 		this->isChunked = true;
 		return true;
 	}
-	else if (headers.find("Transfer-Encoding") != headers.end() \
-		&& headers[transfer_encod].find("chunked") == std::string::npos) {
+	else if (headerFields.find("Transfer-Encoding") != headerFields.end() \
+		&& headerFields[transfer_encod].find("chunked") == std::string::npos) {
 		this->_err = 501; //Not implemented
 		return false;
 	}
-	else if (this->_method == "post" && headers.find("Content-Length") == headers.end()
-		&& headers.find("Transfer-Encoding") == headers.end()) {
+	else if (this->_method == "post" && headerFields.find("Content-Length") == headerFields.end()
+		&& headerFields.find("Transfer-Encoding") == headerFields.end()) {
 		this->_err = 400; //Bad Request
 		return false;
 	}

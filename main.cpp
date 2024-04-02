@@ -10,15 +10,14 @@ int main(int ac, char **av)
     if (ac == 2)
         conFile = av[1];
     else
-        conFile = "configFile.conf";
+        conFile = "cfgFiles/configFile.conf";
 
     
     conf *config = new conf;
     multuplix *multup = new multuplix;
     try{
-        config = fileConfiguration(config, "configFile.conf");
+        config = fileConfiguration(config, conFile);
         multup->multuplixing(config);
-
     }
     catch (const char *x)
     {

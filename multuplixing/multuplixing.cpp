@@ -68,13 +68,13 @@ void	multuplix::multuplixing(conf* conf)
                             throw ("Error: recv failed\n");
 						cl.req.buff[nbytes] = '\0';
 						if (nbytes == 0) {
-							std::cout << "Disconnected" << std::endl;
+							std::cout << "\rConnection was closed by client.\n" << std::endl;
 							_httpRequest.erase(_clSock);
 							// _httpResponse.erase(_clSock);
 							close(_clSock); //should close the client connection
                         }
 						_httpRequest[_clSock].parseHttpRequest(cl.req.buff, nbytes);
-                        // std::cout << _httpRequest[_clSock]._request << '\n';
+                        std::cout << _httpRequest[_clSock].getRequest() << '\n';
 
 						//should check th first time body
                         // post_contentLenght(iter, i, nbytes);

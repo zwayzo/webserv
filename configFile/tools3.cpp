@@ -43,37 +43,39 @@ int storeLocationValue(server &ser, int n, int number)
                 ser.loc[number].root.push_back(ser.mySer[i]);
             i ++;
         }
-        else if (std::strncmp((&ser.mySer)->c_str(), "methodes", 8) == 0)
+        else if (std::strncmp(&ser.mySer[i], "methodes", 8) == 0)
         {
             i = i + 9;
+
             while (ser.mySer[i] != ';'){
-            if (std::strncmp((&ser.mySer)->c_str(), "GET", 3) == 0)
+            if (std::strncmp(&ser.mySer[i], "GET", 3) == 0)
             {
                 ser.loc[number].get = 1;
-                i += 4;
+                i += 3;
             }
-            if (std::strncmp((&ser.mySer)->c_str(), "DELETE", 6) == 0)
+            else if (std::strncmp(&ser.mySer[i], "DELETE", 6) == 0)
             {
                 ser.loc[number].deletee = 1;
-                i += 7;
+                i += 6;
             }
-            if (std::strncmp((&ser.mySer)->c_str(), "POST", 3) == 0)
+            else if (std::strncmp(&ser.mySer[i], "POST", 4) == 0)
             {
                 ser.loc[number].post = 1;
-                i += 5;
+                i += 4;
             }
             else 
-                throw("location");
+                throw("error in methodes_location");
             }
+            i++;
         }
-        else if (std::strncmp((&ser.mySer)->c_str(), "redirection", 11) == 0)
+        else if (std::strncmp(&ser.mySer[i], "redirection", 11) == 0)
         {
             red++;
             i += 12;
             for (; ser.mySer[i]; i++)
                 ser.loc[number].redirection.push_back(ser.mySer[i]);
         }
-        else if (std::strncmp((&ser.mySer)->c_str(), "autoindex", 9) == 0)
+        else if (std::strncmp(&ser.mySer[i], "autoindex", 9) == 0)
         {
             au++;
             std::string tmp99;
@@ -83,7 +85,7 @@ int storeLocationValue(server &ser, int n, int number)
                 ser.loc[number].autoindex = 1;
                 i+= 2;
             }
-            else if (!std::strncmp(&ser.mySer[i], "off;", 3))
+            else if (!std::strncmp(&ser.mySer[i], "off;", 4))
             {
                 ser.loc[number].autoindex = 0;
                 i += 3 ;
@@ -93,8 +95,9 @@ int storeLocationValue(server &ser, int n, int number)
             
         }
         else 
-            throw ("location");
+            throw ("error in location");
         i++;
+        // printf("%d\n",std::strncmp(&ser.mySer[i], "methodes", 8));
     }
     if (in == 0)
         ser.loc[number].index = ser.index;
