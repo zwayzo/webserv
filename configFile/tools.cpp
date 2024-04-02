@@ -93,9 +93,13 @@ void printArguments(infos *info, int n, server &ser)
         std::cout << "\n\nlocation number:" << j << '\n';
         std::cout << "name:" << ser.loc[j].name << '\n';
         std::cout << "index:" << ser.loc[j].index << '\n';
-        // std::cout "index:" << << ser.loc[j].listen << '\n';
+        std::cout << "methodes: ";
         // std::cout "index:" << << ser.loc[j].post << '\n';
-        std::cout << "redirection:" << ser.loc[j].redirection << '\n';
+        for (std::vector<std::string>::const_iterator it = ser.loc[j]._methods.begin(); it != ser.loc[j]._methods.end(); ++it) {
+            const std::string& str = *it;
+            std::cout << str << " ";
+        }
+        std::cout << "\nredirection:" << ser.loc[j].redirection << '\n';
         std::cout << "autoindex:" << ser.loc[j].autoindex << '\n';
         std::cout << "root:" << ser.loc[j].root << '\n';
         // std::cout << ser->loc[j].error_page << '\n';

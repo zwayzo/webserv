@@ -65,6 +65,7 @@ class location{
         std::string root;
         std::string redirection;
         std::string uploads;
+        std::vector<std::string> _methods;
 };
 
 class server{
