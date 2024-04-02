@@ -20,6 +20,7 @@ class client;
 
 int     hextoint(const std::string str);
 std::string toLower(const std::string& str);
+std::string toUpper(const std::string& str);
 
 template <typename T>
 std::string toString(const T& value) {

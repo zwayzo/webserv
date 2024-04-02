@@ -80,10 +80,14 @@ bool HttpRequest::is_body(int& contentLength)
 	// 	return true;
 	return false; //ayaetina makaynch body but we should first check l function li qade loujdi hit howa li mqade contentlenght
 }
+//29\r\nmoi nouhaila\r\nje suis etudiante\r\na l'um6p\r\n0\r\n\r\n
 
 void	HttpRequest::_getChunkedBody(size_t &bodypos) {
-	std::string	tmp = this->_request.substr(bodypos + 2);
+	std::string	tmp = this->_request.substr(bodypos);
+	// std::cout << "----BODY---    "<< tmp;
+	// std::cout << "----Body fin---\n";
 	size_t	bodySize = tmp.size();
+	// printf("%lu\n", bodySize);
 
 	for (size_t i = 0; i < bodySize; i++) {
 		std::string	chunk = "";
@@ -91,11 +95,14 @@ void	HttpRequest::_getChunkedBody(size_t &bodypos) {
 		for (; tmp[j] != '\r'; j++) {
 			chunk += tmp[j];
 		}
+		// std::cout << "the length in HExa: "<< chunk << "\n";
 		i = j + 2;
 		int	chunkedSize = hextoint(chunk);
 		if (chunkedSize == 0)
 			break ;
+		// printf("i: %lu, chunkedSize: %d\n", i, chunkedSize);
 		this->_body += tmp.substr(i, chunkedSize);
+		// std::cout << "own body: " << "'" << this->_body << "'";
 		i += chunkedSize + 1;
 	}
 }
@@ -111,7 +118,7 @@ bool	HttpRequest::_methodExist(void) {
 		} //update the method vector
 	}
 		// Check if the request method is found in the vect of allowed methods
-    return (std::find(_isAllowedMeth.begin(), _isAllowedMeth.end(), this->_method) != _isAllowedMeth.end());
+    return (std::find(_isAllowedMeth.begin(), _isAllowedMeth.end(), toUpper(this->_method)) != _isAllowedMeth.end());
 }
 
 std::string	HttpRequest::_findUploadPath(void) {

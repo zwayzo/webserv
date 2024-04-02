@@ -74,8 +74,8 @@ void	multuplix::multuplixing(conf* conf)
 							close(_clSock); //should close the client connection
                         }
 						_httpRequest[_clSock].parseHttpRequest(cl.req.buff, nbytes);
-                        std::cout << _httpRequest[_clSock].getRequest() << '\n';
-
+                        std::cout << _httpRequest[_clSock].getRequest();
+                        std::cout << "FinREQUEST\n";
 						//should check th first time body
                         // post_contentLenght(iter, i, nbytes);
                         if (nbytes > 0){

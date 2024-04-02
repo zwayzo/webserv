@@ -122,6 +122,14 @@ std::string toLower(const std::string& str)
     return lowerStr;
 }
 
+std::string toUpper(const std::string& str)
+{
+	std::string lowerStr = str;
+    std::transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), 
+			static_cast<int(*)(int)>(std::toupper));
+    return lowerStr;
+}
+
 void HttpRequest::parseHttpRequest(const char* buf, int nbytes)
 {
 	std::string	tmp(buf, nbytes);
@@ -145,6 +153,7 @@ void HttpRequest::parseHttpRequest(const char* buf, int nbytes)
 			std::streampos endHdrPos = requestStream.tellg();
 			size_t bodypos = static_cast<size_t>(endHdrPos);
 			std::cout << "Pos aprs Header: " << bodypos << std::endl;
+			std::cout << "Character in position 281: " << _request[bodypos] << std::endl;
             
 			this->_port = this->_confServ.listen;
 			parseBody(bodypos);
