@@ -80,10 +80,9 @@ class HttpRequest {
         bool	is_body(int& contentLength);
         void    parseBody(size_t &bodypos);
         void	_getChunkedBody(size_t &bodypos);
-        // void    findServer();
 
 		//Allowed methods and randName
-		bool		_methodExist(void);
+		bool		_isSupportedMethod(void);
 		std::string	_generateTempFileName(void);
 		std::string	_findUploadPath(void);
 		void		_creatFile(std::string name, std::string reqBody);

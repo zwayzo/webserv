@@ -49,19 +49,19 @@ int storeLocationValue(server &ser, int n, int number)
             while (ser.mySer[i] != ';'){
             if (std::strncmp(&ser.mySer[i], "GET", 3) == 0)
             {
-                ser.loc[number]._methods.push_back("GET ");
+                ser.loc[number]._methods.push_back("GET");
                 ser.loc[number].get = 1;
                 i += 3;
             }
             else if (std::strncmp(&ser.mySer[i], "DELETE", 6) == 0)
             {
-                ser.loc[number]._methods.push_back("DELETE ");
+                ser.loc[number]._methods.push_back("DELETE");
                 ser.loc[number].deletee = 1;
                 i += 6;
             }
             else if (std::strncmp(&ser.mySer[i], "POST", 4) == 0)
             {
-                ser.loc[number]._methods.push_back("POST ");
+                ser.loc[number]._methods.push_back("POST");
                 ser.loc[number].post = 1;
                 i += 4;
             }

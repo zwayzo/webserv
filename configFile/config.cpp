@@ -17,6 +17,7 @@ server::server(const server& copy) {
         this->max_size = copy.max_size;
 		this->root = copy.root;
         this->uploads = copy.uploads;
+        this->_methods = copy._methods;//
         this->error_page = copy.error_page;
         this->index = copy.index;
 		this->redirection = copy.redirection;
@@ -24,7 +25,7 @@ server::server(const server& copy) {
 		this->loc.resize(copy.loc.size()); // Ensure the same size
 		for (size_t i = 0; i < copy.loc.size(); ++i) {
         	this->loc[i] = copy.loc[i]; // Assuming location has a proper copy constructor
-    }
+        }
 }
 
 server& server::operator=(const server& copy) {
@@ -41,6 +42,7 @@ server& server::operator=(const server& copy) {
         this->max_size = copy.max_size;
 		this->root = copy.root;
         this->uploads = copy.uploads;
+        this->_methods = copy._methods;//
         this->error_page = copy.error_page;
         this->index = copy.index;
 		this->redirection = copy.redirection;
