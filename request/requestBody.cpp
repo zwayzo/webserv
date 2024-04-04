@@ -30,13 +30,13 @@ void	HttpRequest::parseBody(size_t &bodypos) {
 				this->_errCode = 413; /*Content Too Large response status code indicates that
 			the request entity is larger than limits defined by server*/
 		}
-		// else if (contentLength > 0)
-			// {
-			//     std::vector<char> bodyBuffer(contentLength);
-			//     requestStream.read(&bodyBuffer[0], contentLength);
-			//     std::string body(bodyBuffer.begin(), bodyBuffer.end());
-			//     std::cout << "Corps RQ: " << body << std::endl;
-			// }
+		else if (this->_method == "post" && contentLength > 0)
+			{
+			    // std::vector<char> bodyBuffer(contentLength);
+			    // this->_request.read(&bodyBuffer[0], contentLength);
+			    // std::string body(bodyBuffer.begin(), bodyBuffer.end());
+			    std::cout << "Corps RQ: " << _body << std::endl;
+			}
 	}
 	else {
 		std::cout << "NO BODY FOUND*******" << std::endl; //3andna GET wla DELETE
@@ -48,7 +48,7 @@ bool HttpRequest::is_body(int& contentLength)
     //find contenu dial content-lenght
 	std::map<std::string, std::string>::iterator iter = headerFields.find("Content-Length");
     if (iter != headerFields.end()) {
-        contentLength = atoi(iter->second.c_str());
+        contentLength = std::strtol(iter->second.c_str(), NULL, 10);
         return true; // true l9inaah
     }
 	std::string transfer_encod("Transfer-Encoding");

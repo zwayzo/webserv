@@ -98,6 +98,7 @@ int storeLocationValue(server &ser, int n, int number)
         }
         else 
             throw ("error in location");
+        // printf("ouffff: %d\n", i);
         i++;
         // printf("%d\n",std::strncmp(&ser.mySer[i], "methodes", 8));
     }
