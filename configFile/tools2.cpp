@@ -96,8 +96,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
         if (std::strncmp(&mySer[i], "location", 8) == 0){
             i = skipLocation(ser, i);
         }
-        if (std::strncmp(&mySer[i], "listen", 6) == 0)
-        {
+        if (std::strncmp(&mySer[i], "listen", 6) == 0) {
             ser.listen_number++;
             std::string tmp1;
             i = i + 7;
