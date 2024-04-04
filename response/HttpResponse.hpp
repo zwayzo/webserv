@@ -1,9 +1,9 @@
-#ifndef RESPONSE_HPP
-# define RESPONSE_HPP
+#ifndef HTTPRESPONSE_HPP
+# define HTTPRESPONSE_HPP
 
 #include "../multuplixing/multuplixing.hpp"
 #include "../configFile/configFile.hpp"
-#include "../request/parseRequest.hpp"
+#include "../request/HttpRequest.hpp"
 #include <string>
 #include <algorithm>
 #include <cctype>
@@ -31,7 +31,8 @@ class Response {
 		~Response();
 
 		int		sendResponse(HttpRequest &req);
-		void	_respFile(Request &req);
+		void	_respFile(HttpRequest &req);
+		int		_routing(HttpRequest &req);
 };
 
 #endif

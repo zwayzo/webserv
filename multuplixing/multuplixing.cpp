@@ -1,6 +1,15 @@
 #include "multuplixing.hpp"
 #include "multuplixing.hpp"
 #include "client.hpp"
+
+multuplix::multuplix(){}
+
+multuplix::multuplix(multuplix &copy) {
+	(void)copy;
+}
+
+multuplix::~multuplix(){}
+
 client&	returnClient(std::map<int, client> mycl, int i)
 {
 	std::map<int, client>::iterator iter = mycl.lower_bound(i);
