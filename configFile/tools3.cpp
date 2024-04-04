@@ -95,8 +95,7 @@ int storeLocationValue(server &ser, int n, int number)
             else
                 throw ("error in auto index\n");
         }
-        else
-        {
+        else {
             std::cout <<"---\n"<< &ser.mySer[i] << '\n';
             throw ("error in location");
         }
