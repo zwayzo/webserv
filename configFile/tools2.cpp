@@ -195,6 +195,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
         }
         else if (std::strncmp(&mySer[i], "error_page", 10) == 0)
         {
+            int t = 0;
             ser.error_page_number++;
             std::string tmp5;
             i = i + 11;
@@ -202,8 +203,10 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
             {
                 tmp5.push_back(mySer[i]);
                 i++;
-                if (std::isalpha(mySer[i]) && (mySer[i - 1] >= '0' && mySer[i - 1] <= '9'))
+                if (mySer[i] == '/' && (mySer[i - 1] >= '0' && mySer[i - 1] <= '9') && t == 0){
+                    t++;
                     tmp5.push_back(' ');
+                }
                 if (mySer[i] == ';' || mySer[i] == '\0'){
                     e++;
                     ser.error_page = tmp5;
