@@ -60,7 +60,7 @@ void	multuplix::multuplixing(conf* conf)
                     conf->vec.push_back(clSocket);
                     FD_SET(clSocket, &master_re);
 					_httpRequest[clSocket] = HttpRequest(clSocket, mycl[clSocket].clientServer);
-					// _httpResponse[clSocket] = HttpResponse(clSocket, mycl[clSocket].clientServer);
+					_httpResponse[clSocket] = HttpResponse(clSocket, mycl[clSocket].clientServer);
                     if (clSocket > maxfd)
                         maxfd = clSocket;
                 }
@@ -95,7 +95,7 @@ void	multuplix::multuplixing(conf* conf)
                         }
                     }
                     if(FD_ISSET(i, &write_fds)){
-						// int response = 0;
+						int response = 0;
 						// if (_httpRequest[_clSock].getCodeError()) == 0) {
 						// 	//CGI handler
 						// 	//cgi Done
@@ -104,7 +104,7 @@ void	multuplix::multuplixing(conf* conf)
 						// }
 						// else {
 						// 	//send response
-						// 	//response = httpResponse.sendResponse(_httpRequest[_clSock], NULL);//NULL MEANS NO CGI
+							response = _httpResponse[_clSock].sendResponse(_httpRequest[_clSock]);//NULL MEANS NO CGI
 						// }
                         // printf("not new connection in write\n");
                         // send(i, "slma", 5, 0);

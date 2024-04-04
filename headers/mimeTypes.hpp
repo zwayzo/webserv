@@ -6,4 +6,6 @@
 
 extern std::map<std::string, std::string> mimeTypes;
 
+std::map<std::string, std::string>	getMimeTypes(void);
+
 #endif

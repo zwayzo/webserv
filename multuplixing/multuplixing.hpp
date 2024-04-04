@@ -8,10 +8,13 @@
 #include "../multuplixing/client.hpp"
 
 class multuplix{
+    private:
+		std::map<int, HttpRequest>	_httpRequest;
+        std::map<int, HttpResponse>	_httpResponse;
+
     public:
         std::map <int, client>		mycl;
-		std::map<int, HttpRequest>	_httpRequest;
-        std::map<int, Response>		_htppResponse;
+
         multuplix();
         multuplix(multuplix &copy);
         ~multuplix();

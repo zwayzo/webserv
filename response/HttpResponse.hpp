@@ -12,14 +12,16 @@
 #include <map>
 #include <sstream>
 #include <iomanip>
+#ifndef SUCCESS
+# define	SUCCESS 2
+#endif
 
-class server;
-class conf;
-class client;
 class HttpRequest;
 
-class Response {
+class HttpResponse {
 	private:
+		int			_clSocket;
+		server		_serv;
 		std::string	_body;
 		int			_err;
 		std::string	_statusCode;
@@ -27,8 +29,9 @@ class Response {
 
 	public:
 		std::string	_root;
-		Response();
-		~Response();
+		HttpResponse();
+		HttpResponse(int clSocket, server &clientServer);
+		~HttpResponse();
 
 		int		sendResponse(HttpRequest &req);
 		void	_respFile(HttpRequest &req);
