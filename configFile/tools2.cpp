@@ -202,7 +202,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
             {
                 tmp5.push_back(mySer[i]);
                 i++;
-                if (std::isalpha(mySer[i]) && !std::isalpha(mySer[i - 1]))
+                if (std::isalpha(mySer[i]) && (mySer[i - 1] >= '0' && mySer[i - 1] <= '9'))
                     tmp5.push_back(' ');
                 if (mySer[i] == ';' || mySer[i] == '\0'){
                     e++;

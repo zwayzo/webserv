@@ -85,19 +85,21 @@ int storeLocationValue(server &ser, int n, int number)
             if (!std::strncmp(&ser.mySer[i], "on;", 3))
             {
                 ser.loc[number].autoindex = 1;
-                i+= 2;
+                i+= 3;
             }
             else if (!std::strncmp(&ser.mySer[i], "off;", 4))
             {
                 ser.loc[number].autoindex = 0;
-                i += 3 ;
+                i += 4 ;
             }
             else
                 throw ("error in auto index\n");
-            
         }
-        else 
+        else
+        {
+            std::cout <<"---\n"<< &ser.mySer[i] << '\n';
             throw ("error in location");
+        }
         // printf("ouffff: %d\n", i);
         i++;
         // printf("%d\n",std::strncmp(&ser.mySer[i], "methodes", 8));
