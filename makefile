@@ -9,7 +9,7 @@ SRC =   configFile/config.cpp \
 		configFile/tools.cpp configFile/tools2.cpp \
 		configFile/tools3.cpp \
 		request/HttpRequest.cpp \
-		request/requestBody.cpp \
+		request/requestBody.cpp\
 		request/request.cpp \
 
 OBJS = $(SRC:.cpp=.o)

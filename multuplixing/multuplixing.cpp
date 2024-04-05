@@ -1,6 +1,8 @@
 #include "multuplixing.hpp"
-#include "multuplixing.hpp"
+// #include "../response/HttpResponse.hpp"
+// #include "../request/HttpRequest.hpp"
 #include "client.hpp"
+class HttpResponse;
 
 multuplix::multuplix(){}
 
@@ -59,8 +61,8 @@ void	multuplix::multuplixing(conf* conf)
                     mycl.insert(std::pair<int, client>(clSocket, tmp));
                     conf->vec.push_back(clSocket);
                     FD_SET(clSocket, &master_re);
-					_httpRequest[clSocket] = HttpRequest(clSocket, mycl[clSocket].clientServer);
-					_httpResponse[clSocket] = HttpResponse(clSocket, mycl[clSocket].clientServer);
+					// _httpRequest[clSocket] = HttpRequest(clSocket, mycl[clSocket].clientServer);
+					// _httpResponse[clSocket] = HttpResponse(clSocket, mycl[clSocket].clientServer);
                     if (clSocket > maxfd)
                         maxfd = clSocket;
                 }
@@ -73,17 +75,18 @@ void	multuplix::multuplixing(conf* conf)
                         // std::cout << "client upload is : ----------------| " << cl.post << " |---------------\n";
 
                         int nbytes = recv(i, cl.req.buff, sizeof(cl.req.buff), 0);
+                        std::cout << cl.req.buff;
                         if (nbytes == -1)
                             throw ("Error: recv failed\n");
 						cl.req.buff[nbytes] = '\0';
 						if (nbytes == 0) {
 							std::cout << "\rConnection was closed by client.\n" << std::endl;
-							_httpRequest.erase(_clSock);
+							// _httpRequest.erase(_clSock);
 							// _httpResponse.erase(_clSock);
 							close(_clSock); //should close the client connection
                         }
-						_httpRequest[_clSock].parseHttpRequest(cl.req.buff, nbytes);
-                        std::cout << _httpRequest[_clSock].getRequest();
+						// _httpRequest[_clSock].parseHttpRequest(cl.req.buff, nbytes);
+                        // std::cout << _httpRequest[_clSock].getRequest();
                         std::cout << "FinREQUEST\n";
 						//should check th first time body
                         // post_contentLenght(iter, i, nbytes);
@@ -104,7 +107,7 @@ void	multuplix::multuplixing(conf* conf)
 						// }
 						// else {
 						// 	//send response
-							response = _httpResponse[_clSock].sendResponse(_httpRequest[_clSock]);//NULL MEANS NO CGI
+							// response = _httpResponse[_clSock].sendResponse(_httpRequest[_clSock]);//NULL MEANS NO CGI
 						// }
                         // printf("not new connection in write\n");
                         // send(i, "slma", 5, 0);

@@ -12,6 +12,7 @@
 #include <map>
 #include <sstream>
 #include <iomanip>
+#include "../headers/header.hpp"
 #ifndef SUCCESS
 # define	SUCCESS 2
 #endif
