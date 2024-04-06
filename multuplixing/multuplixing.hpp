@@ -7,6 +7,7 @@
 // #include "../response/HttpResponse.hpp"
 #include "../multuplixing/client.hpp"
 class HttpResponse;
+class client;
 
 class multuplix{
     private:
