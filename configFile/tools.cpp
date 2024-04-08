@@ -76,20 +76,20 @@ void printArguments(infos *info, int n, server &ser)
         std::cout <<  "Key: " << it->first << ", Value: " << it->second << std::endl;
     
     std::cout << "\n\n";
-    std::cout << "methodes:\n" << "get:" << ser.get << '\n' << "delete:" << ser.deletee << '\n' << "post:" << ser.post << '\n';
-    std::cout << "Allowed Methods:";
+    std::cout << "name: " << ser.name << '\n';
+    std::cout << "root: " << ser.root << '\n';
+    std::cout << "max: " << ser.max_size << '\n';
+    std::cout << "methodes: " << "get:" << ser.get << " delete:" << ser.deletee << " post:" << ser.post << '\n';
+    std::cout << "Allowed Methods: ";
     for(std::vector<std::string>::iterator it= ser._methods.begin(); it != ser._methods.end(); it++)
        std::cout << *it << " ";
     std::cout << "\n";
-    std::cout << "root:" << ser.root << '\n';
-    std::cout << "index:" << ser.index << '\n';
-    std::cout << "error_page:" << ser.error_page << '\n';
-    std::cout << "redirection:" << ser.redirection << '\n';
-    std::cout << "name:" << ser.name << '\n';
+    std::cout << "index: " << ser.index << '\n';
+    std::cout << "uploads: " << ser.uploads << '\n';
     std::cout << "auto:" << ser.autoindex << '\n';
-    std::cout << "uploads:" << ser.uploads << '\n';
-    std::cout << "max:" << ser.max_size << '\n';
-    std::cout << "thi server has " << ser.locationsNumber << " locations\n";
+    std::cout << "error_page: " << ser.error_page << '\n';
+    std::cout << "redirection:" << ser.redirection << '\n';
+    std::cout << "this server has " << ser.locationsNumber << " locations\n";
 
 
     for (int j = 0;j < n; j++)

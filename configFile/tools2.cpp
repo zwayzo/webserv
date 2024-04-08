@@ -157,7 +157,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
         }
         else if (std::strncmp(&mySer[i], "root", 4) == 0)
         {
-            std::cout << &mySer[i] << "\n-------\n";
+            std::cout << &mySer[i] << "\n-------\n"; /////////loly
             // exit(1);
             ser.root_number++;
             std::string tmp8;
@@ -196,7 +196,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
         {
             int t = 0;
             ser.error_page_number++;
-            std::string tmp5;
+            std::string tmp5; //Raja3 hada vector dyal string
             i = i + 11;
             while (mySer[i] != ';' && mySer[i])
             {
@@ -257,7 +257,7 @@ infos *checkValue(std::string mySer, infos *info, server &ser)
                 if (mySer[i] == ';' || mySer[i] == '\0'){
                     r++;
                     ser.redirection = tmp7;
-                    printf("1{%s}\n", ser.redirection.c_str());
+                    // printf("1{%s}\n", ser.redirection.c_str());
                     info->redirection["0"] = "redirection";
                     info->redirection["1"] = tmp7;
                 }

@@ -96,10 +96,9 @@ int storeLocationValue(server &ser, int n, int number)
                 throw ("error in auto index\n");
         }
         else {
-            std::cout <<"---\n"<< &ser.mySer[i] << '\n';
+            // std::cout <<"---\n"<< &ser.mySer[i] << '\n';
             throw ("error in location");
         }
-        // printf("ouffff: %d\n", i);
         i++;
         // printf("%d\n",std::strncmp(&ser.mySer[i], "methodes", 8));
     }
@@ -109,8 +108,8 @@ int storeLocationValue(server &ser, int n, int number)
         ser.loc[number].root = ser.root;
     if (red == 0)
         ser.loc[number].redirection = ser.redirection;
-    printf("-->{%s}\n", ser.redirection.c_str());
-    printf("{%s}\n", ser.loc[number].redirection.c_str());
+    // printf("-->{%s}\n", ser.redirection.c_str()); //redirect
+    // printf("{%s}\n", ser.loc[number].redirection.c_str());
     // if (in == 0)
         // printf("%d|%d|%d\n",in,ro,red);
     // if (in != 1 || ro != 1 || red > 1)
@@ -189,7 +188,7 @@ std::string getTheFileInOneString(std::string file)
 
 void checkConfigFileRules(server &ser)
 {
-    printf("%d\n", ser.root_number);
+    // printf("%d\n", ser.root_number);
     if (ser.index_number != 1)
         throw ("eroor in index number");
     if (!ser.error_page_number)
