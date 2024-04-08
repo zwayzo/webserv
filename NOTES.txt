@@ -7,6 +7,10 @@ Config File:
 -AUTO INDEX there is always an auto index either off or on (dima khass tkone mktouba auto index w 
 value dyalha ya imma on wela off mashi makaynash rah kathat 
 2 khassk tkhaliha dima kayna w ya imma fiha 0 yaeni off wela fiha 1 yaeni on);
+-dik redirection ra khass tmsah kelma dyal redirection w tktb hadshi 
+"return 301 http://example.com$request_uri" wasst location katkone
+ila kanet return yaeni rah endna redirection so dekchi kaml li qdamha 301 http://example.com$request_uri ghaythat 301 f wahed int
+w lien f string
 
 
 READ SUBJECT:
