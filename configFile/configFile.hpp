@@ -32,6 +32,7 @@ class infos{
 
 class location{
     public:
+    location(){};
     location& operator=(const location& other) {
         if (this != &other) {
             // Ensure that all members are assigned properly

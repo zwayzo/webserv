@@ -1,0 +1,8 @@
+Config File:
+-Handle more than one location;
+-Each location must have methods.
+-Every location block can have an optional uploads path not required;
+-Every location block can have a redirection; (optional)
+-AUTO INDEX there is always an auto index either off or on (dima khass tkone mktouba auto index w 
+value dyalha ya imma on wela off mashi makaynash rah kathat 
+2 khassk tkhaliha dima kayna w ya imma fiha 0 yaeni off wela fiha 1 yaeni on);

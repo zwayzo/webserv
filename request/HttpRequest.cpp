@@ -182,14 +182,17 @@ void HttpRequest::parseRequestLine(const std::string& reqLine)
 
 void HttpRequest::parseURI(void) 
 {
-    std::size_t questionMarkPos = _uri.find('?');
+	size_t questionMarkPos = _uri.find_first_of('?'); // Check for query parameters
+
     if (questionMarkPos != std::string::npos) 
     {
         queryString = _uri.substr(questionMarkPos + 1);
 		_uri = _uri.substr(0, questionMarkPos);
-    } 
-    else
+    }
+    else {
+		_uri = _uri;
         queryString.clear();
+	}
     if (_uri.length() > 2048)
         this->_errCode = 414; //414 URI Too Long
 	// else if (_uri.find("..") != std::string::npos)

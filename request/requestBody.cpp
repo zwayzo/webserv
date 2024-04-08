@@ -106,7 +106,8 @@ bool	HttpRequest::_isSupportedMethod(void) {
 		std::cout << *it << " ";
 	printf("\n");
 	for(size_t i = 0; i < len; i++) {
-		if (this->_uri.find(this->_confServ.loc[i].name) != std::string::npos) {//find the location Name in the uri
+		if (this->_uri.find(this->_confServ.loc[i].name) != std::string::npos
+			&& this->_confServ.loc[i]._methods.empty()) {//find the location Name in the uri
 			_isAllowedMeth = this->_confServ.loc[i]._methods;
 			break ;
 		} //update the method vector
