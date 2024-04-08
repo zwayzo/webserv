@@ -72,8 +72,6 @@ void	multuplix::multuplixing(conf* conf)
 					int _clSock = iter->first;
                     if (FD_ISSET(i, &read_fds)){
                         client cl = iter->second;
-                        // std::cout << "client upload is : ----------------| " << cl.post << " |---------------\n";
-
                         int nbytes = recv(i, cl.req.buff, sizeof(cl.req.buff), 0);
                         if (nbytes == -1)
                             throw ("Error: recv failed\n");
@@ -85,20 +83,20 @@ void	multuplix::multuplixing(conf* conf)
 							close(_clSock); //should close the client connection
                         }
 						_httpRequest[_clSock].parseHttpRequest(cl.req.buff, nbytes);
-                        // std::cout << _httpRequest[_clSock].getRequest();
+                        // std::cout << _httpReque/st[_clSock].getRequest();
                         // std::cout << "FinREQUEST\n";
 						//should check th first time body
                         // post_contentLenght(iter, i, nbytes);
                         if (nbytes > 0){
                             if (iter->second.req.track >= iter->second.req.contentLenght){
-                                // printf("time to clear\n");
+                        //         // printf("time to clear\n");
                                 clearSets(&iter->second, i, &iter->second.req.track, &iter->second.req.first, &master_re, &master_wr);
                             }
                         }
+
                     }
                     if(FD_ISSET(i, &write_fds)){
 						int response = 0;
-                        printf("oook, %d\n", _clSock);
 						// if (_httpRequest[_clSock].getCodeError()) == 0) {
 						// 	//CGI handler
 						// 	//cgi Done
@@ -108,9 +106,8 @@ void	multuplix::multuplixing(conf* conf)
 						// else {
 						// 	//send response
 							// response = _httpResponse[_clSock].buildResponse(_httpRequest[_clSock]);//NULL MEANS NO CGI
-                            send(_clSock, "HTTP/1.1 200 OK\r\nContent-Type: text/html;\r\nContent-Length: 5;\r\n\r\nHELLO", 78, 0);
-                            close(_clSock);
-                            exit(0);
+                            // send(_clSock, "HTTP/1.1 200 OK\r\nContent-Type: text/html;\r\nContent-Length: 5;\r\n\r\nHELLO", 78, 0);
+                            // close(_clSock);
                         // }
 
                         // printf("not new connection in write\n");

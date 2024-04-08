@@ -3,16 +3,17 @@
 
 void	HttpRequest::parseBody(size_t &bodypos) {
 	// std::cout << "Server for our request is: " << this->_confServ.listen << std::endl;
-	int contentLength = 0;
+	long contentLength = 0;
 	if (is_body(contentLength)) {
-		if (this->isChunked) {
+		if (this->isChunked)
+		{
 			_getChunkedBody(bodypos);
 			this->_bodySize = this->_body.size();
 			if (this->_confServ.max_size >= this->_bodySize) {//should check the max body in the conf file >= _bodySize
 				if ((this->_method == "post") && this->_uri.find(".py") == std::string::npos
 					&& this->_uri.find(".rb") == std::string::npos)
 					{
-						if (_isSupportedMethod()) //isMethodAllowed
+						if (_isSupportedMethod())
 						{
 							std::string	file = _generateTempFileName();
 							std::string	uploadPath = _findUploadPath();
@@ -30,25 +31,30 @@ void	HttpRequest::parseBody(size_t &bodypos) {
 				this->_errCode = 413; /*Content Too Large response status code indicates that
 			the request entity is larger than limits defined by server*/
 		}
-		else if (this->_method == "post" && contentLength > 0)
-			{
-			    // std::vector<char> bodyBuffer(contentLength);
-			    // this->_request.read(&bodyBuffer[0], contentLength);
-			    // std::string body(bodyBuffer.begin(), bodyBuffer.end());
-			    std::cout << "Corps RQ: " << _body << std::endl;
-			}
+		if (this->_method == "post" && contentLength > 0)
+		{
+			_getContentLengthBody(bodypos, contentLength);
+			this->_bodySize = contentLength;
+			// std::vector<char> bodyBuffer(contentLength);
+		    // this->_request.read(&bodyBuffer[0], contentLength);
+		    // std::string body(bodyBuffer.begin(), bodyBuffer.end());
+		    std::cout << "Corps : " << this->_body << " with size of: " << this->_bodySize << std::endl;
+		}
 	}
 	else {
 		std::cout << "NO BODY FOUND*******" << std::endl; //3andna GET wla DELETE
 	}
 }
 
-bool HttpRequest::is_body(int& contentLength)
+bool HttpRequest::is_body(long& contentLength)
 {
+		printf("isBody\n");
+
     //find contenu dial content-lenght
 	std::map<std::string, std::string>::iterator iter = headerFields.find("Content-Length");
     if (iter != headerFields.end()) {
         contentLength = std::strtol(iter->second.c_str(), NULL, 10);
+		std::cout << contentLength << std::endl;
         return true; // true l9inaah
     }
 	std::string transfer_encod("Transfer-Encoding");
@@ -94,6 +100,16 @@ void	HttpRequest::_getChunkedBody(size_t &bodypos) {
 		this->_body += tmp.substr(i, chunkedSize);
 		// std::cout << "own body: " << "'" << this->_body << "'";
 		i += chunkedSize + 1;
+	}
+}
+
+void	HttpRequest::_getContentLengthBody(size_t &bodypos, long &contentLength) {
+	std::string	tmp = this->_request.substr(bodypos);
+	long	i = 0;
+
+	while (i != contentLength) {
+		this->_body += tmp[i];
+		i++;
 	}
 }
 

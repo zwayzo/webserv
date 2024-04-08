@@ -76,11 +76,12 @@ class HttpRequest {
         void	parseHeaders(const std::string& headersPart);
         void	printHeaders() const ;
 
-        //body (chunked)
-        bool	is_body(int& contentLength);
+        //body (chunked and content length)
+        bool	is_body(long& contentLength);
         void    parseBody(size_t &bodypos);
         void	_getChunkedBody(size_t &bodypos);
-
+		void	_getContentLengthBody(size_t &bodypos, long &contentLength);
+	
 		//Allowed methods and randName
 		bool		_isSupportedMethod(void);
 		std::string	_generateTempFileName(void);

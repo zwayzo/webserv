@@ -8,7 +8,8 @@ HttpResponse::HttpResponse() :
 	_statusCode(""),
 	_isCgi(false),
 	_root(""),
-	_fd(0) {}
+	_fd(0),
+	_path("") {}
 
 HttpResponse::HttpResponse(int clSocket, server &clientServer) :
 	_clSocket(clSocket),

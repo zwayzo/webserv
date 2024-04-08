@@ -1,8 +1,17 @@
 Config File:
 -Handle more than one location;
--Each location must have methods.
+-Each location must have methods.(obligatoire mashi optional)
+-Set un fichier par défaut comme réponse si la requête est un répertoire (index file obligatoire mashi optionnel)
 -Every location block can have an optional uploads path not required;
 -Every location block can have a redirection; (optional)
 -AUTO INDEX there is always an auto index either off or on (dima khass tkone mktouba auto index w 
 value dyalha ya imma on wela off mashi makaynash rah kathat 
 2 khassk tkhaliha dima kayna w ya imma fiha 0 yaeni off wela fiha 1 yaeni on);
+
+
+READ SUBJECT:
+-Le premier serveur pour un host:port sera le serveur par défaut pour cet host:port
+(ce qui signifie qu’il répondra à toutes les requêtes qui n’appartiennent pas à un
+autre serveur) (It must be a default server in attachClient function if there is no server with the same port)
+-Choisir le port et l’host de chaque "serveur".
+-Setup server_names ou pas (HADA LI OPTIONNEL mashi l Host:) khass ikone mktoub Host mais server_names tqdr diro wla madiroch.
