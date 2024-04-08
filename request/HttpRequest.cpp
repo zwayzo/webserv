@@ -150,10 +150,8 @@ void HttpRequest::parseHttpRequest(const char* buf, int nbytes)
 				headersPart += line + "\n";
 			parseHeaders(headersPart);
 
-    		printHeaders();
 			std::streampos endHdrPos = requestStream.tellg();
 			size_t bodypos = static_cast<size_t>(endHdrPos);
-			printf("okkkkkkkkk\n");
 			std::cout << "Pos aprs Header: " << bodypos << std::endl;
 			std::cout << "Character in position 281: " << _request[bodypos] << std::endl;
             
@@ -163,6 +161,7 @@ void HttpRequest::parseHttpRequest(const char* buf, int nbytes)
 		}
 	}
     
+    		// printHeaders();
     // std::cout << "Method: " << httpRequest.method << std::endl;
     // std::cout << "URI: " << httpRequest.uri << std::endl;
     // std::cout << "Chaine REQUEST: " << httpRequest.queryString << std::endl;
@@ -194,7 +193,7 @@ void HttpRequest::parseURI(void)
 		_uri = _uri;
         queryString.clear();
 	}
-	if (_uri.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?#[]@!$&'()*+,;="))
+	if (!_uri.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?#[]@!$&'()*+,;="))
 		this->_errCode = 400; //Bad Request
     if (_uri.length() > 2048)
         this->_errCode = 414; //414 URI Too Long

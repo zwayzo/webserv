@@ -62,7 +62,7 @@ void	multuplix::multuplixing(conf* conf)
                     conf->vec.push_back(clSocket);
                     FD_SET(clSocket, &master_re);
 					_httpRequest[clSocket] = HttpRequest(clSocket, mycl[clSocket].clientServer);
-					_httpResponse[clSocket] = HttpResponse(clSocket, mycl[clSocket].clientServer);
+					// _httpResponse[clSocket] = HttpResponse(clSocket, mycl[clSocket].clientServer);
                     if (clSocket > maxfd)
                         maxfd = clSocket;
                 }
@@ -83,8 +83,8 @@ void	multuplix::multuplixing(conf* conf)
 							close(_clSock); //should close the client connection
                         }
 						_httpRequest[_clSock].parseHttpRequest(cl.req.buff, nbytes);
-                        // std::cout << _httpReque/st[_clSock].getRequest();
-                        // std::cout << "FinREQUEST\n";
+                        std::cout << _httpRequest[_clSock].getRequest();
+                        std::cout << "\nFinREQUEST\n";
 						//should check th first time body
                         // post_contentLenght(iter, i, nbytes);
                         if (nbytes > 0){

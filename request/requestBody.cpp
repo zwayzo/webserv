@@ -35,10 +35,8 @@ void	HttpRequest::parseBody(size_t &bodypos) {
 		{
 			_getContentLengthBody(bodypos, contentLength);
 			this->_bodySize = contentLength;
-			// std::vector<char> bodyBuffer(contentLength);
-		    // this->_request.read(&bodyBuffer[0], contentLength);
-		    // std::string body(bodyBuffer.begin(), bodyBuffer.end());
-		    std::cout << "Corps : " << this->_body << " with size of: " << this->_bodySize << std::endl;
+			//Handle content Length 
+		    std::cout << "Corps : " << this->_body << "\nwith size of: " << this->_bodySize << std::endl;
 		}
 	}
 	else {
@@ -48,13 +46,10 @@ void	HttpRequest::parseBody(size_t &bodypos) {
 
 bool HttpRequest::is_body(long& contentLength)
 {
-		printf("isBody\n");
-
     //find contenu dial content-lenght
 	std::map<std::string, std::string>::iterator iter = headerFields.find("Content-Length");
     if (iter != headerFields.end()) {
         contentLength = std::strtol(iter->second.c_str(), NULL, 10);
-		std::cout << contentLength << std::endl;
         return true; // true l9inaah
     }
 	std::string transfer_encod("Transfer-Encoding");
