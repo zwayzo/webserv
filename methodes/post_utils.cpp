@@ -1,4 +1,4 @@
-#include "../multuplixing/multuplixing.hpp"
+#include "../multuplixing/client.hpp"
 #include "post.hpp"
 
 int creatFile(int fd, char *buf, client *cl) //creat the file (file+'random number' +.'extention)
@@ -10,7 +10,7 @@ int creatFile(int fd, char *buf, client *cl) //creat the file (file+'random numb
     std::stringstream s;
     s << randomNum();
     tmp += s.str();
-    tmp = cl->upload + '/' + tmp + '.' +  getExtention(buf);
+    tmp = cl->clientServer.uploads + '/' + tmp + '.' +  getExtention(buf);
     std::cout << tmp << '\n';
     // exit(1);
 

@@ -2,6 +2,61 @@
 
 server::server() {}
 
+server::server(int n) : number(n){}
+
+server::server(const server& copy) {
+        this->post = copy.post;
+		this->get = copy.get;
+        this->deletee = copy.deletee;
+        this->methodes_number = copy.methodes_number;
+        this->locationsNumber = copy.locationsNumber;
+
+		this->name = copy.name;
+        this->listen = copy.listen;
+        this->autoindex = copy.autoindex;
+        this->max_size = copy.max_size;
+		this->root = copy.root;
+        this->uploads = copy.uploads;
+        this->_methods = copy._methods;//
+        this->error_page = copy.error_page;
+        this->index = copy.index;
+		this->redirection = copy.redirection;
+            // Copy the location objects
+		this->loc.resize(copy.loc.size()); // Ensure the same size
+		for (size_t i = 0; i < copy.loc.size(); ++i) {
+        	this->loc[i] = copy.loc[i]; // Assuming location has a proper copy constructor
+        }
+}
+
+server& server::operator=(const server& copy) {
+    if (this != &copy) {
+		this->post = copy.post;
+		this->get = copy.get;
+        this->deletee = copy.deletee;
+        this->methodes_number = copy.methodes_number;
+        this->locationsNumber = copy.locationsNumber;
+
+		this->name = copy.name;
+        this->listen = copy.listen;
+        this->autoindex = copy.autoindex;
+        this->max_size = copy.max_size;
+		this->root = copy.root;
+        this->uploads = copy.uploads;
+        this->_methods = copy._methods;//
+        this->error_page = copy.error_page;
+        this->index = copy.index;
+		this->redirection = copy.redirection;
+            // Copy the location objects
+		this->loc.resize(copy.loc.size()); // Ensure the same size
+		for (size_t i = 0; i < copy.loc.size(); ++i) {
+        	this->loc[i] = copy.loc[i]; // Assuming location has a proper copy constructor
+    	}
+    }
+	return *this;
+}
+
+server::~server() {}
+
 void stockLocation(conf *conf, int indice)
 {
     int i = 0, j = 0;
@@ -26,8 +81,6 @@ void stockLocation(conf *conf, int indice)
             newLocation.theLoc.push_back('\n');
             // Assuming loc is a vector of location objects
             conf->ser[indice].loc.push_back(newLocation); // Add the newLocation to the loc vector
-            // std::cout << newLocation.theLoc;
-            // exit(1);
             // std::cout << "enter2\n";
         }
         i++;
@@ -81,7 +134,7 @@ conf* fileConfiguration(conf *conf, std::string file)
         conf->ser[j].info = checkValue(conf->ser[j].mySer, conf->ser[j].info, conf->ser[j]);
         checkConfigFileRules(conf->ser[j]);
         printArguments(conf->ser[j].info, conf->ser[j].locationsNumber, conf->ser[j]);
-        printf("\n---------------------------x----------------------------------------\n");
+        printf("\n-------------------------------------------------------------------\n");
     }
     // exit(1);
     return (conf);

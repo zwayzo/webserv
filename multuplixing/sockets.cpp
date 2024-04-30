@@ -1,4 +1,4 @@
-#include "multuplixing.hpp"
+#include "client.hpp"
 #include "socket.hpp"
 
 void clearSets(client *mycl, int i, long long *s, int *index, fd_set *master_re, fd_set *master_wr) //clear the sets and initialze some variables(select)

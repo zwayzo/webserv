@@ -3,7 +3,7 @@
 
 #include "../configFile/configFile.hpp"
 #include "../multuplixing/multuplixing.hpp"
-#include "../request/parseRequest.hpp"
+#include "../request/HttpRequest.hpp"
 #include "../methodes/post.hpp"
 #include "../request/request.hpp"
 #include "../multuplixing/socket.hpp"

@@ -1,38 +1,26 @@
-
 #ifndef MULTUPLIXING_HPP
 #define MULTUPLIXING_HPP
 
 #include "../headers/header.hpp"
 #include "../request/request.hpp"
-#include "../request/parseRequest.hpp"
-// #include "../response/Response.hpp"
+// #include "../request/HttpRequest.hpp"
+// #include "../response/HttpResponse.hpp"
+#include "../multuplixing/client.hpp"
+class HttpResponse;
+class client;
 
-class request;
-// class HttpRequest;
+class multuplix{
+    private:
+		// std::map<int, HttpRequest>	_httpRequest;
+        // std::map<int, HttpResponse>	_httpResponse;
 
-class client{
     public:
-        request req;
-        HttpRequest httpRequest;
-        // Response    httpResponse;
-        int port;
-        int post;
-        int get;
-        int del;
-        std::string upload;
-    public:
-        int     creatFile(int fd, char *buf);
-        void    getMethodes(std::string buf);
-        // deujks
+        std::map <int, client>		mycl;
+
+        multuplix();
+        multuplix(multuplix &copy);
+        ~multuplix();
+        void multuplixing(conf* conf);
 };
-
-// std::vector <client> mycl;
-
-class conf;
-void multuplixing (conf *conf);
-void getMethodes(std::string buf, client *cl); //check if the method is post to work with
-void handleCtrlZ(int signum);
-int maxFd(conf* conf);
-client attachClientServer(int i, conf *conf, client tmp, int in, int newFd);
 
 #endif

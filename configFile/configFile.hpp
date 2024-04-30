@@ -1,3 +1,4 @@
+
 #ifndef CONFIGFILE_HPP
 #define CONFIGFILE_HPP
 
@@ -39,8 +40,10 @@ class location{
             this->post = other.post;
             this->deletee = other.deletee;
 
+            this->name = other.name;
             this->autoindex = other.autoindex;
             this->root = other.root;
+            this->uploads = other.uploads;
             this->redirection = other.redirection;
             // ... (assign other members)
 
@@ -56,67 +59,82 @@ class location{
         int deletee;
         int autoindex;
 
+        // same as the server just if we don't have like the root in
+        //the location it will set to the server root par default
         std::string index;
+        std::string name;
         std::string theLoc;
         std::string root;
         std::string redirection;
         std::string uploads;
-        std::string name;
+        //you should add a string vector that contains all methods in location
+        // like: 
+        std::vector<std::string> _methods;
 };
 
 class server{
     public:
         server();
-        server(int n) : number(n){};
-        // server(u)
+        server(int n);
+        server(const server& copy);
+        server& operator=(const server& copy);
+        ~server();
+
+        //--------
+        //this are for multuplixing
         int socketAddr;
         int sock;
         int listen_fd;
         int listen;
         int listen_number;
-        int post;
-        int get;
-        int deletee;
-        int autoindex;
+        //---------
+        int post; //if it's allowed will be 1 else it 0
+        int get; //if it's allowed will be 1 else it 0
+        int deletee; //if it's allowed will be 1 else it 0
+        int autoindex; //if we don't have it's 2 , if it's on it's 1 , off 0
         int autoindex_number;
-        int max_size;
+        size_t max_size; //max bosy size
         int max_size_number;
         int number;
         int size;
         int wor;
-        int locationsNumber;
+        int locationsNumber; //locations number in the server
         int methodes_number;
         
         int begin;
         int close;
 
         // std::string ip;
-        std::string index;
+        std::string	root; //directory path wher should get the images or whatever should appear when i connect the client with server
+        int			root_number;
+        std::string index; //specific which index(file) from the root(directory)
         int			index_number;
-        std::string error_page;
+        std::string error_page; //error pages path 404 403 etc mazal mamriglin 100%
         int			error_page_number;
-        std::string name;
+        std::string name; //name of server
         int			name_number;
         std::string mySer;
-        std::string redirection;
+        std::string redirection; //the redirection path
         int			redirection_number;
-        std::string	root;
-        int			root_number;
-        std::string uploads;
+        std::string uploads; //wher should the post be uploaded
         int uploads_number;
 
-        std::vector<location> loc;
+        std::vector<std::string> _methods; //nouhaila add this
+
+        std::vector<location> loc; //verctors of location we reserve x if we have x locations in the server
         infos *info;
-        // location *loc;
+        //NOTE BIEN: everything with number like root_number index_number... just to
+        //protect our config file like if we don't have roort it should not work so i check 
+        //thet root number
 
 };
 
 class conf{
     public:
-        std::vector<server> ser;
+        std::vector<server> ser; //vectors of servers if we have 5 servers w reserve 5
         int size;
-        int serversNumber;
-        std::string allIn;
+        int serversNumber; //servers number in the config file
+        std::string allIn; 
         std::vector<int> vec;
 };
 
@@ -141,5 +159,6 @@ std::string getTheFileInOneString(std::string file);
 int file_size(std::string file);
 void checkConfigFileRules(server &ser);
 void init_variables(server &ser);
+int skipLocation(server &ser, int i);
 
 #endif
